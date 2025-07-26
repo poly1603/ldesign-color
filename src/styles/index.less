@@ -1,0 +1,374 @@
+/**
+ * LDesign Color 组件样式
+ */
+
+// 基础变量
+@prefix: ldesign-color;
+@border-radius: 6px;
+@transition: all 0.3s ease;
+@box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+// 颜色提供者
+.@{prefix}-provider {
+  position: relative;
+}
+
+// 加载状态
+.@{prefix}-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: @border-radius;
+  margin-bottom: 16px;
+
+  &__spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #1890ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+  }
+
+  &__text {
+    color: #666;
+    font-size: 14px;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// 错误状态
+.@{prefix}-error {
+  padding: 12px 16px;
+  background: #fff2f0;
+  border: 1px solid #ffccc7;
+  border-radius: @border-radius;
+  margin-bottom: 16px;
+
+  &__text {
+    color: #ff4d4f;
+    font-size: 14px;
+  }
+}
+
+// 颜色选择器
+.@{prefix}-picker {
+  &__input {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  &__color-input {
+    width: 40px;
+    height: 32px;
+    border: 1px solid #d9d9d9;
+    border-radius: @border-radius;
+    cursor: pointer;
+    transition: @transition;
+
+    &:hover {
+      border-color: #40a9ff;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+
+  &__text-input {
+    flex: 1;
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: @border-radius;
+    font-size: 14px;
+    transition: @transition;
+
+    &:focus {
+      outline: none;
+      border-color: #40a9ff;
+      box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+    }
+
+    &:disabled {
+      background: #f5f5f5;
+      cursor: not-allowed;
+    }
+  }
+
+  &__presets {
+    &-title {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    &-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    &-item {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: @transition;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+
+      &.is-active {
+        border-color: #1890ff;
+        box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+      }
+    }
+  }
+}
+
+// 颜色色阶
+.@{prefix}-palette {
+  margin-bottom: 24px;
+
+  &__title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #262626;
+    margin-bottom: 12px;
+    text-transform: capitalize;
+  }
+
+  &__colors {
+    display: flex;
+    border-radius: @border-radius;
+    overflow: hidden;
+    box-shadow: @box-shadow;
+  }
+
+  &__color-item {
+    flex: 1;
+    height: 60px;
+    position: relative;
+    cursor: pointer;
+    transition: @transition;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    &:hover {
+      transform: translateY(-2px);
+      z-index: 1;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  &__color-value {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    margin-bottom: 2px;
+    opacity: 0;
+    transition: @transition;
+
+    .@{prefix}-palette__color-item:hover & {
+      opacity: 1;
+    }
+  }
+
+  &__color-index {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    font-weight: 500;
+  }
+}
+
+// 主题预览
+.@{prefix}-theme-preview {
+  &__loading,
+  &__empty {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+    font-size: 14px;
+  }
+
+  &__section {
+    margin-bottom: 32px;
+
+    h3 {
+      font-size: 18px;
+      font-weight: 500;
+      color: #262626;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #f0f0f0;
+      padding-bottom: 8px;
+    }
+  }
+
+  &__semantic-colors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  &__semantic-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid #f0f0f0;
+    border-radius: @border-radius;
+    transition: @transition;
+
+    &:hover {
+      box-shadow: @box-shadow;
+    }
+  }
+
+  &__color-block {
+    width: 40px;
+    height: 40px;
+    border-radius: @border-radius;
+    margin-right: 12px;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  }
+
+  &__color-info {
+    flex: 1;
+  }
+
+  &__color-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #262626;
+    margin-bottom: 4px;
+    text-transform: capitalize;
+  }
+
+  &__color-value {
+    font-size: 12px;
+    color: #8c8c8c;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  }
+}
+
+// 暗黑模式适配
+[data-theme='dark'],
+.dark {
+  .@{prefix}-loading {
+    background: rgba(0, 0, 0, 0.9);
+
+    &__text {
+      color: #bfbfbf;
+    }
+  }
+
+  .@{prefix}-error {
+    background: #2a1215;
+    border-color: #58181c;
+
+    &__text {
+      color: #ff7875;
+    }
+  }
+
+  .@{prefix}-picker {
+    &__text-input {
+      background: #141414;
+      border-color: #434343;
+      color: #fff;
+
+      &:focus {
+        border-color: #177ddc;
+        box-shadow: 0 0 0 2px rgba(23, 125, 220, 0.2);
+      }
+
+      &:disabled {
+        background: #262626;
+      }
+    }
+  }
+
+  .@{prefix}-palette {
+    &__title {
+      color: #f0f0f0;
+    }
+  }
+
+  .@{prefix}-theme-preview {
+    &__loading,
+    &__empty {
+      color: #8c8c8c;
+    }
+
+    &__section h3 {
+      color: #f0f0f0;
+      border-bottom-color: #303030;
+    }
+
+    &__semantic-item {
+      background: #141414;
+      border-color: #303030;
+    }
+
+    &__color-name {
+      color: #f0f0f0;
+    }
+
+    &__color-value {
+      color: #8c8c8c;
+    }
+  }
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .@{prefix}-palette {
+    &__colors {
+      flex-direction: column;
+    }
+
+    &__color-item {
+      height: 40px;
+    }
+  }
+
+  .@{prefix}-theme-preview {
+    &__semantic-colors {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+// 打印样式
+@media print {
+  .@{prefix}-loading,
+  .@{prefix}-error {
+    display: none;
+  }
+
+  .@{prefix}-palette__color-item {
+    &:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+}
