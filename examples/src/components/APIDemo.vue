@@ -1,21 +1,155 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import {
+  ColorGenerator,
+  LRUCache,
+  PerformanceMonitor,
+  analyzeColor,
+  generateTheme,
+  hexToHsl,
+  isValidColor,
+  useColor,
+  useThemeSwitch,
+} from '@ldesign/color'
+
+// 核心API演示
+const generatorResult = ref(null)
+const convenienceResult = ref(null)
+
+// Vue API演示
+const vueApiColor = ref('#1890ff')
+const {
+  theme: vueApiTheme,
+  loading: vueApiLoading,
+  error: vueApiError,
+} = useColor(vueApiColor)
+
+// 主题切换演示
+const {
+  currentTheme: demoCurrentTheme,
+  toggleTheme: toggleDemoTheme,
+  isDark: demoDarkMode,
+} = useThemeSwitch()
+
+// 工具函数演示
+const utilsTestColor = ref('#1890ff')
+const utilsResult = ref(null)
+
+// 性能工具演示
+const performanceResult = ref(null)
+
+// 演示函数
+function demoColorGenerator() {
+  const generator = new ColorGenerator({
+    enableCache: true,
+    cacheSize: 100,
+    useWebWorker: false,
+  })
+
+  const theme = generator.generate('#1890ff')
+  generatorResult.value = {
+    semanticColors: theme.semanticColors,
+    timestamp: theme.timestamp,
+  }
+}
+
+async function demoConvenienceFunctions() {
+  const theme = generateTheme('#52c41a')
+  convenienceResult.value = theme
+}
+
+function testColorUtils() {
+  const color = utilsTestColor.value
+
+  try {
+    const valid = isValidColor(color)
+    if (valid) {
+      const hsl = hexToHsl(color)
+      const rgb = hexToRgb(color)
+      const analysis = analyzeColor(color)
+
+      utilsResult.value = {
+        isValid: valid,
+        hsl,
+        rgb,
+        luminance: analysis.luminance,
+        isDark: analysis.isDark,
+      }
+    }
+ else {
+      utilsResult.value = {
+        isValid: false,
+        hsl: null,
+        rgb: null,
+        luminance: null,
+        isDark: null,
+      }
+    }
+  }
+ catch (error) {
+    utilsResult.value = {
+      isValid: false,
+      error: error.message,
+    }
+  }
+}
+
+function demoPerformanceTools() {
+  const monitor = new PerformanceMonitor()
+  const cache = new LRUCache(10)
+
+  // 模拟操作
+  monitor.start('demo-operation')
+
+  // 添加一些缓存项
+  for (let i = 0; i < 5; i++) {
+    cache.set(`key-${i}`, `value-${i}`)
+  }
+
+  const operationTime = monitor.end('demo-operation')
+
+  performanceResult.value = {
+    operationTime: operationTime.toFixed(2),
+    cacheSize: cache.size,
+    memoryUsage: (performance.memory?.usedJSHeapSize / 1024 / 1024 || 0).toFixed(2),
+  }
+}
+
+// 辅助函数
+function hexToRgb(hex: string): [number, number, number] {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  return result
+? [
+    Number.parseInt(result[1], 16),
+    Number.parseInt(result[2], 16),
+    Number.parseInt(result[3], 16),
+  ]
+: [0, 0, 0]
+}
+</script>
+
 <template>
   <section id="api" class="api-section">
     <div class="section-header">
-      <h2 class="section-title">🔌 API演示</h2>
+      <h2 class="section-title">
+        🔌 API演示
+      </h2>
       <p class="section-description">
         探索 @ldesign/color 的完整API，包括核心类、工具函数和Vue集成
       </p>
     </div>
-    
+
     <div class="api-container">
       <!-- 核心API -->
       <div class="api-group">
-        <h3 class="group-title">核心API</h3>
-        
+        <h3 class="group-title">
+          核心API
+        </h3>
+
         <div class="api-demo-card">
           <h4>ColorGenerator</h4>
           <p>主要的颜色生成器类</p>
-          
+
           <div class="code-demo">
             <pre><code>import { ColorGenerator } from '@ldesign/color'
 
@@ -27,21 +161,21 @@ const generator = new ColorGenerator({
 
 const theme = generator.generate('#1890ff')</code></pre>
           </div>
-          
+
           <button class="btn btn-primary" @click="demoColorGenerator">
             运行示例
           </button>
-          
+
           <div v-if="generatorResult" class="result">
             <h5>结果：</h5>
             <pre><code>{{ JSON.stringify(generatorResult, null, 2) }}</code></pre>
           </div>
         </div>
-        
+
         <div class="api-demo-card">
           <h4>便捷函数</h4>
           <p>快速生成主题的函数</p>
-          
+
           <div class="code-demo">
             <pre><code>import { generateTheme, generateThemeAsync } from '@ldesign/color'
 
@@ -51,15 +185,15 @@ const theme = generateTheme('#1890ff')
 // 异步生成
 const asyncTheme = await generateThemeAsync('#1890ff')</code></pre>
           </div>
-          
+
           <button class="btn btn-primary" @click="demoConvenienceFunctions">
             运行示例
           </button>
-          
+
           <div v-if="convenienceResult" class="result">
             <h5>结果：</h5>
             <div class="semantic-colors">
-              <div 
+              <div
                 v-for="(color, name) in convenienceResult.semanticColors"
                 :key="name"
                 class="color-item"
@@ -72,15 +206,17 @@ const asyncTheme = await generateThemeAsync('#1890ff')</code></pre>
           </div>
         </div>
       </div>
-      
+
       <!-- Vue API -->
       <div class="api-group">
-        <h3 class="group-title">Vue API</h3>
-        
+        <h3 class="group-title">
+          Vue API
+        </h3>
+
         <div class="api-demo-card">
           <h4>useColor</h4>
           <p>Vue 3 组合式API</p>
-          
+
           <div class="code-demo">
             <pre><code>import { ref } from 'vue'
 import { useColor } from '@ldesign/color'
@@ -88,22 +224,22 @@ import { useColor } from '@ldesign/color'
 const primaryColor = ref('#1890ff')
 const { theme, loading, error } = useColor(primaryColor)</code></pre>
           </div>
-          
+
           <div class="interactive-demo">
             <div class="input-group">
               <label>主色调：</label>
-              <input type="color" v-model="vueApiColor" />
+              <input v-model="vueApiColor" type="color">
               <span>{{ vueApiColor }}</span>
             </div>
-            
+
             <div class="status">
               <span>状态：{{ vueApiLoading ? '加载中' : '完成' }}</span>
               <span>错误：{{ vueApiError || '无' }}</span>
             </div>
-            
+
             <div v-if="vueApiTheme" class="theme-result">
               <div class="semantic-grid">
-                <div 
+                <div
                   v-for="(color, name) in vueApiTheme.semanticColors"
                   :key="name"
                   class="semantic-item"
@@ -115,17 +251,17 @@ const { theme, loading, error } = useColor(primaryColor)</code></pre>
             </div>
           </div>
         </div>
-        
+
         <div class="api-demo-card">
           <h4>useThemeSwitch</h4>
           <p>主题切换管理</p>
-          
+
           <div class="code-demo">
             <pre><code>import { useThemeSwitch } from '@ldesign/color'
 
 const { currentTheme, toggleTheme, isDark } = useThemeSwitch()</code></pre>
           </div>
-          
+
           <div class="interactive-demo">
             <div class="theme-controls">
               <button class="btn btn-secondary" @click="toggleDemoTheme">
@@ -136,21 +272,23 @@ const { currentTheme, toggleTheme, isDark } = useThemeSwitch()</code></pre>
           </div>
         </div>
       </div>
-      
+
       <!-- 工具函数 -->
       <div class="api-group">
-        <h3 class="group-title">工具函数</h3>
-        
+        <h3 class="group-title">
+          工具函数
+        </h3>
+
         <div class="api-demo-card">
           <h4>颜色工具</h4>
           <p>颜色格式转换和分析</p>
-          
+
           <div class="code-demo">
-            <pre><code>import { 
-  hexToHsl, 
-  hslToHex, 
-  isValidColor, 
-  analyzeColor 
+            <pre><code>import {
+  hexToHsl,
+  hslToHex,
+  isValidColor,
+  analyzeColor
 } from '@ldesign/color'
 
 const hsl = hexToHsl('#1890ff')
@@ -158,21 +296,21 @@ const hex = hslToHex([210, 100, 55])
 const valid = isValidColor('#1890ff')
 const analysis = analyzeColor('#1890ff')</code></pre>
           </div>
-          
+
           <div class="interactive-demo">
             <div class="input-group">
               <label>测试颜色：</label>
-              <input 
-                type="text" 
+              <input
                 v-model="utilsTestColor"
+                type="text"
                 placeholder="#1890ff"
                 class="color-input"
-              />
+              >
               <button class="btn btn-secondary" @click="testColorUtils">
                 分析
               </button>
             </div>
-            
+
             <div v-if="utilsResult" class="utils-result">
               <div class="result-grid">
                 <div class="result-item">
@@ -201,11 +339,11 @@ const analysis = analyzeColor('#1890ff')</code></pre>
             </div>
           </div>
         </div>
-        
+
         <div class="api-demo-card">
           <h4>性能工具</h4>
           <p>缓存和性能监控</p>
-          
+
           <div class="code-demo">
             <pre><code>import { PerformanceMonitor, LRUCache } from '@ldesign/color'
 
@@ -216,12 +354,12 @@ monitor.start('operation')
 // ... 执行操作
 const time = monitor.end('operation')</code></pre>
           </div>
-          
+
           <div class="interactive-demo">
             <button class="btn btn-secondary" @click="demoPerformanceTools">
               演示性能工具
             </button>
-            
+
             <div v-if="performanceResult" class="performance-result">
               <div class="metric-grid">
                 <div class="metric-item">
@@ -244,134 +382,6 @@ const time = monitor.end('operation')</code></pre>
     </div>
   </section>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-import { 
-  ColorGenerator,
-  generateTheme,
-  generateThemeAsync,
-  useColor,
-  useThemeSwitch,
-  hexToHsl,
-  hslToHex,
-  isValidColor,
-  analyzeColor,
-  PerformanceMonitor,
-  LRUCache
-} from '@ldesign/color'
-
-// 核心API演示
-const generatorResult = ref(null)
-const convenienceResult = ref(null)
-
-// Vue API演示
-const vueApiColor = ref('#1890ff')
-const { 
-  theme: vueApiTheme, 
-  loading: vueApiLoading, 
-  error: vueApiError 
-} = useColor(vueApiColor)
-
-// 主题切换演示
-const { 
-  currentTheme: demoCurrentTheme, 
-  toggleTheme: toggleDemoTheme, 
-  isDark: demoDarkMode 
-} = useThemeSwitch()
-
-// 工具函数演示
-const utilsTestColor = ref('#1890ff')
-const utilsResult = ref(null)
-
-// 性能工具演示
-const performanceResult = ref(null)
-
-// 演示函数
-const demoColorGenerator = () => {
-  const generator = new ColorGenerator({
-    enableCache: true,
-    cacheSize: 100,
-    useWebWorker: false
-  })
-  
-  const theme = generator.generate('#1890ff')
-  generatorResult.value = {
-    semanticColors: theme.semanticColors,
-    timestamp: theme.timestamp
-  }
-}
-
-const demoConvenienceFunctions = async () => {
-  const theme = generateTheme('#52c41a')
-  convenienceResult.value = theme
-}
-
-const testColorUtils = () => {
-  const color = utilsTestColor.value
-  
-  try {
-    const valid = isValidColor(color)
-    if (valid) {
-      const hsl = hexToHsl(color)
-      const rgb = hexToRgb(color)
-      const analysis = analyzeColor(color)
-      
-      utilsResult.value = {
-        isValid: valid,
-        hsl,
-        rgb,
-        luminance: analysis.luminance,
-        isDark: analysis.isDark
-      }
-    } else {
-      utilsResult.value = {
-        isValid: false,
-        hsl: null,
-        rgb: null,
-        luminance: null,
-        isDark: null
-      }
-    }
-  } catch (error) {
-    utilsResult.value = {
-      isValid: false,
-      error: error.message
-    }
-  }
-}
-
-const demoPerformanceTools = () => {
-  const monitor = new PerformanceMonitor()
-  const cache = new LRUCache(10)
-  
-  // 模拟操作
-  monitor.start('demo-operation')
-  
-  // 添加一些缓存项
-  for (let i = 0; i < 5; i++) {
-    cache.set(`key-${i}`, `value-${i}`)
-  }
-  
-  const operationTime = monitor.end('demo-operation')
-  
-  performanceResult.value = {
-    operationTime: operationTime.toFixed(2),
-    cacheSize: cache.size,
-    memoryUsage: (performance.memory?.usedJSHeapSize / 1024 / 1024 || 0).toFixed(2)
-  }
-}
-
-// 辅助函数
-const hexToRgb = (hex: string): [number, number, number] => {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-  return result ? [
-    parseInt(result[1], 16),
-    parseInt(result[2], 16),
-    parseInt(result[3], 16)
-  ] : [0, 0, 0]
-}
-</script>
 
 <style scoped>
 .api-section {
@@ -648,17 +658,17 @@ const hexToRgb = (hex: string): [number, number, number] => {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .theme-controls {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .result-grid,
   .metric-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .semantic-grid {
     grid-template-columns: repeat(2, 1fr);
   }

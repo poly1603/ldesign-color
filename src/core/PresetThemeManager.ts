@@ -1,4 +1,4 @@
-import { ref, reactive, computed } from 'vue'
+import { computed, reactive } from 'vue'
 import type { PresetTheme } from '../types'
 
 /**
@@ -24,21 +24,21 @@ export const DEFAULT_PRESET_THEMES: PresetTheme[] = [
  */
 export class PresetThemeManager {
   private themes = reactive<PresetTheme[]>([...DEFAULT_PRESET_THEMES])
-  
+
   /**
    * 获取所有预设主题（响应式）
    */
   public getThemes() {
     return this.themes
   }
-  
+
   /**
    * 获取启用的预设主题（响应式）
    */
   public getEnabledThemes() {
     return computed(() => this.themes.filter(theme => theme.enabled !== false))
   }
-  
+
   /**
    * 添加预设主题
    */
@@ -47,18 +47,19 @@ export class PresetThemeManager {
       ...theme,
       enabled: true,
     }
-    
+
     // 检查是否已存在相同名称的主题
     const existingIndex = this.themes.findIndex(t => t.name === theme.name)
     if (existingIndex >= 0) {
       // 更新现有主题
       this.themes[existingIndex] = newTheme
-    } else {
+    }
+ else {
       // 添加新主题
       this.themes.push(newTheme)
     }
   }
-  
+
   /**
    * 移除预设主题
    */
@@ -70,7 +71,7 @@ export class PresetThemeManager {
     }
     return false
   }
-  
+
   /**
    * 启用/禁用预设主题
    */
@@ -82,7 +83,7 @@ export class PresetThemeManager {
     }
     return false
   }
-  
+
   /**
    * 更新预设主题
    */
@@ -94,77 +95,78 @@ export class PresetThemeManager {
     }
     return false
   }
-  
+
   /**
    * 根据名称查找主题
    */
   public findTheme(name: string): PresetTheme | undefined {
     return this.themes.find(theme => theme.name === name)
   }
-  
+
   /**
    * 根据颜色查找主题
    */
   public findThemeByColor(color: string): PresetTheme | undefined {
     return this.themes.find(theme => theme.color.toLowerCase() === color.toLowerCase())
   }
-  
+
   /**
    * 重置为默认主题
    */
   public resetToDefault(): void {
     this.themes.splice(0, this.themes.length, ...DEFAULT_PRESET_THEMES.map(theme => ({ ...theme })))
   }
-  
+
   /**
    * 禁用所有默认主题
    */
   public disableDefaultThemes(): void {
-    DEFAULT_PRESET_THEMES.forEach(defaultTheme => {
+    DEFAULT_PRESET_THEMES.forEach((defaultTheme) => {
       const theme = this.themes.find(t => t.name === defaultTheme.name)
       if (theme) {
         theme.enabled = false
       }
     })
   }
-  
+
   /**
    * 启用所有默认主题
    */
   public enableDefaultThemes(): void {
-    DEFAULT_PRESET_THEMES.forEach(defaultTheme => {
+    DEFAULT_PRESET_THEMES.forEach((defaultTheme) => {
       const theme = this.themes.find(t => t.name === defaultTheme.name)
       if (theme) {
         theme.enabled = true
       }
     })
   }
-  
+
   /**
    * 批量添加主题
    */
   public addThemes(themes: Omit<PresetTheme, 'enabled'>[]): void {
     themes.forEach(theme => this.addTheme(theme))
   }
-  
+
   /**
    * 导出主题配置
    */
   public exportThemes(): PresetTheme[] {
     return JSON.parse(JSON.stringify(this.themes))
   }
-  
+
   /**
    * 导入主题配置
    */
   public importThemes(themes: PresetTheme[], replace: boolean = false): void {
     if (replace) {
       this.themes.splice(0, this.themes.length, ...themes)
-    } else {
+    }
+ else {
       themes.forEach(theme => this.addTheme(theme))
     }
   }
-  
+
   /**
    * 获取主题数量统计
    */

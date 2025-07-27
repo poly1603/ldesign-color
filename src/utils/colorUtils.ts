@@ -17,7 +17,8 @@ export function hslToHex(hsl: HSLColor): string {
   try {
     const hex = convert.hsl.hex([h, s, l])
     return ensureHashPrefix(hex)
-  } catch (error) {
+  }
+ catch (error) {
     console.warn('HSL to Hex conversion failed:', hsl, error)
     // 使用Color库作为备选方案
     return Color.hsl(h, s, l).hex()
@@ -235,7 +236,8 @@ export function generateRandomColor(): string {
     // 直接生成随机十六进制颜色，更简单可靠
     const randomHex = Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')
     return `#${randomHex}`
-  } catch (error) {
+  }
+ catch (error) {
     console.warn('Random color generation failed, using fallback:', error)
     // 备选方案：生成固定的随机颜色
     const fallbackColors = ['#FF5733', '#33FF57', '#3357FF', '#FF33F5', '#F5FF33', '#33FFF5']

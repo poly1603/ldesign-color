@@ -1,4 +1,4 @@
-import { generateTheme, generateRandomColor } from './dist/ldesign-color.es.js'
+import { generateRandomColor, generateTheme } from './dist/ldesign-color.es.js'
 
 console.log('🔧 验证最新修复...\n')
 
@@ -10,17 +10,19 @@ try {
     randomColors.push(generateRandomColor())
   }
   console.log('✅ 随机颜色生成成功:', randomColors.slice(0, 5))
-  
+
   // 验证颜色格式
-  const isValidHex = randomColors.every(color => /^#[0-9a-fA-F]{6}$/.test(color))
+  const isValidHex = randomColors.every(color => /^#[0-9a-f]{6}$/i.test(color))
   console.log('✅ 随机颜色格式验证:', isValidHex ? '通过' : '失败')
-  
+
   if (isValidHex) {
     console.log('   所有随机颜色都是有效的十六进制格式')
-  } else {
-    console.log('   部分随机颜色格式不正确:', randomColors.filter(color => !/^#[0-9a-fA-F]{6}$/.test(color)))
   }
-} catch (error) {
+ else {
+    console.log('   部分随机颜色格式不正确:', randomColors.filter(color => !/^#[0-9a-f]{6}$/i.test(color)))
+  }
+}
+ catch (error) {
   console.log('❌ 随机颜色生成失败:', error.message)
 }
 
@@ -28,33 +30,33 @@ try {
 console.log('\n2. 验证灰色更深的修复')
 try {
   // 明亮模式
-  const lightTheme = generateTheme('#1890ff', { 
+  const lightTheme = generateTheme('#1890ff', {
     grayMixPrimary: false,
-    autoInject: false
+    autoInject: false,
   })
   const lightGrayColors = lightTheme.palettes.light.gray
   console.log('✅ 明亮模式灰色色阶:')
   console.log('   最浅灰色 (gray-1):', lightGrayColors[0])
   console.log('   中等灰色 (gray-7):', lightGrayColors[6])
   console.log('   最深灰色 (gray-14):', lightGrayColors[13])
-  
+
   // 暗黑模式
-  const darkTheme = generateTheme('#1890ff', { 
+  const darkTheme = generateTheme('#1890ff', {
     grayMixPrimary: false,
-    autoInject: false
+    autoInject: false,
   })
   const darkGrayColors = darkTheme.palettes.dark.gray
   console.log('\n✅ 暗黑模式灰色色阶:')
   console.log('   最浅灰色 (gray-1):', darkGrayColors[0])
   console.log('   中等灰色 (gray-7):', darkGrayColors[6])
   console.log('   最深灰色 (gray-14):', darkGrayColors[13])
-  
+
   // 验证最深的灰色确实更深了
   console.log('\n✅ 深度验证:')
   console.log('   明亮模式最深灰色应该接近 #404040 (25% lightness)')
   console.log('   暗黑模式最深灰色应该接近 #191919 (10% lightness)')
-  
-} catch (error) {
+}
+ catch (error) {
   console.log('❌ 灰色深度验证失败:', error.message)
 }
 
@@ -62,36 +64,37 @@ try {
 console.log('\n3. 验证混入主色调的灰色对比')
 try {
   // 不混入主色调
-  const pureGrayTheme = generateTheme('#1890ff', { 
+  const pureGrayTheme = generateTheme('#1890ff', {
     grayMixPrimary: false,
-    autoInject: false
+    autoInject: false,
   })
-  
+
   // 混入主色调
-  const mixedGrayTheme = generateTheme('#1890ff', { 
+  const mixedGrayTheme = generateTheme('#1890ff', {
     grayMixPrimary: true,
-    autoInject: false
+    autoInject: false,
   })
-  
+
   console.log('✅ 纯中性灰色 (不混入主色调):')
   console.log('   gray-1:', pureGrayTheme.palettes.light.gray[0])
   console.log('   gray-14:', pureGrayTheme.palettes.light.gray[13])
-  
+
   console.log('\n✅ 混入主色调的灰色:')
   console.log('   gray-1:', mixedGrayTheme.palettes.light.gray[0])
   console.log('   gray-14:', mixedGrayTheme.palettes.light.gray[13])
-  
+
   // 验证差异
   const pureGray1 = pureGrayTheme.palettes.light.gray[0]
   const mixedGray1 = mixedGrayTheme.palettes.light.gray[0]
-  
+
   if (pureGray1 !== mixedGray1) {
     console.log('\n✅ 混入主色调功能正常工作 - 颜色有差异')
-  } else {
+  }
+ else {
     console.log('\n❌ 混入主色调功能可能有问题 - 颜色相同')
   }
-  
-} catch (error) {
+}
+ catch (error) {
   console.log('❌ 灰色对比验证失败:', error.message)
 }
 

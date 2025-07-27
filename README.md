@@ -44,12 +44,12 @@ yarn add @ldesign/color
 ### 基础用法
 
 ```typescript
-import { generateTheme } from '@ldesign/color';
+import { generateTheme } from '@ldesign/color'
 
 // 🎨 一行代码生成完整主题
-const theme = generateTheme('#1890ff');
+const theme = generateTheme('#1890ff')
 
-console.log(theme.semanticColors);
+console.log(theme.semanticColors)
 // {
 //   primary: '#1890ff',
 //   success: '#52c41a',
@@ -58,52 +58,62 @@ console.log(theme.semanticColors);
 //   gray: '#8c8c8c'
 // }
 
-console.log(theme.palettes.light.primary);
+console.log(theme.palettes.light.primary)
 // ['#e6f7ff', '#bae7ff', '#91d5ff', ...] // 12个色阶
 
-console.log(theme.palettes.dark.primary);
+console.log(theme.palettes.dark.primary)
 // ['#111d2c', '#112a3a', '#15395b', ...] // 暗黑模式12个色阶
 ```
 
 ### 🆕 高级配置
 
 ```typescript
-import { generateTheme, createPresetThemeManager } from '@ldesign/color';
+import { createPresetThemeManager, generateTheme } from '@ldesign/color'
 
 // 🎨 完整配置示例
 const theme = generateTheme('#1890ff', {
-  grayMixPrimary: false,        // 使用纯中性灰色（更深更实用）
-  cssPrefix: 'my-app',          // 自定义CSS变量前缀
-  semanticNames: {              // 自定义语义化名称
+  grayMixPrimary: false, // 使用纯中性灰色（更深更实用）
+  cssPrefix: 'my-app', // 自定义CSS变量前缀
+  semanticNames: { // 自定义语义化名称
     primary: 'brand',
     success: 'positive',
     warning: 'caution',
     danger: 'negative',
     gray: 'neutral'
   },
-  autoInject: true              // 自动注入CSS变量到页面
-});
+  autoInject: true // 自动注入CSS变量到页面
+})
 
 // 🎭 预设主题管理
-const presetManager = createPresetThemeManager();
+const presetManager = createPresetThemeManager()
 
 // 添加自定义预设
 presetManager.addTheme({
   name: '企业蓝',
   color: '#0066cc',
   description: '企业级蓝色主题'
-});
+})
 
 // 获取启用的主题（响应式）
-const enabledThemes = presetManager.getEnabledThemes();
+const enabledThemes = presetManager.getEnabledThemes()
 
 // 手动注入样式到页面
-theme.cssGenerator.injectToHead(theme.cssVariables);
+theme.cssGenerator.injectToHead(theme.cssVariables)
 ```
 
 ### Vue 3 组合式API
 
 ```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { ColorPicker, ThemePreview, useColor } from '@ldesign/color'
+
+const primaryColor = ref('#1890ff')
+
+// 🚀 自动响应颜色变化，生成主题
+const { theme, loading, error } = useColor(primaryColor)
+</script>
+
 <template>
   <div>
     <!-- 🎨 颜色选择器 -->
@@ -113,40 +123,40 @@ theme.cssGenerator.injectToHead(theme.cssVariables);
     <ThemePreview v-if="theme" />
 
     <!-- ⚡ 加载状态 -->
-    <div v-if="loading">正在生成主题...</div>
+    <div v-if="loading">
+      正在生成主题...
+    </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue';
-import { useColor, ColorPicker, ThemePreview } from '@ldesign/color';
-
-const primaryColor = ref('#1890ff');
-
-// 🚀 自动响应颜色变化，生成主题
-const { theme, loading, error } = useColor(primaryColor);
-</script>
 ```
 
 ### Vue 组件方式
 
 ```vue
+<script setup lang="ts">
+import { ColorProvider } from '@ldesign/color'
+</script>
+
 <template>
   <!-- 🎯 提供颜色上下文 -->
   <ColorProvider primary-color="#1890ff">
     <div class="my-app">
       <!-- 🎨 所有子组件都能访问主题 -->
-      <MyButton type="primary">主要按钮</MyButton>
-      <MyButton type="success">成功按钮</MyButton>
-      <MyButton type="warning">警告按钮</MyButton>
-      <MyButton type="danger">危险按钮</MyButton>
+      <MyButton type="primary">
+        主要按钮
+      </MyButton>
+      <MyButton type="success">
+        成功按钮
+      </MyButton>
+      <MyButton type="warning">
+        警告按钮
+      </MyButton>
+      <MyButton type="danger">
+        危险按钮
+      </MyButton>
     </div>
   </ColorProvider>
 </template>
-
-<script setup lang="ts">
-import { ColorProvider } from '@ldesign/color';
-</script>
 ```
 
 ## 🎨 高级用法
@@ -154,23 +164,23 @@ import { ColorProvider } from '@ldesign/color';
 ### 高性能配置
 
 ```typescript
-import { useHighPerformanceColor } from '@ldesign/color';
+import { useHighPerformanceColor } from '@ldesign/color'
 
 const { theme, loading } = useHighPerformanceColor(primaryColor, {
-  enableCache: true,      // 🚀 启用智能缓存
-  cacheSize: 200,         // 📦 缓存大小
-  useWebWorker: true,     // ⚡ 使用Web Worker
-  autoInject: true        // 🎯 自动注入CSS变量
-});
+  enableCache: true, // 🚀 启用智能缓存
+  cacheSize: 200, // 📦 缓存大小
+  useWebWorker: true, // ⚡ 使用Web Worker
+  autoInject: true // 🎯 自动注入CSS变量
+})
 ```
 
 ### 批量处理
 
 ```typescript
-import { useBatchColor } from '@ldesign/color';
+import { useBatchColor } from '@ldesign/color'
 
-const colors = ref(['#1890ff', '#52c41a', '#f5222d']);
-const { themes, loading } = useBatchColor(colors);
+const colors = ref(['#1890ff', '#52c41a', '#f5222d'])
+const { themes, loading } = useBatchColor(colors)
 
 // 🚀 一次性生成多个主题
 ```
@@ -178,16 +188,16 @@ const { themes, loading } = useBatchColor(colors);
 ### 自定义配置
 
 ```typescript
-import { ColorGenerator } from '@ldesign/color';
+import { ColorGenerator } from '@ldesign/color'
 
 const generator = new ColorGenerator({
-  cssPrefix: 'my-app',    // 🏷️ 自定义CSS变量前缀
-  enableCache: true,      // 🚀 启用缓存
-  useWebWorker: true,     // ⚡ 使用Web Worker
-  autoInject: false       // 🎯 手动控制CSS注入
-});
+  cssPrefix: 'my-app', // 🏷️ 自定义CSS变量前缀
+  enableCache: true, // 🚀 启用缓存
+  useWebWorker: true, // ⚡ 使用Web Worker
+  autoInject: false // 🎯 手动控制CSS注入
+})
 
-const theme = await generator.generateAsync('#1890ff');
+const theme = await generator.generateAsync('#1890ff')
 ```
 
 ## 🎯 API 文档
@@ -202,7 +212,7 @@ const theme = await generator.generateAsync('#1890ff');
 const theme = generateTheme('#1890ff', {
   enableCache: true,
   useWebWorker: false
-});
+})
 ```
 
 #### `generateThemeAsync(primaryColor, config?)`
@@ -210,7 +220,7 @@ const theme = generateTheme('#1890ff', {
 异步生成主题，避免阻塞主线程。
 
 ```typescript
-const theme = await generateThemeAsync('#1890ff');
+const theme = await generateThemeAsync('#1890ff')
 ```
 
 ### Vue 组合式API
@@ -221,14 +231,14 @@ const theme = await generateThemeAsync('#1890ff');
 
 ```typescript
 const {
-  theme,              // 🎨 生成的主题
-  loading,            // ⏳ 加载状态
-  error,              // ❌ 错误信息
-  isValid,            // ✅ 颜色是否有效
-  generateTheme,      // 🔄 手动生成主题
-  clearCache,         // 🗑️ 清除缓存
+  theme, // 🎨 生成的主题
+  loading, // ⏳ 加载状态
+  error, // ❌ 错误信息
+  isValid, // ✅ 颜色是否有效
+  generateTheme, // 🔄 手动生成主题
+  clearCache, // 🗑️ 清除缓存
   getPerformanceMetrics // 📊 获取性能指标
-} = useColor(primaryColor);
+} = useColor(primaryColor)
 ```
 
 #### `useSimpleColor(primaryColor)`
@@ -236,7 +246,7 @@ const {
 简化版本，只关注基本功能。
 
 ```typescript
-const { theme, loading, error } = useSimpleColor(primaryColor);
+const { theme, loading, error } = useSimpleColor(primaryColor)
 ```
 
 #### `useThemeSwitch()`
@@ -245,11 +255,11 @@ const { theme, loading, error } = useSimpleColor(primaryColor);
 
 ```typescript
 const {
-  currentTheme,       // 🌓 当前主题（light/dark）
-  toggleTheme,        // 🔄 切换主题
-  setTheme,           // 🎯 设置主题
-  isDark              // 🌙 是否为暗黑模式
-} = useThemeSwitch();
+  currentTheme, // 🌓 当前主题（light/dark）
+  toggleTheme, // 🔄 切换主题
+  setTheme, // 🎯 设置主题
+  isDark // 🌙 是否为暗黑模式
+} = useThemeSwitch()
 ```
 
 ### Vue 组件
@@ -339,12 +349,12 @@ const {
 // 🚀 启用LRU缓存
 const generator = new ColorGenerator({
   enableCache: true,
-  cacheSize: 200  // 缓存200个主题
-});
+  cacheSize: 200 // 缓存200个主题
+})
 
 // 📊 查看缓存统计
-const stats = generator.cache.getStats();
-console.log(`缓存命中率: ${stats.hitRate * 100}%`);
+const stats = generator.cache.getStats()
+console.log(`缓存命中率: ${stats.hitRate * 100}%`)
 ```
 
 ### Web Worker
@@ -353,9 +363,9 @@ console.log(`缓存命中率: ${stats.hitRate * 100}%`);
 // ⚡ 在独立线程中生成颜色
 const generator = new ColorGenerator({
   useWebWorker: true
-});
+})
 
-const theme = await generator.generateAsync('#1890ff');
+const theme = await generator.generateAsync('#1890ff')
 ```
 
 ### 防抖处理
@@ -363,8 +373,8 @@ const theme = await generator.generateAsync('#1890ff');
 ```typescript
 // 🎯 防抖生成，避免频繁计算
 generator.generateDebounced('#1890ff', (theme) => {
-  console.log('主题生成完成:', theme);
-});
+  console.log('主题生成完成:', theme)
+})
 ```
 
 ## 🎯 最佳实践
@@ -374,18 +384,18 @@ generator.generateDebounced('#1890ff', (theme) => {
 ```typescript
 // ✅ 推荐：饱和度适中的颜色
 const goodColors = [
-  '#1890ff',  // 蓝色
-  '#52c41a',  // 绿色
-  '#722ed1',  // 紫色
-  '#fa541c'   // 橙色
-];
+  '#1890ff', // 蓝色
+  '#52c41a', // 绿色
+  '#722ed1', // 紫色
+  '#fa541c' // 橙色
+]
 
 // ❌ 避免：过于极端的颜色
 const badColors = [
-  '#000000',  // 纯黑
-  '#ffffff',  // 纯白
-  '#ff0000'   // 纯红
-];
+  '#000000', // 纯黑
+  '#ffffff', // 纯白
+  '#ff0000' // 纯红
+]
 ```
 
 ### 2. 合理使用缓存
@@ -395,54 +405,54 @@ const badColors = [
 const devConfig = {
   enableCache: false,
   useWebWorker: false
-};
+}
 
 // 🏭 生产环境：启用所有优化
 const prodConfig = {
   enableCache: true,
   cacheSize: 500,
   useWebWorker: true
-};
+}
 ```
 
 ### 3. 主题切换
 
 ```typescript
 // 🌓 响应系统主题偏好
-const { currentTheme, setTheme } = useThemeSwitch();
+const { currentTheme, setTheme } = useThemeSwitch()
 
 // 监听系统主题变化
-const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
 mediaQuery.addEventListener('change', (e) => {
-  setTheme(e.matches ? 'dark' : 'light');
-});
+  setTheme(e.matches ? 'dark' : 'light')
+})
 ```
 
 ## 🔧 配置选项
 
 ```typescript
 interface ColorGeneratorConfig {
-  enableCache?: boolean;     // 🚀 启用缓存
-  cacheSize?: number;        // 📦 缓存大小
-  useWebWorker?: boolean;    // ⚡ 使用Web Worker
-  cssPrefix?: string;        // 🏷️ CSS变量前缀
-  autoInject?: boolean;      // 🎯 自动注入CSS
+  enableCache?: boolean // 🚀 启用缓存
+  cacheSize?: number // 📦 缓存大小
+  useWebWorker?: boolean // ⚡ 使用Web Worker
+  cssPrefix?: string // 🏷️ CSS变量前缀
+  autoInject?: boolean // 🎯 自动注入CSS
 }
 ```
 
 ## 📊 性能监控
 
 ```typescript
-const { getPerformanceMetrics } = useColor(primaryColor);
+const { getPerformanceMetrics } = useColor(primaryColor)
 
-const metrics = getPerformanceMetrics();
+const metrics = getPerformanceMetrics()
 console.log({
   语义化颜色生成: `${metrics.semanticColorGeneration}ms`,
   色阶生成: `${metrics.paletteGeneration}ms`,
   CSS变量生成: `${metrics.cssVariableGeneration}ms`,
   总耗时: `${metrics.totalTime}ms`,
   缓存命中率: `${metrics.cacheHitRate * 100}%`
-});
+})
 ```
 
 ## 🎨 示例项目

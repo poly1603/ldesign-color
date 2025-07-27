@@ -116,7 +116,7 @@ export class PaletteGenerator {
     const maxSaturationStep = 95
     const minSaturationStep = 3 // 更低的最小饱和度，让最浅的更浅
     const maxValue = 98 // 更高的最大明度，让最浅的更浅
-    const minValue = 18  // 调整最深明度，保持色彩特征，避免过深
+    const minValue = 18 // 调整最深明度，保持色彩特征，避免过深
 
     // 中心点在第7步（原来是第6步）
     const centerStep = 7
@@ -187,10 +187,10 @@ export class PaletteGenerator {
 
     // 暗黑模式参数 - 与明亮模式对应但调整范围
     const hueStep = 1.2
-    const maxSaturationStep = 90  // 暗黑模式饱和度稍低
-    const minSaturationStep = 8   // 暗黑模式最小饱和度稍高
-    const maxValue = 85           // 暗黑模式最亮不能太亮
-    const minValue = 12           // 暗黑模式最深不要太深
+    const maxSaturationStep = 90 // 暗黑模式饱和度稍低
+    const minSaturationStep = 8 // 暗黑模式最小饱和度稍高
+    const maxValue = 85 // 暗黑模式最亮不能太亮
+    const minValue = 12 // 暗黑模式最深不要太深
 
     // 中心点在第7步
     const centerStep = 7
@@ -257,19 +257,21 @@ export class PaletteGenerator {
   private generateLightGrayStep(originColor: string, step: number, grayMixPrimary: boolean = true, grayMixRatio: number = 0.2): string {
     if (!grayMixPrimary) {
       // 纯中性灰色，使用平滑的明度曲线
-      const maxLightness = 98  // 最浅接近白色
-      const minLightness = 15  // 最深不要太黑，保持可读性
-      const centerStep = 8     // 14步的中心点
+      const maxLightness = 98 // 最浅接近白色
+      const minLightness = 15 // 最深不要太黑，保持可读性
+      const centerStep = 8 // 14步的中心点
 
       let lightness: number
       if (step < centerStep) {
         // 浅色部分：从最浅到中等
         const ratio = (centerStep - step) / (centerStep - 1)
         lightness = 50 + (maxLightness - 50) * ratio
-      } else if (step === centerStep) {
+      }
+ else if (step === centerStep) {
         // 中心点
         lightness = 50
-      } else {
+      }
+ else {
         // 深色部分：从中等到最深
         const ratio = (step - centerStep) / (14 - centerStep)
         lightness = 50 - (50 - minLightness) * ratio
@@ -284,16 +286,18 @@ export class PaletteGenerator {
 
     // 使用与纯中性灰色相同的明度曲线
     const maxLightness = 98
-    const minLightness = 15  // 最深不要太黑，保持可读性
+    const minLightness = 15 // 最深不要太黑，保持可读性
     const centerStep = 8
 
     let lightness: number
     if (step < centerStep) {
       const ratio = (centerStep - step) / (centerStep - 1)
       lightness = 50 + (maxLightness - 50) * ratio
-    } else if (step === centerStep) {
+    }
+ else if (step === centerStep) {
       lightness = 50
-    } else {
+    }
+ else {
       const ratio = (step - centerStep) / (14 - centerStep)
       lightness = 50 - (50 - minLightness) * ratio
     }
@@ -311,19 +315,21 @@ export class PaletteGenerator {
   private generateDarkGrayStep(originColor: string, step: number, grayMixPrimary: boolean = true, grayMixRatio: number = 0.2): string {
     if (!grayMixPrimary) {
       // 纯中性灰色，使用平滑的明度曲线（暗黑模式）
-      const maxLightness = 85  // 暗黑模式最浅不能太亮
-      const minLightness = 12  // 最深不要太黑，保持可读性
-      const centerStep = 8     // 14步的中心点
+      const maxLightness = 85 // 暗黑模式最浅不能太亮
+      const minLightness = 12 // 最深不要太黑，保持可读性
+      const centerStep = 8 // 14步的中心点
 
       let lightness: number
       if (step < centerStep) {
         // 浅色部分：从最浅到中等
         const ratio = (centerStep - step) / (centerStep - 1)
         lightness = 35 + (maxLightness - 35) * ratio
-      } else if (step === centerStep) {
+      }
+ else if (step === centerStep) {
         // 中心点
         lightness = 35
-      } else {
+      }
+ else {
         // 深色部分：从中等到最深
         const ratio = (step - centerStep) / (14 - centerStep)
         lightness = 35 - (35 - minLightness) * ratio
@@ -338,22 +344,24 @@ export class PaletteGenerator {
 
     // 使用与纯中性灰色相同的明度曲线
     const maxLightness = 85
-    const minLightness = 12  // 最深不要太黑，保持可读性
+    const minLightness = 12 // 最深不要太黑，保持可读性
     const centerStep = 8
 
     let lightness: number
     if (step < centerStep) {
       const ratio = (centerStep - step) / (centerStep - 1)
       lightness = 35 + (maxLightness - 35) * ratio
-    } else if (step === centerStep) {
+    }
+ else if (step === centerStep) {
       lightness = 35
-    } else {
+    }
+ else {
       const ratio = (step - centerStep) / (14 - centerStep)
       lightness = 35 - (35 - minLightness) * ratio
     }
 
     // 饱和度根据混入比例和位置计算
-    const maxSaturation = 12 * grayMixRatio  // 暗黑模式饱和度稍高
+    const maxSaturation = 12 * grayMixRatio // 暗黑模式饱和度稍高
     const saturation = Math.max(0, Math.min(maxSaturation, maxSaturation * (1 - Math.abs(step - centerStep) / centerStep)))
 
     return Color({ h, s: Math.round(saturation), l: Math.round(lightness) }).hex()

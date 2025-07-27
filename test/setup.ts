@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+import { vi } from 'vitest'
 
 // Mock DOM APIs that might not be available in test environment
 Object.defineProperty(window, 'matchMedia', {
@@ -13,7 +13,7 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
   })),
-});
+})
 
 // Mock localStorage
 Object.defineProperty(window, 'localStorage', {
@@ -24,7 +24,7 @@ Object.defineProperty(window, 'localStorage', {
     clear: vi.fn(),
   },
   writable: true,
-});
+})
 
 // Mock navigator.clipboard
 Object.defineProperty(navigator, 'clipboard', {
@@ -33,45 +33,45 @@ Object.defineProperty(navigator, 'clipboard', {
     readText: vi.fn().mockResolvedValue(''),
   },
   writable: true,
-});
+})
 
 // Mock requestIdleCallback
 Object.defineProperty(window, 'requestIdleCallback', {
   value: vi.fn().mockImplementation((callback: Function) => {
-    return setTimeout(() => callback({ timeRemaining: () => 50 }), 0);
+    return setTimeout(() => callback({ timeRemaining: () => 50 }), 0)
   }),
   writable: true,
-});
+})
 
 // Mock cancelIdleCallback
 Object.defineProperty(window, 'cancelIdleCallback', {
   value: vi.fn().mockImplementation((id: number) => {
-    clearTimeout(id);
+    clearTimeout(id)
   }),
   writable: true,
-});
+})
 
 // Mock Worker
 Object.defineProperty(window, 'Worker', {
   value: class MockWorker {
-    onmessage: ((event: MessageEvent) => void) | null = null;
-    onerror: ((event: ErrorEvent) => void) | null = null;
-    
+    onmessage: ((event: MessageEvent) => void) | null = null
+    onerror: ((event: ErrorEvent) => void) | null = null
+
     constructor(public url: string) {}
-    
+
     postMessage(data: any) {
       // Mock worker response
       setTimeout(() => {
         if (this.onmessage) {
-          this.onmessage(new MessageEvent('message', { data: { success: true, data: {} } }));
+          this.onmessage(new MessageEvent('message', { data: { success: true, data: {} } }))
         }
-      }, 0);
+      }, 0)
     }
-    
+
     terminate() {}
   },
   writable: true,
-});
+})
 
 // Mock performance.memory
 Object.defineProperty(performance, 'memory', {
@@ -81,7 +81,7 @@ Object.defineProperty(performance, 'memory', {
     jsHeapSizeLimit: 4000000,
   },
   writable: true,
-});
+})
 
 // Mock document for CSS injection tests
 Object.defineProperty(global, 'document', {
@@ -104,4 +104,4 @@ Object.defineProperty(global, 'document', {
     },
   },
   writable: true,
-});
+})

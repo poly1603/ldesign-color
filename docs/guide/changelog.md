@@ -44,7 +44,7 @@ const theme = generateTheme('#1890ff', { grayMixPrimary: false })
 // 明亮模式灰色色阶
 console.log(theme.palettes.light.gray[13]) // '#404040' (25% lightness)
 
-// 暗黑模式灰色色阶  
+// 暗黑模式灰色色阶
 console.log(theme.palettes.dark.gray[13]) // '#1A1A1A' (10% lightness)
 ```
 
@@ -57,8 +57,8 @@ console.log(theme.palettes.dark.gray[13]) // '#1A1A1A' (10% lightness)
 
 ```typescript
 const theme = generateTheme('#1890ff', {
-  cssPrefix: 'my-app',          // 自定义前缀
-  semanticNames: {              // 自定义名称
+  cssPrefix: 'my-app', // 自定义前缀
+  semanticNames: { // 自定义名称
     primary: 'brand',
     success: 'positive',
     warning: 'caution',
@@ -156,9 +156,9 @@ const theme = generateTheme('#1890ff')
 
 // v2.1.0 - 新增配置选项
 const theme = generateTheme('#1890ff', {
-  grayMixPrimary: false,        // 新增：控制灰色混入
-  cssPrefix: 'my-app',          // 新增：自定义前缀
-  semanticNames: {              // 新增：自定义名称
+  grayMixPrimary: false, // 新增：控制灰色混入
+  cssPrefix: 'my-app', // 新增：自定义前缀
+  semanticNames: { // 新增：自定义名称
     primary: 'brand'
   }
 })

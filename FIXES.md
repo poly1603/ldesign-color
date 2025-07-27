@@ -24,7 +24,7 @@
 const theme1 = generateTheme('#1890ff', { grayMixPrimary: false })
 // 生成: ['#F2F2F2', '#E6E6E6', '#D9D9D9', ...]
 
-// 启用混入主色调 - 带色相的灰色  
+// 启用混入主色调 - 带色相的灰色
 const theme2 = generateTheme('#1890ff', { grayMixPrimary: true })
 // 生成: ['#F2F2F3', '#E4E6E7', '#D6D9DB', ...]
 ```
@@ -45,7 +45,11 @@ const theme2 = generateTheme('#1890ff', { grayMixPrimary: true })
 ```javascript
 // 现在可以稳定生成随机颜色
 const randomColors = [
-  '#8A4FFF', '#B8C93F', '#4A6BC7', '#D142A3', '#6B2AAB'
+  '#8A4FFF',
+'#B8C93F',
+'#4A6BC7',
+'#D142A3',
+'#6B2AAB'
 ]
 ```
 
@@ -63,11 +67,11 @@ const randomColors = [
 interface ColorGeneratorConfig {
   cssPrefix?: string // 默认: 'ldesign'
   semanticNames?: {
-    primary?: string   // 默认: 'primary'
-    success?: string   // 默认: 'success'  
-    warning?: string   // 默认: 'warning'
-    danger?: string    // 默认: 'danger'
-    gray?: string      // 默认: 'gray'
+    primary?: string // 默认: 'primary'
+    success?: string // 默认: 'success'
+    warning?: string // 默认: 'warning'
+    danger?: string // 默认: 'danger'
+    gray?: string // 默认: 'gray'
   }
 }
 ```
@@ -79,7 +83,7 @@ const theme = generateTheme('#1890ff', {
   semanticNames: {
     primary: 'brand',
     success: 'positive',
-    warning: 'caution', 
+    warning: 'caution',
     danger: 'negative',
     gray: 'neutral'
   }
@@ -156,7 +160,7 @@ theme.cssGenerator.injectToHead(theme.cssVariables, 'my-custom-styles')
 ### 完整配置示例
 
 ```javascript
-import { generateTheme, createPresetThemeManager } from '@ldesign/color'
+import { createPresetThemeManager, generateTheme } from '@ldesign/color'
 
 // 创建预设主题管理器
 const presetManager = createPresetThemeManager()
@@ -170,16 +174,16 @@ presetManager.addTheme({
 
 // 生成主题（完整配置）
 const theme = generateTheme('#1890ff', {
-  grayMixPrimary: false,        // 使用纯中性灰色
-  cssPrefix: 'my-app',          // 自定义前缀
-  semanticNames: {              // 自定义语义化名称
+  grayMixPrimary: false, // 使用纯中性灰色
+  cssPrefix: 'my-app', // 自定义前缀
+  semanticNames: { // 自定义语义化名称
     primary: 'brand',
     success: 'positive',
     warning: 'caution',
     danger: 'negative',
     gray: 'neutral'
   },
-  autoInject: true              // 自动注入CSS变量
+  autoInject: true // 自动注入CSS变量
 })
 
 // 手动注入样式
@@ -216,7 +220,7 @@ node verify-fixes-simple.js
 本次修复解决了所有提出的问题：
 
 1. ✅ **灰色色阶偏红** - 支持纯中性灰色生成
-2. ✅ **随机颜色报错** - 使用更可靠的生成方法  
+2. ✅ **随机颜色报错** - 使用更可靠的生成方法
 3. ✅ **CSS变量配置** - 支持自定义前缀和语义化名称
 4. ✅ **预设主题管理** - 响应式数据和完整CRUD操作
 5. ✅ **样式注入功能** - 支持手动注入CSS到head

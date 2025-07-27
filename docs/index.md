@@ -73,13 +73,13 @@ console.log(theme.palettes.dark.primary)
 ## 🆕 新功能预览
 
 ```typescript
-import { generateTheme, createPresetThemeManager } from '@ldesign/color'
+import { createPresetThemeManager, generateTheme } from '@ldesign/color'
 
 // 🎨 高级配置
 const theme = generateTheme('#1890ff', {
-  grayMixPrimary: false,        // 使用纯中性灰色（更深更实用）
-  cssPrefix: 'my-app',          // 自定义CSS变量前缀
-  semanticNames: {              // 自定义语义化名称
+  grayMixPrimary: false, // 使用纯中性灰色（更深更实用）
+  cssPrefix: 'my-app', // 自定义CSS变量前缀
+  semanticNames: { // 自定义语义化名称
     primary: 'brand',
     success: 'positive'
   }
@@ -97,6 +97,16 @@ theme.cssGenerator.injectToHead(theme.cssVariables)
 ```
 
 ```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { ColorPicker, ThemePreview, useColor } from '@ldesign/color'
+
+const primaryColor = ref('#1890ff')
+
+// 🚀 自动响应颜色变化，生成主题
+const { theme, loading, error } = useColor(primaryColor)
+</script>
+
 <template>
   <div>
     <!-- 🎨 颜色选择器 -->
@@ -106,19 +116,11 @@ theme.cssGenerator.injectToHead(theme.cssVariables)
     <ThemePreview v-if="theme" />
 
     <!-- ⚡ 加载状态 -->
-    <div v-if="loading">正在生成主题...</div>
+    <div v-if="loading">
+      正在生成主题...
+    </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-import { useColor, ColorPicker, ThemePreview } from '@ldesign/color'
-
-const primaryColor = ref('#1890ff')
-
-// 🚀 自动响应颜色变化，生成主题
-const { theme, loading, error } = useColor(primaryColor)
-</script>
 ```
 
 ## 为什么选择 @ldesign/color？

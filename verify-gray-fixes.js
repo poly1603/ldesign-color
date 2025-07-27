@@ -18,8 +18,8 @@ try {
   darkPrimaryColors.forEach((color, index) => {
     console.log(`   primary-${index + 1}: ${color}`)
   })
-
-} catch (error) {
+}
+ catch (error) {
   console.log('❌ 主色调色阶验证失败:', error.message)
 }
 
@@ -29,7 +29,7 @@ try {
   // 明亮模式
   const lightTheme = generateTheme('#1890ff', {
     grayMixPrimary: false,
-    autoInject: false
+    autoInject: false,
   })
   const lightGrayColors = lightTheme.palettes.light.gray
   console.log('✅ 明亮模式灰色14色阶（平滑曲线）:')
@@ -40,7 +40,7 @@ try {
   // 暗黑模式
   const darkTheme = generateTheme('#1890ff', {
     grayMixPrimary: false,
-    autoInject: false
+    autoInject: false,
   })
   const darkGrayColors = darkTheme.palettes.dark.gray
   console.log('\n✅ 暗黑模式灰色14色阶（平滑曲线）:')
@@ -54,8 +54,8 @@ try {
   console.log('   明亮模式最深灰色 (gray-14):', lightGrayColors[13], '- 应该接近黑色')
   console.log('   暗黑模式最浅灰色 (gray-1):', darkGrayColors[0], '- 应该适中')
   console.log('   暗黑模式最深灰色 (gray-14):', darkGrayColors[13], '- 应该接近黑色')
-
-} catch (error) {
+}
+ catch (error) {
   console.log('❌ 灰色深度验证失败:', error.message)
 }
 
@@ -66,21 +66,21 @@ try {
   const lowMixTheme = generateTheme('#1890ff', {
     grayMixPrimary: true,
     grayMixRatio: 0.1,
-    autoInject: false
+    autoInject: false,
   })
 
   // 中等混入比例 (0.5)
   const mediumMixTheme = generateTheme('#1890ff', {
     grayMixPrimary: true,
     grayMixRatio: 0.5,
-    autoInject: false
+    autoInject: false,
   })
 
   // 高混入比例 (1.0)
   const highMixTheme = generateTheme('#1890ff', {
     grayMixPrimary: true,
     grayMixRatio: 1.0,
-    autoInject: false
+    autoInject: false,
   })
 
   console.log('✅ 不同混入比例的灰色对比:')
@@ -95,14 +95,15 @@ try {
 
   if (lowGray !== mediumGray && mediumGray !== highGray && lowGray !== highGray) {
     console.log('\n✅ 混入比例功能正常工作 - 不同比例产生不同颜色')
-  } else {
+  }
+ else {
     console.log('\n❌ 混入比例功能可能有问题 - 颜色相同或部分相同')
     console.log('   低混入:', lowGray)
     console.log('   中等混入:', mediumGray)
     console.log('   高混入:', highGray)
   }
-
-} catch (error) {
+}
+ catch (error) {
   console.log('❌ 混入比例验证失败:', error.message)
 }
 
@@ -112,14 +113,14 @@ try {
   // 纯中性灰色
   const pureGrayTheme = generateTheme('#1890ff', {
     grayMixPrimary: false,
-    autoInject: false
+    autoInject: false,
   })
 
   // 混入主色调的灰色
   const mixedGrayTheme = generateTheme('#1890ff', {
     grayMixPrimary: true,
     grayMixRatio: 0.3,
-    autoInject: false
+    autoInject: false,
   })
 
   console.log('✅ 纯中性灰色 vs 混入主色调对比:')
@@ -134,11 +135,12 @@ try {
 
   if (pureGray7 !== mixedGray7) {
     console.log('\n✅ 纯中性灰色与混入主色调功能正常工作 - 颜色有差异')
-  } else {
+  }
+ else {
     console.log('\n❌ 纯中性灰色与混入主色调功能可能有问题 - 颜色相同')
   }
-
-} catch (error) {
+}
+ catch (error) {
   console.log('❌ 纯中性灰色对比验证失败:', error.message)
 }
 
@@ -149,21 +151,21 @@ try {
   const blueTheme = generateTheme('#1890ff', {
     grayMixPrimary: true,
     grayMixRatio: 0.5,
-    autoInject: false
+    autoInject: false,
   })
 
   // 红色主题
   const redTheme = generateTheme('#f5222d', {
     grayMixPrimary: true,
     grayMixRatio: 0.5,
-    autoInject: false
+    autoInject: false,
   })
 
   // 绿色主题
   const greenTheme = generateTheme('#52c41a', {
     grayMixPrimary: true,
     grayMixRatio: 0.5,
-    autoInject: false
+    autoInject: false,
   })
 
   console.log('✅ 不同主色调的混入效果:')
@@ -178,11 +180,12 @@ try {
 
   if (blueGray !== redGray && redGray !== greenGray && blueGray !== greenGray) {
     console.log('\n✅ 不同主色调混入功能正常工作 - 产生不同的灰色色调')
-  } else {
+  }
+ else {
     console.log('\n❌ 不同主色调混入功能可能有问题 - 颜色相同或部分相同')
   }
-
-} catch (error) {
+}
+ catch (error) {
   console.log('❌ 不同主色调混入验证失败:', error.message)
 }
 

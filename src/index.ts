@@ -29,7 +29,7 @@ export {
   MemoryMonitor,
   PerformanceMonitor,
   runInIdleTime,
-  throttle
+  throttle,
 } from './utils/performanceUtils'
 
 // Vue相关导出
@@ -39,7 +39,7 @@ export {
   useColorAnalysis,
   useHighPerformanceColor,
   useSimpleColor,
-  useThemeSwitch
+  useThemeSwitch,
 } from './vue/useColor'
 
 export {
@@ -48,12 +48,15 @@ export {
   ColorProvider,
   ColorThemeKey,
   ThemePreview,
-  useColorTheme
+  useColorTheme,
 } from './vue/ColorProvider'
 
 // 预设主题管理器导出
 export {
-  createPresetThemeManager, DEFAULT_PRESET_THEMES, globalPresetThemeManager, PresetThemeManager
+  createPresetThemeManager,
+DEFAULT_PRESET_THEMES,
+globalPresetThemeManager,
+PresetThemeManager,
 } from './core/PresetThemeManager'
 
 // 类型定义导出
@@ -73,7 +76,7 @@ export type {
   RGBColor,
   SemanticColors,
   WorkerMessage,
-  WorkerResponse
+  WorkerResponse,
 } from './types'
 
 /**

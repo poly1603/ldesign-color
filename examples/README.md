@@ -88,15 +88,15 @@ import { generateTheme } from '@ldesign/color'
 const theme = generateTheme('#1890ff')
 
 // 获取语义化颜色
-console.log(theme.semanticColors.primary)  // #1890ff
-console.log(theme.semanticColors.success)  // #52c41a
+console.log(theme.semanticColors.primary) // #1890ff
+console.log(theme.semanticColors.success) // #52c41a
 
 // 获取色阶
-console.log(theme.palettes.light.primary)  // ['#e6f7ff', '#bae7ff', ...]
-console.log(theme.palettes.dark.primary)   // ['#111b26', '#112a3a', ...]
+console.log(theme.palettes.light.primary) // ['#e6f7ff', '#bae7ff', ...]
+console.log(theme.palettes.dark.primary) // ['#111b26', '#112a3a', ...]
 
 // 获取CSS变量
-console.log(theme.cssVariables)  // 完整的CSS变量字符串
+console.log(theme.cssVariables) // 完整的CSS变量字符串
 ```
 
 ## 🎯 设计理念

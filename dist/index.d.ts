@@ -454,8 +454,8 @@ onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
 }>, {
 presetColors: string[];
-modelValue: string;
 disabled: boolean;
+modelValue: string;
 showPresets: boolean;
 }, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
 

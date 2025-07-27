@@ -1,240 +1,9 @@
-<template>
-  <section id="performance" class="performance-section">
-    <div class="section-header">
-      <h2 class="section-title">⚡ 性能演示</h2>
-      <p class="section-description">
-        体验 @ldesign/color 的高性能特性：缓存、Web Worker、防抖等优化
-      </p>
-    </div>
-    
-    <div class="demo-container">
-      <!-- 缓存演示 -->
-      <div class="demo-card">
-        <h3 class="demo-title">🚀 智能缓存</h3>
-        <p class="demo-description">
-          LRU缓存策略，避免重复计算，提升性能
-        </p>
-        
-        <div class="cache-demo">
-          <div class="controls">
-            <button class="btn btn-primary" @click="testCache">
-              测试缓存性能
-            </button>
-            <button class="btn btn-secondary" @click="clearAllCache">
-              清除缓存
-            </button>
-          </div>
-          
-          <div v-if="cacheResults.length" class="results">
-            <h4>测试结果</h4>
-            <div class="result-list">
-              <div 
-                v-for="(result, index) in cacheResults"
-                :key="index"
-                class="result-item"
-                :class="{ cached: result.fromCache }"
-              >
-                <span class="color-preview" :style="{ backgroundColor: result.color }"></span>
-                <span class="color-value">{{ result.color }}</span>
-                <span class="time">{{ result.time.toFixed(2) }}ms</span>
-                <span class="cache-status">{{ result.fromCache ? '缓存' : '计算' }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- 防抖演示 -->
-      <div class="demo-card">
-        <h3 class="demo-title">🎯 防抖优化</h3>
-        <p class="demo-description">
-          防抖处理，避免频繁的颜色生成操作
-        </p>
-        
-        <div class="debounce-demo">
-          <div class="input-group">
-            <label>快速输入颜色值：</label>
-            <input 
-              type="text" 
-              v-model="debounceInput"
-              placeholder="#1890ff"
-              class="debounce-input"
-            />
-          </div>
-          
-          <div class="debounce-status">
-            <div class="status-item">
-              <span class="label">输入次数：</span>
-              <span class="value">{{ inputCount }}</span>
-            </div>
-            <div class="status-item">
-              <span class="label">生成次数：</span>
-              <span class="value">{{ generateCount }}</span>
-            </div>
-            <div class="status-item">
-              <span class="label">节省比例：</span>
-              <span class="value">{{ savingPercentage }}%</span>
-            </div>
-          </div>
-          
-          <div v-if="debounceTheme" class="debounce-result">
-            <div class="generated-colors">
-              <div 
-                v-for="(color, name) in debounceTheme.semanticColors"
-                :key="name"
-                class="color-item"
-                :style="{ backgroundColor: color }"
-              >
-                <span class="color-name">{{ name }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- 批量处理演示 -->
-      <div class="demo-card full-width">
-        <h3 class="demo-title">📊 批量处理</h3>
-        <p class="demo-description">
-          批量生成多个主题，展示并发处理能力
-        </p>
-        
-        <div class="batch-demo">
-          <div class="batch-controls">
-            <div class="color-inputs">
-              <div 
-                v-for="(color, index) in batchColors"
-                :key="index"
-                class="color-input-item"
-              >
-                <input 
-                  type="color" 
-                  v-model="batchColors[index]"
-                  class="color-picker"
-                />
-                <input 
-                  type="text" 
-                  v-model="batchColors[index]"
-                  class="color-text"
-                />
-                <button 
-                  class="btn-remove"
-                  @click="removeBatchColor(index)"
-                  v-if="batchColors.length > 1"
-                >
-                  ×
-                </button>
-              </div>
-            </div>
-            
-            <div class="batch-actions">
-              <button class="btn btn-secondary" @click="addBatchColor">
-                + 添加颜色
-              </button>
-              <button 
-                class="btn btn-primary" 
-                @click="processBatch"
-                :disabled="batchLoading"
-              >
-                {{ batchLoading ? '处理中...' : '批量生成' }}
-              </button>
-            </div>
-          </div>
-          
-          <div v-if="batchLoading" class="batch-loading">
-            <div class="progress-bar">
-              <div 
-                class="progress-fill"
-                :style="{ width: `${batchProgress}%` }"
-              ></div>
-            </div>
-            <span class="progress-text">{{ batchProgress }}% 完成</span>
-          </div>
-          
-          <div v-if="batchResults.length" class="batch-results">
-            <h4>批量生成结果 ({{ batchTime }}ms)</h4>
-            <div class="batch-grid">
-              <div 
-                v-for="(result, index) in batchResults"
-                :key="index"
-                class="batch-item"
-              >
-                <div class="batch-header">
-                  <span class="batch-index">#{{ index + 1 }}</span>
-                  <span class="batch-color">{{ result.inputColor }}</span>
-                </div>
-                <div class="batch-colors">
-                  <div 
-                    v-for="(color, name) in result.theme.semanticColors"
-                    :key="name"
-                    class="batch-color-item"
-                    :style="{ backgroundColor: color }"
-                    :title="`${name}: ${color}`"
-                  ></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- 性能对比 -->
-      <div class="demo-card full-width">
-        <h3 class="demo-title">📈 性能对比</h3>
-        <p class="demo-description">
-          对比不同配置下的性能表现
-        </p>
-        
-        <div class="benchmark-demo">
-          <div class="benchmark-controls">
-            <button 
-              class="btn btn-primary" 
-              @click="runBenchmark"
-              :disabled="benchmarkRunning"
-            >
-              {{ benchmarkRunning ? '测试中...' : '运行性能测试' }}
-            </button>
-          </div>
-          
-          <div v-if="benchmarkRunning" class="benchmark-progress">
-            <div class="spinner"></div>
-            <span>正在运行性能测试...</span>
-          </div>
-          
-          <div v-if="benchmarkResults.length" class="benchmark-results">
-            <div class="benchmark-chart">
-              <div 
-                v-for="result in benchmarkResults"
-                :key="result.name"
-                class="benchmark-bar"
-              >
-                <div class="bar-label">{{ result.name }}</div>
-                <div class="bar-container">
-                  <div 
-                    class="bar-fill"
-                    :style="{ 
-                      width: `${(result.time / maxBenchmarkTime) * 100}%`,
-                      backgroundColor: result.color 
-                    }"
-                  ></div>
-                  <span class="bar-time">{{ result.time.toFixed(2) }}ms</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-</template>
-
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import { 
-  ColorGenerator, 
-  useBatchColor, 
+import { computed, ref, watch } from 'vue'
+import {
+  ColorGenerator,
   generateRandomColor,
-  presetColors 
+  presetColors,
 } from '@ldesign/color'
 
 // 缓存演示
@@ -263,7 +32,8 @@ const benchmarkResults = ref([])
 
 // 计算属性
 const savingPercentage = computed(() => {
-  if (inputCount.value === 0) return 0
+  if (inputCount.value === 0)
+return 0
   return Math.round(((inputCount.value - generateCount.value) / inputCount.value) * 100)
 })
 
@@ -272,39 +42,39 @@ const maxBenchmarkTime = computed(() => {
 })
 
 // 缓存测试
-const testCache = async () => {
+async function testCache() {
   const generator = new ColorGenerator({ enableCache: true })
   const testColors = Object.values(presetColors).slice(0, 5)
   cacheResults.value = []
-  
+
   // 第一轮：计算
   for (const color of testColors) {
     const start = performance.now()
     generator.generate(color)
     const time = performance.now() - start
-    
+
     cacheResults.value.push({
       color,
       time,
-      fromCache: false
+      fromCache: false,
     })
   }
-  
+
   // 第二轮：缓存
   for (const color of testColors) {
     const start = performance.now()
     generator.generate(color)
     const time = performance.now() - start
-    
+
     cacheResults.value.push({
       color,
       time,
-      fromCache: true
+      fromCache: true,
     })
   }
 }
 
-const clearAllCache = () => {
+function clearAllCache() {
   // 清除所有缓存
   cacheResults.value = []
 }
@@ -315,14 +85,15 @@ const debounceGenerator = new ColorGenerator({ enableCache: true })
 
 watch(debounceInput, () => {
   inputCount.value++
-  
+
   clearTimeout(debounceTimer)
   debounceTimer = setTimeout(() => {
-    if (debounceInput.value && /^#[0-9a-fA-F]{6}$/.test(debounceInput.value)) {
+    if (debounceInput.value && /^#[0-9a-f]{6}$/i.test(debounceInput.value)) {
       generateCount.value++
       try {
         debounceTheme.value = debounceGenerator.generate(debounceInput.value)
-      } catch (error) {
+      }
+ catch (error) {
         console.error('生成失败:', error)
       }
     }
@@ -330,90 +101,334 @@ watch(debounceInput, () => {
 })
 
 // 批量处理
-const addBatchColor = () => {
+function addBatchColor() {
   batchColors.value.push(generateRandomColor())
 }
 
-const removeBatchColor = (index: number) => {
+function removeBatchColor(index: number) {
   batchColors.value.splice(index, 1)
 }
 
-const processBatch = async () => {
+async function processBatch() {
   batchLoading.value = true
   batchProgress.value = 0
   batchResults.value = []
-  
+
   const start = performance.now()
   const generator = new ColorGenerator({ enableCache: true })
-  
+
   try {
-    const validColors = batchColors.value.filter(color => 
-      /^#[0-9a-fA-F]{6}$/.test(color)
+    const validColors = batchColors.value.filter(color =>
+      /^#[0-9a-f]{6}$/i.test(color),
     )
-    
+
     for (let i = 0; i < validColors.length; i++) {
       const color = validColors[i]
       const theme = generator.generate(color)
-      
+
       batchResults.value.push({
         inputColor: color,
-        theme
+        theme,
       })
-      
+
       batchProgress.value = Math.round(((i + 1) / validColors.length) * 100)
-      
+
       // 模拟异步处理
       await new Promise(resolve => setTimeout(resolve, 100))
     }
-    
+
     batchTime.value = Math.round(performance.now() - start)
-  } catch (error) {
+  }
+ catch (error) {
     console.error('批量处理失败:', error)
-  } finally {
+  }
+ finally {
     batchLoading.value = false
   }
 }
 
 // 性能测试
-const runBenchmark = async () => {
+async function runBenchmark() {
   benchmarkRunning.value = true
   benchmarkResults.value = []
-  
+
   const testColor = '#1890ff'
   const iterations = 10
-  
+
   // 测试不同配置
   const configs = [
     { name: '无优化', config: { enableCache: false, useWebWorker: false } },
     { name: '启用缓存', config: { enableCache: true, useWebWorker: false } },
-    { name: '完整优化', config: { enableCache: true, useWebWorker: false } }
+    { name: '完整优化', config: { enableCache: true, useWebWorker: false } },
   ]
-  
+
   for (const { name, config } of configs) {
     const generator = new ColorGenerator(config)
     const times = []
-    
+
     for (let i = 0; i < iterations; i++) {
       const start = performance.now()
       generator.generate(testColor)
       times.push(performance.now() - start)
     }
-    
+
     const avgTime = times.reduce((a, b) => a + b, 0) / times.length
-    
+
     benchmarkResults.value.push({
       name,
       time: avgTime,
-      color: testColor
+      color: testColor,
     })
-    
+
     // 模拟测试延迟
     await new Promise(resolve => setTimeout(resolve, 500))
   }
-  
+
   benchmarkRunning.value = false
 }
 </script>
+
+<template>
+  <section id="performance" class="performance-section">
+    <div class="section-header">
+      <h2 class="section-title">
+        ⚡ 性能演示
+      </h2>
+      <p class="section-description">
+        体验 @ldesign/color 的高性能特性：缓存、Web Worker、防抖等优化
+      </p>
+    </div>
+
+    <div class="demo-container">
+      <!-- 缓存演示 -->
+      <div class="demo-card">
+        <h3 class="demo-title">
+          🚀 智能缓存
+        </h3>
+        <p class="demo-description">
+          LRU缓存策略，避免重复计算，提升性能
+        </p>
+
+        <div class="cache-demo">
+          <div class="controls">
+            <button class="btn btn-primary" @click="testCache">
+              测试缓存性能
+            </button>
+            <button class="btn btn-secondary" @click="clearAllCache">
+              清除缓存
+            </button>
+          </div>
+
+          <div v-if="cacheResults.length" class="results">
+            <h4>测试结果</h4>
+            <div class="result-list">
+              <div
+                v-for="(result, index) in cacheResults"
+                :key="index"
+                class="result-item"
+                :class="{ cached: result.fromCache }"
+              >
+                <span class="color-preview" :style="{ backgroundColor: result.color }" />
+                <span class="color-value">{{ result.color }}</span>
+                <span class="time">{{ result.time.toFixed(2) }}ms</span>
+                <span class="cache-status">{{ result.fromCache ? '缓存' : '计算' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 防抖演示 -->
+      <div class="demo-card">
+        <h3 class="demo-title">
+          🎯 防抖优化
+        </h3>
+        <p class="demo-description">
+          防抖处理，避免频繁的颜色生成操作
+        </p>
+
+        <div class="debounce-demo">
+          <div class="input-group">
+            <label>快速输入颜色值：</label>
+            <input
+              v-model="debounceInput"
+              type="text"
+              placeholder="#1890ff"
+              class="debounce-input"
+            >
+          </div>
+
+          <div class="debounce-status">
+            <div class="status-item">
+              <span class="label">输入次数：</span>
+              <span class="value">{{ inputCount }}</span>
+            </div>
+            <div class="status-item">
+              <span class="label">生成次数：</span>
+              <span class="value">{{ generateCount }}</span>
+            </div>
+            <div class="status-item">
+              <span class="label">节省比例：</span>
+              <span class="value">{{ savingPercentage }}%</span>
+            </div>
+          </div>
+
+          <div v-if="debounceTheme" class="debounce-result">
+            <div class="generated-colors">
+              <div
+                v-for="(color, name) in debounceTheme.semanticColors"
+                :key="name"
+                class="color-item"
+                :style="{ backgroundColor: color }"
+              >
+                <span class="color-name">{{ name }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 批量处理演示 -->
+      <div class="demo-card full-width">
+        <h3 class="demo-title">
+          📊 批量处理
+        </h3>
+        <p class="demo-description">
+          批量生成多个主题，展示并发处理能力
+        </p>
+
+        <div class="batch-demo">
+          <div class="batch-controls">
+            <div class="color-inputs">
+              <div
+                v-for="(color, index) in batchColors"
+                :key="index"
+                class="color-input-item"
+              >
+                <input
+                  v-model="batchColors[index]"
+                  type="color"
+                  class="color-picker"
+                >
+                <input
+                  v-model="batchColors[index]"
+                  type="text"
+                  class="color-text"
+                >
+                <button
+                  v-if="batchColors.length > 1"
+                  class="btn-remove"
+                  @click="removeBatchColor(index)"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+
+            <div class="batch-actions">
+              <button class="btn btn-secondary" @click="addBatchColor">
+                + 添加颜色
+              </button>
+              <button
+                class="btn btn-primary"
+                :disabled="batchLoading"
+                @click="processBatch"
+              >
+                {{ batchLoading ? '处理中...' : '批量生成' }}
+              </button>
+            </div>
+          </div>
+
+          <div v-if="batchLoading" class="batch-loading">
+            <div class="progress-bar">
+              <div
+                class="progress-fill"
+                :style="{ width: `${batchProgress}%` }"
+              />
+            </div>
+            <span class="progress-text">{{ batchProgress }}% 完成</span>
+          </div>
+
+          <div v-if="batchResults.length" class="batch-results">
+            <h4>批量生成结果 ({{ batchTime }}ms)</h4>
+            <div class="batch-grid">
+              <div
+                v-for="(result, index) in batchResults"
+                :key="index"
+                class="batch-item"
+              >
+                <div class="batch-header">
+                  <span class="batch-index">#{{ index + 1 }}</span>
+                  <span class="batch-color">{{ result.inputColor }}</span>
+                </div>
+                <div class="batch-colors">
+                  <div
+                    v-for="(color, name) in result.theme.semanticColors"
+                    :key="name"
+                    class="batch-color-item"
+                    :style="{ backgroundColor: color }"
+                    :title="`${name}: ${color}`"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 性能对比 -->
+      <div class="demo-card full-width">
+        <h3 class="demo-title">
+          📈 性能对比
+        </h3>
+        <p class="demo-description">
+          对比不同配置下的性能表现
+        </p>
+
+        <div class="benchmark-demo">
+          <div class="benchmark-controls">
+            <button
+              class="btn btn-primary"
+              :disabled="benchmarkRunning"
+              @click="runBenchmark"
+            >
+              {{ benchmarkRunning ? '测试中...' : '运行性能测试' }}
+            </button>
+          </div>
+
+          <div v-if="benchmarkRunning" class="benchmark-progress">
+            <div class="spinner" />
+            <span>正在运行性能测试...</span>
+          </div>
+
+          <div v-if="benchmarkResults.length" class="benchmark-results">
+            <div class="benchmark-chart">
+              <div
+                v-for="result in benchmarkResults"
+                :key="result.name"
+                class="benchmark-bar"
+              >
+                <div class="bar-label">
+                  {{ result.name }}
+                </div>
+                <div class="bar-container">
+                  <div
+                    class="bar-fill"
+                    :style="{
+                      width: `${(result.time / maxBenchmarkTime) * 100}%`,
+                      backgroundColor: result.color,
+                    }"
+                  />
+                  <span class="bar-time">{{ result.time.toFixed(2) }}ms</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
 
 <style scoped>
 .performance-section {
@@ -789,26 +804,26 @@ const runBenchmark = async () => {
   .demo-container {
     grid-template-columns: 1fr;
   }
-  
+
   .cache-demo .controls {
     flex-direction: column;
   }
-  
+
   .debounce-status {
     flex-direction: column;
     gap: var(--space-sm);
   }
-  
+
   .batch-actions {
     flex-direction: column;
   }
-  
+
   .benchmark-bar {
     flex-direction: column;
     align-items: stretch;
     gap: var(--space-sm);
   }
-  
+
   .bar-label {
     width: auto;
   }

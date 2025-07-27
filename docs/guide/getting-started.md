@@ -36,7 +36,7 @@ console.log(theme.semanticColors)
 // {
 //   primary: '#1890ff',
 //   success: '#52c41a',
-//   warning: '#faad14', 
+//   warning: '#faad14',
 //   danger: '#f5222d',
 //   gray: '#8c8c8c'
 // }
@@ -53,32 +53,6 @@ console.log(theme.palettes.dark.primary)
 在 Vue 3 项目中，推荐使用组合式API：
 
 ```vue
-<template>
-  <div>
-    <!-- 颜色选择器 -->
-    <input 
-      type="color" 
-      v-model="primaryColor" 
-      @change="handleColorChange"
-    />
-    
-    <!-- 主题预览 -->
-    <div v-if="theme" class="theme-preview">
-      <div 
-        v-for="(color, name) in theme.semanticColors"
-        :key="name"
-        :style="{ backgroundColor: color }"
-        class="color-block"
-      >
-        {{ name }}: {{ color }}
-      </div>
-    </div>
-    
-    <!-- 加载状态 -->
-    <div v-if="loading">正在生成主题...</div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useColor } from '@ldesign/color'
@@ -88,10 +62,38 @@ const primaryColor = ref('#1890ff')
 // 🚀 自动响应颜色变化，生成主题
 const { theme, loading, error } = useColor(primaryColor)
 
-const handleColorChange = () => {
+function handleColorChange() {
   console.log('主题已更新:', theme.value)
 }
 </script>
+
+<template>
+  <div>
+    <!-- 颜色选择器 -->
+    <input
+      v-model="primaryColor"
+      type="color"
+      @change="handleColorChange"
+    >
+
+    <!-- 主题预览 -->
+    <div v-if="theme" class="theme-preview">
+      <div
+        v-for="(color, name) in theme.semanticColors"
+        :key="name"
+        :style="{ backgroundColor: color }"
+        class="color-block"
+      >
+        {{ name }}: {{ color }}
+      </div>
+    </div>
+
+    <!-- 加载状态 -->
+    <div v-if="loading">
+      正在生成主题...
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .color-block {
@@ -109,17 +111,36 @@ const handleColorChange = () => {
 @ldesign/color 提供了开箱即用的组件：
 
 ```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import {
+  ColorPalette,
+  ColorPicker,
+  ColorProvider,
+  ThemePreview,
+  presetColors,
+  useColorTheme
+} from '@ldesign/color'
+
+const selectedColor = ref('#1890ff')
+const { theme } = useColorTheme()
+
+function handleColorClick({ color, index }) {
+  console.log(`点击了第${index + 1}个颜色: ${color}`)
+}
+</script>
+
 <template>
   <ColorProvider primary-color="#1890ff">
     <!-- 颜色选择器 -->
-    <ColorPicker 
+    <ColorPicker
       v-model="selectedColor"
       :preset-colors="presetColors"
     />
-    
+
     <!-- 主题预览 -->
     <ThemePreview />
-    
+
     <!-- 色阶展示 -->
     <ColorPalette
       color-name="primary"
@@ -129,25 +150,6 @@ const handleColorChange = () => {
     />
   </ColorProvider>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-import { 
-  ColorProvider, 
-  ColorPicker, 
-  ThemePreview, 
-  ColorPalette,
-  useColorTheme,
-  presetColors 
-} from '@ldesign/color'
-
-const selectedColor = ref('#1890ff')
-const { theme } = useColorTheme()
-
-const handleColorClick = ({ color, index }) => {
-  console.log(`点击了第${index + 1}个颜色: ${color}`)
-}
-</script>
 ```
 
 ## 核心特性
@@ -186,10 +188,10 @@ const handleColorClick = ({ color, index }) => {
   --ldesign-primary-1: #e6f7ff;
   --ldesign-primary-2: #bae7ff;
   /* ... 更多色阶 */
-  
+
   --ldesign-success-1: #f6ffed;
   /* ... */
-  
+
   /* 语义化变量 */
   --ldesign-primary: var(--ldesign-primary-6);
   --ldesign-primary-hover: var(--ldesign-primary-5);

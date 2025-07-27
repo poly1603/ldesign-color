@@ -14,11 +14,11 @@ new ColorGenerator(config?: ColorGeneratorConfig)
 
 ```typescript
 interface ColorGeneratorConfig {
-  enableCache?: boolean     // 启用缓存，默认 true
-  cacheSize?: number        // 缓存大小，默认 100
-  useWebWorker?: boolean    // 使用Web Worker，默认 false
-  cssPrefix?: string        // CSS变量前缀，默认 'ldesign'
-  autoInject?: boolean      // 自动注入CSS，默认 true
+  enableCache?: boolean // 启用缓存，默认 true
+  cacheSize?: number // 缓存大小，默认 100
+  useWebWorker?: boolean // 使用Web Worker，默认 false
+  cssPrefix?: string // CSS变量前缀，默认 'ldesign'
+  autoInject?: boolean // 自动注入CSS，默认 true
 }
 ```
 
@@ -111,7 +111,7 @@ const theme = await generator.generateAsync('#1890ff')
 console.log('异步生成完成:', theme)
 
 // 或使用 .then()
-generator.generateAsync('#1890ff').then(theme => {
+generator.generateAsync('#1890ff').then((theme) => {
   console.log('主题生成完成:', theme)
 })
 ```
@@ -236,11 +236,11 @@ getPerformanceMetrics(): PerformanceMetrics
 
 ```typescript
 interface PerformanceMetrics {
-  semanticColorGeneration: number  // 语义化颜色生成耗时(ms)
-  paletteGeneration: number        // 色阶生成耗时(ms)
-  cssVariableGeneration: number    // CSS变量生成耗时(ms)
-  totalTime: number                // 总耗时(ms)
-  cacheHitRate: number             // 缓存命中率(0-1)
+  semanticColorGeneration: number // 语义化颜色生成耗时(ms)
+  paletteGeneration: number // 色阶生成耗时(ms)
+  cssVariableGeneration: number // CSS变量生成耗时(ms)
+  totalTime: number // 总耗时(ms)
+  cacheHitRate: number // 缓存命中率(0-1)
 }
 ```
 
@@ -309,7 +309,8 @@ const generator = createColorGenerator({
 ```typescript
 try {
   const theme = generator.generate('invalid-color')
-} catch (error) {
+}
+ catch (error) {
   console.error('颜色生成失败:', error.message)
   // 错误: Invalid color: invalid-color
 }
@@ -320,16 +321,17 @@ try {
 ```typescript
 try {
   const theme = await generator.generateAsync('#1890ff')
-} catch (error) {
+}
+ catch (error) {
   console.error('异步生成失败:', error)
 }
 
 // 或使用 .catch()
 generator.generateAsync('#1890ff')
-  .then(theme => {
+  .then((theme) => {
     console.log('生成成功:', theme)
   })
-  .catch(error => {
+  .catch((error) => {
     console.error('生成失败:', error)
   })
 ```
@@ -344,7 +346,7 @@ generator.generateAsync('#1890ff')
 // colorService.ts
 class ColorService {
   private static instance: ColorGenerator
-  
+
   static getInstance(): ColorGenerator {
     if (!this.instance) {
       this.instance = new ColorGenerator({
@@ -368,8 +370,8 @@ export const colorGenerator = ColorService.getInstance()
 const isDev = process.env.NODE_ENV === 'development'
 
 const generator = new ColorGenerator({
-  enableCache: !isDev,        // 开发环境禁用缓存
-  useWebWorker: !isDev,       // 开发环境禁用Worker
+  enableCache: !isDev, // 开发环境禁用缓存
+  useWebWorker: !isDev, // 开发环境禁用Worker
   autoInject: true
 })
 ```
@@ -379,15 +381,16 @@ const generator = new ColorGenerator({
 ```typescript
 class ColorGeneratorWrapper {
   private generator: ColorGenerator
-  
+
   constructor(config?: ColorGeneratorConfig) {
     this.generator = new ColorGenerator(config)
   }
-  
+
   async safeGenerate(color: string): Promise<GeneratedTheme | null> {
     try {
       return await this.generator.generateAsync(color)
-    } catch (error) {
+    }
+ catch (error) {
       console.error('颜色生成失败:', error)
       return null
     }

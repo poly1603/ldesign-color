@@ -1,3 +1,28 @@
+<script setup lang="ts">
+import { onMounted } from 'vue'
+
+// 导入组件
+import APIDemo from './components/APIDemo.vue'
+import AppFooter from './components/AppFooter.vue'
+import AppHeader from './components/AppHeader.vue'
+import ColorGeneratorDemo from './components/ColorGeneratorDemo.vue'
+import ComponentDemo from './components/ComponentDemo.vue'
+import PerformanceDemo from './components/PerformanceDemo.vue'
+import WelcomeSection from './components/WelcomeSection.vue'
+
+// 主题切换 - 简化版本，不依赖库
+const currentTheme = 'light'
+function toggleTheme() {
+  console.log('主题切换功能')
+}
+
+// 组件挂载时的初始化
+onMounted(() => {
+  console.log('🎨 @ldesign/color 演示应用已加载')
+  console.log('当前主题:', currentTheme)
+})
+</script>
+
 <template>
   <div class="app">
     <!-- 头部导航 -->
@@ -29,31 +54,6 @@
     <AppFooter />
   </div>
 </template>
-
-<script setup lang="ts">
-import { onMounted } from 'vue'
-
-// 导入组件
-import APIDemo from './components/APIDemo.vue'
-import AppFooter from './components/AppFooter.vue'
-import AppHeader from './components/AppHeader.vue'
-import ColorGeneratorDemo from './components/ColorGeneratorDemo.vue'
-import ComponentDemo from './components/ComponentDemo.vue'
-import PerformanceDemo from './components/PerformanceDemo.vue'
-import WelcomeSection from './components/WelcomeSection.vue'
-
-// 主题切换 - 简化版本，不依赖库
-const currentTheme = 'light'
-const toggleTheme = () => {
-  console.log('主题切换功能')
-}
-
-// 组件挂载时的初始化
-onMounted(() => {
-  console.log('🎨 @ldesign/color 演示应用已加载')
-  console.log('当前主题:', currentTheme)
-})
-</script>
 
 <style scoped>
 .app {

@@ -1,7 +1,132 @@
+<script setup lang="ts">
+import { generateRandomColor, generateTheme } from '@ldesign/color'
+import { computed, ref, watch } from 'vue'
+
+// 响应式数据
+const primaryColor = ref('#1890ff')
+const currentMode = ref<'light' | 'dark'>('light')
+const theme = ref(null)
+const loading = ref(false)
+const error = ref(null)
+
+// 生成主题的函数
+async function generateColorTheme(color: string) {
+  loading.value = true
+  error.value = null
+  try {
+    const newTheme = generateTheme(color)
+    theme.value = newTheme
+
+    // 自动注入CSS变量到页面
+    injectCSSVariables(newTheme.cssVariables)
+  }
+ catch (err) {
+    error.value = err.message
+    console.error('生成主题失败:', err)
+  }
+ finally {
+    loading.value = false
+  }
+}
+
+// 注入CSS变量到页面
+function injectCSSVariables(cssVariables: string) {
+  // 移除之前的样式
+  const existingStyle = document.getElementById('ldesign-color-vars')
+  if (existingStyle) {
+    existingStyle.remove()
+  }
+
+  // 创建新的样式标签
+  const style = document.createElement('style')
+  style.id = 'ldesign-color-vars'
+  style.textContent = cssVariables
+  document.head.appendChild(style)
+}
+
+// 监听颜色变化
+watch(primaryColor, (newColor) => {
+  generateColorTheme(newColor)
+}, { immediate: true })
+
+// 预设颜色
+const presetColors = [
+  { name: '蓝色', color: '#1890ff' },
+  { name: '绿色', color: '#52c41a' },
+  { name: '红色', color: '#f5222d' },
+  { name: '橙色', color: '#fa541c' },
+  { name: '紫色', color: '#722ed1' },
+  { name: '青色', color: '#13c2c2' },
+  { name: '黄色', color: '#faad14' },
+  { name: '粉色', color: '#eb2f96' },
+]
+
+// 当前色阶
+const currentPalette = computed(() => {
+  if (!theme.value)
+return {}
+  return currentMode.value === 'light'
+    ? theme.value.palettes.light
+    : theme.value.palettes.dark
+})
+
+// CSS变量预览（只显示部分）
+const cssPreview = computed(() => {
+  if (!theme.value)
+return ''
+
+  const lines = theme.value.cssVariables.split('\n')
+  const preview = lines.slice(0, 20).join('\n')
+  return preview + (lines.length > 20 ? '\n/* ... 更多变量 */' : '')
+})
+
+// 验证颜色格式
+function validateColor() {
+  const colorRegex = /^#([A-F0-9]{6}|[A-F0-9]{3})$/i
+  if (!colorRegex.test(primaryColor.value)) {
+    primaryColor.value = '#1890ff'
+  }
+}
+
+// 生成随机颜色
+function generateRandomColorHandler() {
+  primaryColor.value = generateRandomColor()
+}
+
+// 复制颜色
+async function copyColor(color: string) {
+  try {
+    await navigator.clipboard.writeText(color)
+    console.log(`已复制颜色: ${color}`)
+    // 这里可以添加提示消息
+  }
+ catch (err) {
+    console.error('复制失败:', err)
+  }
+}
+
+// 复制CSS变量
+async function copyCSSVariables() {
+  if (!theme.value)
+return
+
+  try {
+    await navigator.clipboard.writeText(theme.value.cssVariables)
+    console.log('已复制CSS变量')
+    // 这里可以添加提示消息
+  }
+ catch (err) {
+    console.error('复制失败:', err)
+  }
+}
+</script>
+
 <template>
   <section id="generator" class="generator-section">
     <div class="section-header">
-      <h2 class="section-title">🎨 颜色生成演示</h2>
+      <h2 class="section-title">
+        🎨 颜色生成演示
+      </h2>
       <p class="section-description">
         体验智能颜色生成算法，看看如何从一个主色调生成完整的配色方案
       </p>
@@ -15,17 +140,17 @@
           <div class="input-wrapper">
             <input
               id="primary-color"
+              v-model="primaryColor"
               type="color"
-              v-model="primaryColor"
               class="color-picker"
-            />
+            >
             <input
-              type="text"
               v-model="primaryColor"
+              type="text"
               class="color-text"
               placeholder="#1890ff"
               @blur="validateColor"
-            />
+            >
           </div>
         </div>
 
@@ -39,8 +164,8 @@
               class="preset-item"
               :class="{ active: primaryColor === preset.color }"
               :style="{ backgroundColor: preset.color }"
-              @click="primaryColor = preset.color"
               :title="preset.name"
+              @click="primaryColor = preset.color"
             >
               <span class="preset-name">{{ preset.name }}</span>
             </button>
@@ -59,7 +184,7 @@
       <div class="result-panel">
         <!-- 加载状态 -->
         <div v-if="loading" class="loading-overlay">
-          <div class="spinner"></div>
+          <div class="spinner" />
           <span>正在生成主题...</span>
         </div>
 
@@ -76,10 +201,14 @@
               <div
                 class="color-preview"
                 :style="{ backgroundColor: color }"
-              ></div>
+              />
               <div class="color-info">
-                <div class="color-name">{{ name }}</div>
-                <div class="color-value">{{ color }}</div>
+                <div class="color-name">
+                  {{ name }}
+                </div>
+                <div class="color-value">
+                  {{ color }}
+                </div>
               </div>
             </div>
           </div>
@@ -113,15 +242,17 @@
               :key="name"
               class="palette-row"
             >
-              <div class="palette-name">{{ name }}</div>
+              <div class="palette-name">
+                {{ name }}
+              </div>
               <div class="palette-colors">
                 <div
                   v-for="(color, index) in colors"
                   :key="index"
                   class="palette-color"
                   :style="{ backgroundColor: color }"
-                  @click="copyColor(color)"
                   :title="`${name}-${index + 1}: ${color}`"
+                  @click="copyColor(color)"
                 >
                   <span class="color-index">{{ index + 1 }}</span>
                 </div>
@@ -144,122 +275,6 @@
     </div>
   </section>
 </template>
-
-<script setup lang="ts">
-import { generateRandomColor, generateTheme } from '@ldesign/color'
-import { computed, ref, watch } from 'vue'
-
-// 响应式数据
-const primaryColor = ref('#1890ff')
-const currentMode = ref<'light' | 'dark'>('light')
-const theme = ref(null)
-const loading = ref(false)
-const error = ref(null)
-
-// 生成主题的函数
-const generateColorTheme = async (color: string) => {
-  loading.value = true
-  error.value = null
-  try {
-    const newTheme = generateTheme(color)
-    theme.value = newTheme
-
-    // 自动注入CSS变量到页面
-    injectCSSVariables(newTheme.cssVariables)
-  } catch (err) {
-    error.value = err.message
-    console.error('生成主题失败:', err)
-  } finally {
-    loading.value = false
-  }
-}
-
-// 注入CSS变量到页面
-const injectCSSVariables = (cssVariables: string) => {
-  // 移除之前的样式
-  const existingStyle = document.getElementById('ldesign-color-vars')
-  if (existingStyle) {
-    existingStyle.remove()
-  }
-
-  // 创建新的样式标签
-  const style = document.createElement('style')
-  style.id = 'ldesign-color-vars'
-  style.textContent = cssVariables
-  document.head.appendChild(style)
-}
-
-// 监听颜色变化
-watch(primaryColor, (newColor) => {
-  generateColorTheme(newColor)
-}, { immediate: true })
-
-// 预设颜色
-const presetColors = [
-  { name: '蓝色', color: '#1890ff' },
-  { name: '绿色', color: '#52c41a' },
-  { name: '红色', color: '#f5222d' },
-  { name: '橙色', color: '#fa541c' },
-  { name: '紫色', color: '#722ed1' },
-  { name: '青色', color: '#13c2c2' },
-  { name: '黄色', color: '#faad14' },
-  { name: '粉色', color: '#eb2f96' }
-]
-
-// 当前色阶
-const currentPalette = computed(() => {
-  if (!theme.value) return {}
-  return currentMode.value === 'light'
-    ? theme.value.palettes.light
-    : theme.value.palettes.dark
-})
-
-// CSS变量预览（只显示部分）
-const cssPreview = computed(() => {
-  if (!theme.value) return ''
-
-  const lines = theme.value.cssVariables.split('\n')
-  const preview = lines.slice(0, 20).join('\n')
-  return preview + (lines.length > 20 ? '\n/* ... 更多变量 */' : '')
-})
-
-// 验证颜色格式
-const validateColor = () => {
-  const colorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
-  if (!colorRegex.test(primaryColor.value)) {
-    primaryColor.value = '#1890ff'
-  }
-}
-
-// 生成随机颜色
-const generateRandomColorHandler = () => {
-  primaryColor.value = generateRandomColor()
-}
-
-// 复制颜色
-const copyColor = async (color: string) => {
-  try {
-    await navigator.clipboard.writeText(color)
-    console.log(`已复制颜色: ${color}`)
-    // 这里可以添加提示消息
-  } catch (err) {
-    console.error('复制失败:', err)
-  }
-}
-
-// 复制CSS变量
-const copyCSSVariables = async () => {
-  if (!theme.value) return
-
-  try {
-    await navigator.clipboard.writeText(theme.value.cssVariables)
-    console.log('已复制CSS变量')
-    // 这里可以添加提示消息
-  } catch (err) {
-    console.error('复制失败:', err)
-  }
-}
-</script>
 
 <style scoped>
 .generator-section {

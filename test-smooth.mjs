@@ -9,7 +9,7 @@ try {
     { name: '蓝色', color: '#1890ff' },
     { name: '红色', color: '#f5222d' },
     { name: '绿色', color: '#52c41a' },
-    { name: '紫色', color: '#722ed1' }
+    { name: '紫色', color: '#722ed1' },
   ]
 
   colors.forEach(({ name, color }) => {
@@ -24,7 +24,7 @@ try {
     const theme = generateTheme(color, {
       grayMixPrimary: true,
       grayMixRatio: 0.3,
-      autoInject: false
+      autoInject: false,
     })
     const semanticGray = theme.semanticColors.gray
     console.log(`  ${name} (${color}): 语义化灰色 ${semanticGray}`)
@@ -35,7 +35,7 @@ try {
   const blueTheme = generateTheme('#1890ff', {
     grayMixPrimary: true,
     grayMixRatio: 0.3,
-    autoInject: false
+    autoInject: false,
   })
 
   console.log('  蓝色主题的灰色14色阶:')
@@ -49,7 +49,7 @@ try {
   console.log('\n4. ⚪ 纯中性灰色对比:')
   const pureGrayTheme = generateTheme('#1890ff', {
     grayMixPrimary: false,
-    autoInject: false
+    autoInject: false,
   })
 
   console.log('  纯中性灰色:')
@@ -60,11 +60,11 @@ try {
   // 5. 验证不同混入比例
   console.log('\n5. 🎭 混入比例效果验证:')
   const ratios = [0.1, 0.3, 0.5, 0.8]
-  ratios.forEach(ratio => {
+  ratios.forEach((ratio) => {
     const mixTheme = generateTheme('#1890ff', {
       grayMixPrimary: true,
       grayMixRatio: ratio,
-      autoInject: false
+      autoInject: false,
     })
     console.log(`  比例${ratio}: 语义化灰色 ${mixTheme.semanticColors.gray}`)
   })
@@ -74,7 +74,7 @@ try {
   console.log('✅ 语义化灰色根据主色调动态生成，不再固定')
   console.log('✅ 灰色色阶更平滑，最深色阶不会突然变黑')
   console.log('✅ 混入比例功能正常，效果明显')
-
-} catch (error) {
+}
+ catch (error) {
   console.log('❌ 测试失败:', error.message)
 }

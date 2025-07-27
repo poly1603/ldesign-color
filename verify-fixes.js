@@ -12,7 +12,8 @@ try {
   const theme2 = generateTheme('#1890ff', { grayMixPrimary: true })
   const grayColors2 = theme2.palettes.light.gray
   console.log('✅ 启用混入主色调时生成的灰色色阶:', grayColors2.slice(0, 3), '...')
-} catch (error) {
+}
+ catch (error) {
   console.log('❌ 灰色色阶生成失败:', error.message)
 }
 
@@ -24,7 +25,8 @@ try {
     randomColors.push(generateRandomColor())
   }
   console.log('✅ 随机颜色生成成功:', randomColors)
-} catch (error) {
+}
+ catch (error) {
   console.log('❌ 随机颜色生成失败:', error.message)
 }
 
@@ -43,8 +45,8 @@ try {
   })
 
   const hasCustomPrefix = theme.cssVariables.includes('--my-design-')
-  const hasCustomNames = theme.cssVariables.includes('--my-design-brand-') &&
-    theme.cssVariables.includes('--my-design-positive-')
+  const hasCustomNames = theme.cssVariables.includes('--my-design-brand-')
+    && theme.cssVariables.includes('--my-design-positive-')
 
   console.log('✅ CSS前缀自定义:', hasCustomPrefix ? '成功' : '失败')
   console.log('✅ 语义化名称自定义:', hasCustomNames ? '成功' : '失败')
@@ -52,7 +54,8 @@ try {
   // 验证样式注入方法存在
   const hasInjectMethod = typeof theme.cssGenerator.injectToHead === 'function'
   console.log('✅ 样式注入方法:', hasInjectMethod ? '存在' : '不存在')
-} catch (error) {
+}
+ catch (error) {
   console.log('❌ CSS变量配置失败:', error.message)
 }
 
@@ -81,7 +84,8 @@ try {
   presetManager.toggleTheme('测试主题', false)
   const enabledThemes = presetManager.getEnabledThemes()
   console.log('✅ 启用的主题数量:', enabledThemes.value.length)
-} catch (error) {
+}
+ catch (error) {
   console.log('❌ 预设主题管理器失败:', error.message)
 }
 

@@ -1,37 +1,82 @@
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+import { useColor } from '../src/vue/useColor'
+
+// 响应式数据
+const primaryColor = ref('#1890ff')
+const currentMode = ref<'light' | 'dark'>('light')
+
+// 使用颜色生成Hook
+const {
+  theme,
+  loading,
+  error,
+  getPerformanceMetrics,
+} = useColor(primaryColor, {
+  enableCache: true,
+  useWebWorker: false,
+})
+
+// 当前色阶
+const currentPalette = computed(() => {
+  if (!theme.value)
+return {}
+  return currentMode.value === 'light'
+    ? theme.value.palettes.light
+    : theme.value.palettes.dark
+})
+
+// 性能指标
+const metrics = computed(() => {
+  return getPerformanceMetrics()
+})
+
+// 复制颜色到剪贴板
+async function copyColor(color: string) {
+  try {
+    await navigator.clipboard.writeText(color)
+    console.log(`已复制颜色: ${color}`)
+  }
+ catch (err) {
+    console.error('复制失败:', err)
+  }
+}
+</script>
+
 <template>
   <div class="vue-example">
     <h1>🎨 Vue 3 示例</h1>
-    
+
     <!-- 颜色选择器 -->
     <div class="color-input">
       <label>选择主色调：</label>
-      <input 
-        type="color" 
+      <input
         v-model="primaryColor"
+        type="color"
         class="color-picker"
-      />
+      >
       <span class="color-value">{{ primaryColor }}</span>
     </div>
-    
+
     <!-- 加载状态 -->
     <div v-if="loading" class="loading">
       正在生成主题...
     </div>
-    
+
     <!-- 错误状态 -->
     <div v-if="error" class="error">
       错误: {{ error }}
     </div>
-    
+
     <!-- 主题展示 -->
     <div v-if="theme && !loading" class="theme-display">
       <h2>生成的主题</h2>
-      
+
       <!-- 语义化颜色 -->
       <div class="semantic-colors">
         <h3>语义化颜色</h3>
         <div class="color-grid">
-          <div 
+          <div
             v-for="(color, name) in theme.semanticColors"
             :key="name"
             class="color-item"
@@ -43,47 +88,49 @@
           </div>
         </div>
       </div>
-      
+
       <!-- 色阶展示 -->
       <div class="palettes">
         <h3>色阶展示</h3>
         <div class="mode-switch">
-          <button 
+          <button
             :class="{ active: currentMode === 'light' }"
             @click="currentMode = 'light'"
           >
             明亮模式
           </button>
-          <button 
+          <button
             :class="{ active: currentMode === 'dark' }"
             @click="currentMode = 'dark'"
           >
             暗黑模式
           </button>
         </div>
-        
+
         <div class="palette-grid">
-          <div 
+          <div
             v-for="(colors, name) in currentPalette"
             :key="name"
             class="palette-row"
           >
-            <div class="palette-name">{{ name }}</div>
+            <div class="palette-name">
+              {{ name }}
+            </div>
             <div class="palette-colors">
-              <div 
+              <div
                 v-for="(color, index) in colors"
                 :key="index"
                 class="palette-color"
                 :style="{ backgroundColor: color }"
-                @click="copyColor(color)"
                 :title="`${name}-${index + 1}: ${color}`"
-              ></div>
+                @click="copyColor(color)"
+              />
             </div>
           </div>
         </div>
       </div>
     </div>
-    
+
     <!-- 性能指标 -->
     <div v-if="theme" class="performance">
       <h3>性能指标</h3>
@@ -100,49 +147,6 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useColor } from '../src/vue/useColor'
-
-// 响应式数据
-const primaryColor = ref('#1890ff')
-const currentMode = ref<'light' | 'dark'>('light')
-
-// 使用颜色生成Hook
-const { 
-  theme, 
-  loading, 
-  error, 
-  getPerformanceMetrics 
-} = useColor(primaryColor, {
-  enableCache: true,
-  useWebWorker: false
-})
-
-// 当前色阶
-const currentPalette = computed(() => {
-  if (!theme.value) return {}
-  return currentMode.value === 'light' 
-    ? theme.value.palettes.light 
-    : theme.value.palettes.dark
-})
-
-// 性能指标
-const metrics = computed(() => {
-  return getPerformanceMetrics()
-})
-
-// 复制颜色到剪贴板
-const copyColor = async (color: string) => {
-  try {
-    await navigator.clipboard.writeText(color)
-    console.log(`已复制颜色: ${color}`)
-  } catch (err) {
-    console.error('复制失败:', err)
-  }
-}
-</script>
 
 <style scoped>
 .vue-example {

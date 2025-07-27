@@ -1,43 +1,119 @@
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+import {
+  ColorPalette as ColorPaletteComponent,
+  ColorPicker,
+  ColorProvider,
+  ThemePreview,
+  presetColors as defaultPresets,
+  useColor,
+} from '@ldesign/color'
+
+// ColorPicker 演示
+const pickerColor = ref('#1890ff')
+const presetColors = Object.values(defaultPresets).slice(0, 8)
+
+// ColorPalette 演示
+const showValues = ref(true)
+const samplePalette = [
+  '#e6f7ff',
+'#bae7ff',
+'#91d5ff',
+'#69c0ff',
+  '#40a9ff',
+'#1890ff',
+'#096dd9',
+'#0050b3',
+]
+
+// ColorProvider 演示
+const providerColor = ref('#52c41a')
+
+// useColor API 演示
+const apiColor = ref('#722ed1')
+const showMetrics = ref(false)
+
+const {
+  theme: apiTheme,
+  loading: apiLoading,
+  error: apiError,
+  isValid: apiIsValid,
+  clearCache: clearApiCache,
+  getPerformanceMetrics,
+} = useColor(apiColor, {
+  enableCache: true,
+  useWebWorker: false,
+})
+
+const apiMetrics = computed(() => {
+  return getPerformanceMetrics()
+})
+
+// 事件处理
+function handlePickerChange(color: string) {
+  console.log('颜色选择器变化:', color)
+}
+
+function handlePaletteClick({ color, index }: { color: string, index: number }) {
+  copyColor(color)
+  console.log(`点击了第${index + 1}个颜色: ${color}`)
+}
+
+async function copyColor(color: string) {
+  try {
+    await navigator.clipboard.writeText(color)
+    console.log(`已复制颜色: ${color}`)
+  }
+ catch (err) {
+    console.error('复制失败:', err)
+  }
+}
+</script>
+
 <template>
   <section id="components" class="components-section">
     <div class="section-header">
-      <h2 class="section-title">🔧 组件演示</h2>
+      <h2 class="section-title">
+        🔧 组件演示
+      </h2>
       <p class="section-description">
         体验 @ldesign/color 提供的Vue组件，包括颜色选择器、色阶展示等
       </p>
     </div>
-    
+
     <div class="demo-grid">
       <!-- ColorPicker 演示 -->
       <div class="demo-card">
-        <h3 class="demo-title">ColorPicker 颜色选择器</h3>
+        <h3 class="demo-title">
+          ColorPicker 颜色选择器
+        </h3>
         <p class="demo-description">
           支持预设颜色、自定义输入的颜色选择器组件
         </p>
-        
+
         <div class="demo-content">
-          <ColorPicker 
+          <ColorPicker
             v-model="pickerColor"
             :preset-colors="presetColors"
             :show-presets="true"
             @change="handlePickerChange"
           />
-          
+
           <div class="result-display">
             <div class="selected-color">
-              <div 
+              <div
                 class="color-block"
                 :style="{ backgroundColor: pickerColor }"
-              ></div>
+              />
               <span class="color-text">{{ pickerColor }}</span>
             </div>
           </div>
         </div>
-        
+
         <div class="code-example">
           <details>
             <summary>查看代码</summary>
-            <pre><code>&lt;ColorPicker 
+            <pre><code>&lt;ColorPicker
   v-model="color"
   :preset-colors="presetColors"
   :show-presets="true"
@@ -46,14 +122,16 @@
           </details>
         </div>
       </div>
-      
+
       <!-- ColorPalette 演示 -->
       <div class="demo-card">
-        <h3 class="demo-title">ColorPalette 色阶展示</h3>
+        <h3 class="demo-title">
+          ColorPalette 色阶展示
+        </h3>
         <p class="demo-description">
           展示颜色色阶的组件，支持点击复制
         </p>
-        
+
         <div class="demo-content">
           <ColorPaletteComponent
             color-name="primary"
@@ -62,15 +140,15 @@
             :copyable="true"
             @color-click="handlePaletteClick"
           />
-          
+
           <div class="palette-controls">
             <label>
-              <input type="checkbox" v-model="showValues" />
+              <input v-model="showValues" type="checkbox">
               显示颜色值
             </label>
           </div>
         </div>
-        
+
         <div class="code-example">
           <details>
             <summary>查看代码</summary>
@@ -84,16 +162,18 @@
           </details>
         </div>
       </div>
-      
+
       <!-- ColorProvider 演示 -->
       <div class="demo-card full-width">
-        <h3 class="demo-title">ColorProvider 上下文提供者</h3>
+        <h3 class="demo-title">
+          ColorProvider 上下文提供者
+        </h3>
         <p class="demo-description">
           为子组件提供颜色主题上下文的容器组件
         </p>
-        
+
         <div class="demo-content">
-          <ColorProvider 
+          <ColorProvider
             :primary-color="providerColor"
             :show-loading="true"
             loading-text="正在生成主题..."
@@ -101,19 +181,19 @@
             <div class="provider-demo">
               <div class="color-input">
                 <label>主色调：</label>
-                <input 
-                  type="color" 
+                <input
                   v-model="providerColor"
+                  type="color"
                   class="color-picker"
-                />
+                >
                 <span class="color-value">{{ providerColor }}</span>
               </div>
-              
+
               <ThemePreview />
             </div>
           </ColorProvider>
         </div>
-        
+
         <div class="code-example">
           <details>
             <summary>查看代码</summary>
@@ -124,39 +204,41 @@
           </details>
         </div>
       </div>
-      
+
       <!-- 组合式API演示 -->
       <div class="demo-card full-width">
-        <h3 class="demo-title">useColor 组合式API</h3>
+        <h3 class="demo-title">
+          useColor 组合式API
+        </h3>
         <p class="demo-description">
           Vue 3 组合式API，提供响应式的颜色管理
         </p>
-        
+
         <div class="demo-content">
           <div class="api-demo">
             <div class="controls">
               <div class="control-group">
                 <label>颜色：</label>
-                <input 
-                  type="color" 
+                <input
                   v-model="apiColor"
+                  type="color"
                   class="color-picker"
-                />
-                <input 
-                  type="text" 
+                >
+                <input
                   v-model="apiColor"
+                  type="text"
                   class="color-input"
-                />
+                >
               </div>
-              
+
               <div class="control-group">
-                <button 
+                <button
                   class="btn btn-secondary"
                   @click="clearApiCache"
                 >
                   清除缓存
                 </button>
-                <button 
+                <button
                   class="btn btn-secondary"
                   @click="showMetrics = !showMetrics"
                 >
@@ -164,7 +246,7 @@
                 </button>
               </div>
             </div>
-            
+
             <div class="api-status">
               <div class="status-item">
                 <span class="label">状态：</span>
@@ -179,7 +261,7 @@
                 </span>
               </div>
             </div>
-            
+
             <div v-if="showMetrics && apiMetrics" class="metrics-display">
               <h4>性能指标</h4>
               <div class="metrics-grid">
@@ -201,11 +283,11 @@
                 </div>
               </div>
             </div>
-            
+
             <div v-if="apiTheme" class="theme-result">
               <h4>生成的语义化颜色</h4>
               <div class="semantic-colors">
-                <div 
+                <div
                   v-for="(color, name) in apiTheme.semanticColors"
                   :key="name"
                   class="semantic-item"
@@ -219,7 +301,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="code-example">
           <details>
             <summary>查看代码</summary>
@@ -228,13 +310,13 @@ import { useColor } from '@ldesign/color'
 
 const primaryColor = ref('#1890ff')
 
-const { 
-  theme, 
-  loading, 
-  error, 
+const {
+  theme,
+  loading,
+  error,
   isValid,
   clearCache,
-  getPerformanceMetrics 
+  getPerformanceMetrics
 } = useColor(primaryColor)</code></pre>
           </details>
         </div>
@@ -242,71 +324,6 @@ const {
     </div>
   </section>
 </template>
-
-<script setup lang="ts">
-import { ref, computed } from 'vue'
-import { 
-  ColorPicker, 
-  ColorPalette as ColorPaletteComponent, 
-  ColorProvider, 
-  ThemePreview,
-  useColor,
-  presetColors as defaultPresets
-} from '@ldesign/color'
-
-// ColorPicker 演示
-const pickerColor = ref('#1890ff')
-const presetColors = Object.values(defaultPresets).slice(0, 8)
-
-// ColorPalette 演示
-const showValues = ref(true)
-const samplePalette = [
-  '#e6f7ff', '#bae7ff', '#91d5ff', '#69c0ff', 
-  '#40a9ff', '#1890ff', '#096dd9', '#0050b3'
-]
-
-// ColorProvider 演示
-const providerColor = ref('#52c41a')
-
-// useColor API 演示
-const apiColor = ref('#722ed1')
-const showMetrics = ref(false)
-
-const { 
-  theme: apiTheme, 
-  loading: apiLoading, 
-  error: apiError,
-  isValid: apiIsValid,
-  clearCache: clearApiCache,
-  getPerformanceMetrics
-} = useColor(apiColor, {
-  enableCache: true,
-  useWebWorker: false
-})
-
-const apiMetrics = computed(() => {
-  return getPerformanceMetrics()
-})
-
-// 事件处理
-const handlePickerChange = (color: string) => {
-  console.log('颜色选择器变化:', color)
-}
-
-const handlePaletteClick = ({ color, index }: { color: string; index: number }) => {
-  copyColor(color)
-  console.log(`点击了第${index + 1}个颜色: ${color}`)
-}
-
-const copyColor = async (color: string) => {
-  try {
-    await navigator.clipboard.writeText(color)
-    console.log(`已复制颜色: ${color}`)
-  } catch (err) {
-    console.error('复制失败:', err)
-  }
-}
-</script>
 
 <style scoped>
 .components-section {
@@ -626,25 +643,25 @@ const copyColor = async (color: string) => {
   .demo-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .controls {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .control-group {
     justify-content: space-between;
   }
-  
+
   .api-status {
     flex-direction: column;
     gap: var(--space-sm);
   }
-  
+
   .metrics-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .semantic-colors {
     grid-template-columns: repeat(2, 1fr);
   }

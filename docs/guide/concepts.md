@@ -103,16 +103,18 @@ const darkPalette = theme.palettes.dark.primary
 // 成功色生成示例
 function generateSuccessColor(primaryHsl: [number, number, number]): string {
   const [h, s, l] = primaryHsl
-  
+
   // 根据主色调确定成功色色相
   let newH: number
-  if (h < 25 || h >= 335) newH = 120      // 红色系 -> 绿色
-  else if (h >= 25 && h < 75) newH = 80   // 黄色系 -> 黄绿色
+  if (h < 25 || h >= 335)
+newH = 120 // 红色系 -> 绿色
+  else if (h >= 25 && h < 75)
+newH = 80 // 黄色系 -> 黄绿色
   // ... 更多逻辑
-  
+
   const newS = Math.max(55, Math.min(70, s - 5))
   const newL = Math.max(45, Math.min(60, l + 5))
-  
+
   return hslToHex([newH, newS, newL])
 }
 ```
@@ -154,10 +156,10 @@ function generateSuccessColor(primaryHsl: [number, number, number]): string {
   --ldesign-primary-2: #bae7ff;
   --ldesign-primary-6: #1890ff;
   --ldesign-primary-12: #003a8c;
-  
+
   /* RGB格式（用于透明度） */
   --ldesign-primary-6-rgb: 24, 144, 255;
-  
+
   /* 语义化变量 */
   --ldesign-primary: var(--ldesign-primary-6);
   --ldesign-primary-hover: var(--ldesign-primary-5);
@@ -182,7 +184,7 @@ function generateSuccessColor(primaryHsl: [number, number, number]): string {
 // 缓存配置
 const generator = new ColorGenerator({
   enableCache: true,
-  cacheSize: 100  // 缓存100个主题
+  cacheSize: 100 // 缓存100个主题
 })
 
 // 缓存键生成
@@ -230,11 +232,11 @@ interface SemanticColors {
 
 // 色阶类型
 interface ColorPalette {
-  primary: string[]    // 12色阶
-  success: string[]    // 12色阶
-  warning: string[]    // 12色阶
-  danger: string[]     // 12色阶
-  gray: string[]       // 14色阶
+  primary: string[] // 12色阶
+  success: string[] // 12色阶
+  warning: string[] // 12色阶
+  danger: string[] // 12色阶
+  gray: string[] // 14色阶
 }
 
 // 完整主题类型
@@ -253,11 +255,11 @@ interface GeneratedTheme {
 
 ```typescript
 interface ColorGeneratorConfig {
-  enableCache?: boolean     // 启用缓存
-  cacheSize?: number        // 缓存大小
-  useWebWorker?: boolean    // 使用Web Worker
-  cssPrefix?: string        // CSS变量前缀
-  autoInject?: boolean      // 自动注入CSS
+  enableCache?: boolean // 启用缓存
+  cacheSize?: number // 缓存大小
+  useWebWorker?: boolean // 使用Web Worker
+  cssPrefix?: string // CSS变量前缀
+  autoInject?: boolean // 自动注入CSS
 }
 ```
 
@@ -268,17 +270,17 @@ interface ColorGeneratorConfig {
 ```typescript
 // ✅ 推荐：饱和度适中的颜色
 const goodColors = [
-  '#1890ff',  // 蓝色
-  '#52c41a',  // 绿色
-  '#722ed1',  // 紫色
-  '#fa541c'   // 橙色
+  '#1890ff', // 蓝色
+  '#52c41a', // 绿色
+  '#722ed1', // 紫色
+  '#fa541c' // 橙色
 ]
 
 // ❌ 避免：过于极端的颜色
 const badColors = [
-  '#000000',  // 纯黑
-  '#ffffff',  // 纯白
-  '#ff0000'   // 纯红
+  '#000000', // 纯黑
+  '#ffffff', // 纯白
+  '#ff0000' // 纯红
 ]
 ```
 

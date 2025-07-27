@@ -1,175 +1,3 @@
-<template>
-  <div class="color-demo">
-    <h1>🎨 @ldesign/color 完整演示</h1>
-
-    <!-- 颜色输入区域 -->
-    <div class="input-section">
-      <div class="color-input-group">
-        <label>选择主色调：</label>
-        <input
-          type="color"
-          v-model="primaryColor"
-          class="color-picker"
-        />
-        <input
-          type="text"
-          v-model="primaryColor"
-          class="color-text"
-          placeholder="#1890ff"
-        />
-        <button @click="generateRandom" class="btn-random">🎲 随机颜色</button>
-      </div>
-
-      <!-- 预设主题 -->
-      <div class="preset-themes">
-        <label>预设主题：</label>
-        <div class="preset-grid">
-          <button
-            v-for="preset in presetThemes"
-            :key="preset.name"
-            @click="applyPreset(preset)"
-            class="preset-btn"
-            :class="{ active: primaryColor === preset.color }"
-            :style="{ backgroundColor: preset.color }"
-            :title="preset.name"
-          >
-            <span class="preset-name">{{ preset.name }}</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="controls-row">
-        <div class="mode-switch">
-          <button
-            :class="{ active: currentMode === 'light' }"
-            @click="currentMode = 'light'"
-            class="mode-btn"
-          >
-            ☀️ 明亮模式
-          </button>
-          <button
-            :class="{ active: currentMode === 'dark' }"
-            @click="currentMode = 'dark'"
-            class="mode-btn"
-          >
-            🌙 暗黑模式
-          </button>
-        </div>
-
-        <div class="gray-config">
-          <label class="config-label">
-            <input
-              type="checkbox"
-              v-model="grayMixPrimary"
-              @change="regenerateTheme"
-            />
-            灰色混入主色调
-          </label>
-          <div v-if="grayMixPrimary" class="mix-ratio">
-            <label>混入比例：</label>
-            <input
-              type="range"
-              v-model="grayMixRatio"
-              @input="regenerateTheme"
-              min="0"
-              max="1"
-              step="0.1"
-              class="ratio-slider"
-            />
-            <span class="ratio-value">{{ Math.round(grayMixRatio * 100) }}%</span>
-          </div>
-        </div>
-
-        <div class="css-config">
-          <div class="config-item">
-            <label>CSS前缀：</label>
-            <input
-              type="text"
-              v-model="cssPrefix"
-              @input="regenerateTheme"
-              class="text-input"
-              placeholder="ldesign"
-            />
-          </div>
-          <button @click="addCustomTheme" class="btn-add-theme">
-            ➕ 添加预设
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 加载状态 -->
-    <div v-if="loading" class="loading">
-      <div class="spinner"></div>
-      <span>正在生成主题...</span>
-    </div>
-
-    <!-- 错误状态 -->
-    <div v-if="error" class="error">
-      错误: {{ error }}
-    </div>
-
-    <!-- 主题展示 -->
-    <div v-if="theme && !loading" class="theme-display">
-      <!-- 语义化颜色 -->
-      <section class="semantic-section">
-        <h2>语义化颜色</h2>
-        <div class="semantic-grid">
-          <div
-            v-for="(color, name) in theme.semanticColors"
-            :key="name"
-            class="semantic-item"
-            :style="{ backgroundColor: color }"
-            @click="copyColor(color)"
-            :title="`点击复制 ${color}`"
-          >
-            <span class="color-name">{{ name }}</span>
-            <span class="color-value">{{ color }}</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- 色阶展示 -->
-      <section class="palette-section" :class="{ 'dark-mode': currentMode === 'dark' }">
-        <h2>{{ currentMode === 'light' ? '明亮模式' : '暗黑模式' }}色阶</h2>
-        <div class="palette-grid">
-          <div
-            v-for="(colors, name) in currentPalette"
-            :key="name"
-            class="palette-row"
-          >
-            <div class="palette-name">{{ name }}</div>
-            <div class="palette-colors">
-              <div
-                v-for="(color, index) in colors"
-                :key="index"
-                class="palette-color"
-                :style="{ backgroundColor: color }"
-                @click="copyColor(color)"
-                :title="`${name}-${currentMode === 'dark' ? (12 - index) : (index + 1)}: ${color}`"
-              >
-                <span class="color-index">{{ currentMode === 'dark' ? (12 - index) : (index + 1) }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- CSS变量展示 -->
-      <section class="css-section">
-        <h2>生成的CSS变量 <span class="css-count">({{ cssPreview.split('\n').filter(line => line.includes(':')).length }} 个变量)</span></h2>
-        <div class="css-preview">
-          <pre><code>{{ cssPreview }}</code></pre>
-        </div>
-        <div class="css-actions">
-          <button @click="copyCSSVariables" class="btn-copy">📋 复制CSS变量</button>
-          <button @click="downloadCSS" class="btn-download">💾 下载CSS文件</button>
-        </div>
-      </section>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { createPresetThemeManager, generateRandomColor, generateTheme } from '@ldesign/color'
 import { computed, ref, watch } from 'vue'
@@ -199,7 +27,8 @@ const semanticNames = ref({
 
 // 当前色阶
 const currentPalette = computed(() => {
-  if (!theme.value) return {}
+  if (!theme.value)
+return {}
   const palette = currentMode.value === 'light'
     ? theme.value.palettes.light
     : theme.value.palettes.dark
@@ -207,7 +36,7 @@ const currentPalette = computed(() => {
   // 暗黑模式需要反转色阶顺序（从深到浅）
   if (currentMode.value === 'dark') {
     const reversedPalette = {}
-    Object.keys(palette).forEach(key => {
+    Object.keys(palette).forEach((key) => {
       reversedPalette[key] = [...palette[key]].reverse()
     })
     return reversedPalette
@@ -218,12 +47,13 @@ const currentPalette = computed(() => {
 
 // CSS变量预览（显示完整内容）
 const cssPreview = computed(() => {
-  if (!theme.value) return ''
+  if (!theme.value)
+return ''
   return theme.value.cssVariables
 })
 
 // 生成主题的函数
-const generateColorTheme = async (color: string) => {
+async function generateColorTheme(color: string) {
   loading.value = true
   error.value = null
   try {
@@ -240,21 +70,25 @@ const generateColorTheme = async (color: string) => {
     if (newTheme.cssVariables) {
       newTheme.cssGenerator.injectToHead(newTheme.cssVariables)
     }
-  } catch (err) {
+  }
+ catch (err) {
     error.value = err.message || '生成主题失败'
     console.error('生成主题失败:', err)
-  } finally {
+  }
+ finally {
     loading.value = false
   }
 }
 
 // 添加自定义预设主题
-const addCustomTheme = () => {
+function addCustomTheme() {
   const name = prompt('请输入主题名称:')
-  if (!name) return
+  if (!name)
+return
 
   const color = prompt('请输入主题颜色 (如: #1890ff):')
-  if (!color) return
+  if (!color)
+return
 
   presetManager.addTheme({
     name,
@@ -264,47 +98,51 @@ const addCustomTheme = () => {
 }
 
 // 生成随机颜色
-const generateRandom = () => {
+function generateRandom() {
   primaryColor.value = generateRandomColor()
 }
 
 // 应用预设主题
-const applyPreset = (preset) => {
+function applyPreset(preset) {
   primaryColor.value = preset.color
 }
 
 // 重新生成主题（当配置改变时）
-const regenerateTheme = () => {
+function regenerateTheme() {
   generateColorTheme(primaryColor.value)
 }
 
 // 复制颜色
-const copyColor = async (color: string) => {
+async function copyColor(color: string) {
   try {
     await navigator.clipboard.writeText(color)
     console.log(`已复制颜色: ${color}`)
     // 这里可以添加提示消息
-  } catch (err) {
+  }
+ catch (err) {
     console.error('复制失败:', err)
   }
 }
 
 // 复制CSS变量
-const copyCSSVariables = async () => {
-  if (!theme.value) return
+async function copyCSSVariables() {
+  if (!theme.value)
+return
 
   try {
     await navigator.clipboard.writeText(theme.value.cssVariables)
     console.log('已复制CSS变量')
     // 这里可以添加提示消息
-  } catch (err) {
+  }
+ catch (err) {
     console.error('复制失败:', err)
   }
 }
 
 // 下载CSS文件
-const downloadCSS = () => {
-  if (!theme.value) return
+function downloadCSS() {
+  if (!theme.value)
+return
 
   const blob = new Blob([theme.value.cssVariables], { type: 'text/css' })
   const url = URL.createObjectURL(blob)
@@ -322,6 +160,186 @@ watch(primaryColor, (newColor) => {
   generateColorTheme(newColor)
 }, { immediate: true })
 </script>
+
+<template>
+  <div class="color-demo">
+    <h1>🎨 @ldesign/color 完整演示</h1>
+
+    <!-- 颜色输入区域 -->
+    <div class="input-section">
+      <div class="color-input-group">
+        <label>选择主色调：</label>
+        <input
+          v-model="primaryColor"
+          type="color"
+          class="color-picker"
+        >
+        <input
+          v-model="primaryColor"
+          type="text"
+          class="color-text"
+          placeholder="#1890ff"
+        >
+        <button class="btn-random" @click="generateRandom">
+          🎲 随机颜色
+        </button>
+      </div>
+
+      <!-- 预设主题 -->
+      <div class="preset-themes">
+        <label>预设主题：</label>
+        <div class="preset-grid">
+          <button
+            v-for="preset in presetThemes"
+            :key="preset.name"
+            class="preset-btn"
+            :class="{ active: primaryColor === preset.color }"
+            :style="{ backgroundColor: preset.color }"
+            :title="preset.name"
+            @click="applyPreset(preset)"
+          >
+            <span class="preset-name">{{ preset.name }}</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="controls-row">
+        <div class="mode-switch">
+          <button
+            :class="{ active: currentMode === 'light' }"
+            class="mode-btn"
+            @click="currentMode = 'light'"
+          >
+            ☀️ 明亮模式
+          </button>
+          <button
+            :class="{ active: currentMode === 'dark' }"
+            class="mode-btn"
+            @click="currentMode = 'dark'"
+          >
+            🌙 暗黑模式
+          </button>
+        </div>
+
+        <div class="gray-config">
+          <label class="config-label">
+            <input
+              v-model="grayMixPrimary"
+              type="checkbox"
+              @change="regenerateTheme"
+            >
+            灰色混入主色调
+          </label>
+          <div v-if="grayMixPrimary" class="mix-ratio">
+            <label>混入比例：</label>
+            <input
+              v-model="grayMixRatio"
+              type="range"
+              min="0"
+              max="1"
+              step="0.1"
+              class="ratio-slider"
+              @input="regenerateTheme"
+            >
+            <span class="ratio-value">{{ Math.round(grayMixRatio * 100) }}%</span>
+          </div>
+        </div>
+
+        <div class="css-config">
+          <div class="config-item">
+            <label>CSS前缀：</label>
+            <input
+              v-model="cssPrefix"
+              type="text"
+              class="text-input"
+              placeholder="ldesign"
+              @input="regenerateTheme"
+            >
+          </div>
+          <button class="btn-add-theme" @click="addCustomTheme">
+            ➕ 添加预设
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 加载状态 -->
+    <div v-if="loading" class="loading">
+      <div class="spinner" />
+      <span>正在生成主题...</span>
+    </div>
+
+    <!-- 错误状态 -->
+    <div v-if="error" class="error">
+      错误: {{ error }}
+    </div>
+
+    <!-- 主题展示 -->
+    <div v-if="theme && !loading" class="theme-display">
+      <!-- 语义化颜色 -->
+      <section class="semantic-section">
+        <h2>语义化颜色</h2>
+        <div class="semantic-grid">
+          <div
+            v-for="(color, name) in theme.semanticColors"
+            :key="name"
+            class="semantic-item"
+            :style="{ backgroundColor: color }"
+            :title="`点击复制 ${color}`"
+            @click="copyColor(color)"
+          >
+            <span class="color-name">{{ name }}</span>
+            <span class="color-value">{{ color }}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 色阶展示 -->
+      <section class="palette-section" :class="{ 'dark-mode': currentMode === 'dark' }">
+        <h2>{{ currentMode === 'light' ? '明亮模式' : '暗黑模式' }}色阶</h2>
+        <div class="palette-grid">
+          <div
+            v-for="(colors, name) in currentPalette"
+            :key="name"
+            class="palette-row"
+          >
+            <div class="palette-name">
+              {{ name }}
+            </div>
+            <div class="palette-colors">
+              <div
+                v-for="(color, index) in colors"
+                :key="index"
+                class="palette-color"
+                :style="{ backgroundColor: color }"
+                :title="`${name}-${currentMode === 'dark' ? (12 - index) : (index + 1)}: ${color}`"
+                @click="copyColor(color)"
+              >
+                <span class="color-index">{{ currentMode === 'dark' ? (12 - index) : (index + 1) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CSS变量展示 -->
+      <section class="css-section">
+        <h2>生成的CSS变量 <span class="css-count">({{ cssPreview.split('\n').filter(line => line.includes(':')).length }} 个变量)</span></h2>
+        <div class="css-preview">
+          <pre><code>{{ cssPreview }}</code></pre>
+        </div>
+        <div class="css-actions">
+          <button class="btn-copy" @click="copyCSSVariables">
+            📋 复制CSS变量
+          </button>
+          <button class="btn-download" @click="downloadCSS">
+            💾 下载CSS文件
+          </button>
+        </div>
+      </section>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .color-demo {

@@ -200,7 +200,7 @@ npx tsx test-installation.ts
    ```typescript
    // 旧版本
    import { ColorThemeGenerator } from '@ldesign/color'
-   
+
    // 新版本
    import { ColorGenerator } from '@ldesign/color'
    ```
@@ -209,7 +209,7 @@ npx tsx test-installation.ts
    ```typescript
    // 旧版本
    const generator = new ColorGenerator({ cache: true })
-   
+
    // 新版本
    const generator = new ColorGenerator({ enableCache: true })
    ```
@@ -218,7 +218,7 @@ npx tsx test-installation.ts
    ```vue
    <!-- 旧版本 -->
    <ColorThemeProvider>
-   
+
    <!-- 新版本 -->
    <ColorProvider>
    ```

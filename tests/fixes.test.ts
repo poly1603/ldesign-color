@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest'
-import { generateTheme, generateRandomColor, createPresetThemeManager } from '../src'
+import { beforeEach, describe, expect, it } from 'vitest'
+import { createPresetThemeManager, generateRandomColor, generateTheme } from '../src'
 
 describe('修复验证测试', () => {
   describe('1. 灰色色阶偏红问题修复', () => {
@@ -10,15 +10,15 @@ describe('修复验证测试', () => {
 
       // 检查生成的灰色是否为中性灰色（饱和度应该为0或接近0）
       const grayColors = theme.palettes.light.gray
-      
+
       // 验证第一个灰色（最浅的）
       const lightestGray = grayColors[0]
-      expect(lightestGray).toMatch(/^#[0-9a-fA-F]{6}$/)
-      
+      expect(lightestGray).toMatch(/^#[0-9a-f]{6}$/i)
+
       // 验证最深的灰色
       const darkestGray = grayColors[grayColors.length - 1]
-      expect(darkestGray).toMatch(/^#[0-9a-fA-F]{6}$/)
-      
+      expect(darkestGray).toMatch(/^#[0-9a-f]{6}$/i)
+
       // 验证灰色数量正确（14个色阶）
       expect(grayColors).toHaveLength(14)
     })
@@ -30,10 +30,10 @@ describe('修复验证测试', () => {
 
       const grayColors = theme.palettes.light.gray
       expect(grayColors).toHaveLength(14)
-      
+
       // 验证生成的颜色格式正确
-      grayColors.forEach(color => {
-        expect(color).toMatch(/^#[0-9a-fA-F]{6}$/)
+      grayColors.forEach((color) => {
+        expect(color).toMatch(/^#[0-9a-f]{6}$/i)
       })
     })
   })
@@ -43,20 +43,20 @@ describe('修复验证测试', () => {
       // 多次生成随机颜色，确保不会报错
       for (let i = 0; i < 10; i++) {
         const randomColor = generateRandomColor()
-        expect(randomColor).toMatch(/^#[0-9a-fA-F]{6}$/)
+        expect(randomColor).toMatch(/^#[0-9a-f]{6}$/i)
         expect(randomColor).toHaveLength(7)
       }
     })
 
     it('生成的随机颜色应该是有效的十六进制颜色', () => {
       const randomColor = generateRandomColor()
-      
+
       // 验证格式
-      expect(randomColor).toMatch(/^#[0-9a-fA-F]{6}$/)
-      
+      expect(randomColor).toMatch(/^#[0-9a-f]{6}$/i)
+
       // 验证可以被解析
       const hex = randomColor.slice(1)
-      const num = parseInt(hex, 16)
+      const num = Number.parseInt(hex, 16)
       expect(num).toBeGreaterThanOrEqual(0)
       expect(num).toBeLessThanOrEqual(0xFFFFFF)
     })
@@ -89,14 +89,14 @@ describe('修复验证测试', () => {
       expect(theme.cssVariables).toContain('--test-caution-')
       expect(theme.cssVariables).toContain('--test-negative-')
       expect(theme.cssVariables).toContain('--test-neutral-')
-      
+
       expect(theme.cssVariables).not.toContain('--test-primary-')
       expect(theme.cssVariables).not.toContain('--test-success-')
     })
 
-    it('CSS生成器应该有injectToHead方法', () => {
+    it('cSS生成器应该有injectToHead方法', () => {
       const theme = generateTheme('#1890ff')
-      
+
       expect(theme.cssGenerator).toBeDefined()
       expect(typeof theme.cssGenerator.injectToHead).toBe('function')
     })
@@ -112,7 +112,7 @@ describe('修复验证测试', () => {
     it('应该包含默认预设主题', () => {
       const themes = presetManager.getThemes()
       expect(themes.length).toBeGreaterThan(0)
-      
+
       // 验证默认主题包含蓝色
       const blueTheme = themes.find(t => t.name === '蓝色')
       expect(blueTheme).toBeDefined()
@@ -121,7 +121,7 @@ describe('修复验证测试', () => {
 
     it('应该能够添加自定义主题', () => {
       const initialCount = presetManager.getThemes().length
-      
+
       presetManager.addTheme({
         name: '自定义红色',
         color: '#ff0000',
@@ -130,7 +130,7 @@ describe('修复验证测试', () => {
 
       const themes = presetManager.getThemes()
       expect(themes.length).toBe(initialCount + 1)
-      
+
       const customTheme = themes.find(t => t.name === '自定义红色')
       expect(customTheme).toBeDefined()
       expect(customTheme?.color).toBe('#ff0000')
@@ -146,7 +146,7 @@ describe('修复验证测试', () => {
       // 禁用主题
       const result = presetManager.toggleTheme('测试主题', false)
       expect(result).toBe(true)
-      
+
       const theme = presetManager.findTheme('测试主题')
       expect(theme?.enabled).toBe(false)
 
@@ -163,7 +163,7 @@ describe('修复验证测试', () => {
 
       const initialCount = presetManager.getThemes().length
       const result = presetManager.removeTheme('待删除主题')
-      
+
       expect(result).toBe(true)
       expect(presetManager.getThemes().length).toBe(initialCount - 1)
       expect(presetManager.findTheme('待删除主题')).toBeUndefined()
@@ -179,7 +179,7 @@ describe('修复验证测试', () => {
 
       const enabledThemes = presetManager.getEnabledThemes()
       const allThemes = presetManager.getThemes()
-      
+
       expect(enabledThemes.value.length).toBeLessThan(allThemes.length)
       expect(enabledThemes.value.find(t => t.name === '禁用主题')).toBeUndefined()
     })
@@ -199,7 +199,7 @@ describe('修复验证测试', () => {
           appendChild: () => {},
         },
       }
-      
+
       // 这个测试需要在浏览器环境中运行
       // 这里只验证方法存在和基本功能
       const theme = generateTheme('#1890ff')

@@ -4,8 +4,8 @@
  * 启动演示项目的脚本
  */
 
-const { spawn } = require('child_process')
-const path = require('path')
+const { spawn } = require('node:child_process')
+const path = require('node:path')
 
 console.log('🎨 启动 @ldesign/color 演示项目...')
 
@@ -16,7 +16,7 @@ const examplesDir = path.join(__dirname, '../examples')
 const child = spawn('pnpm', ['dev'], {
   cwd: examplesDir,
   stdio: 'inherit',
-  shell: true
+  shell: true,
 })
 
 child.on('error', (error) => {

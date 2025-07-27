@@ -1,19 +1,54 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+
+// 监听颜色变化
+import { watch } from 'vue'
+
+// 简单的颜色状态
+const color = ref('#1890ff')
+const loading = ref(false)
+const theme = ref(null)
+
+// 模拟主题生成
+function generateTheme(inputColor: string) {
+  loading.value = true
+
+  setTimeout(() => {
+    theme.value = {
+      semanticColors: {
+        primary: inputColor,
+        success: '#52c41a',
+        warning: '#faad14',
+        danger: '#f5222d',
+        gray: '#8c8c8c',
+      },
+    }
+    loading.value = false
+  }, 500)
+}
+watch(color, (newColor) => {
+  generateTheme(newColor)
+}, { immediate: true })
+</script>
+
 <template>
   <div class="simple-app">
     <h1>🎨 @ldesign/color 简单示例</h1>
-    
+
     <div class="color-input">
       <label>选择颜色：</label>
-      <input type="color" v-model="color" />
+      <input v-model="color" type="color">
       <span>{{ color }}</span>
     </div>
-    
-    <div v-if="loading">加载中...</div>
-    
+
+    <div v-if="loading">
+      加载中...
+    </div>
+
     <div v-if="theme && !loading" class="result">
       <h2>生成的语义化颜色</h2>
       <div class="colors">
-        <div 
+        <div
           v-for="(colorValue, name) in theme.semanticColors"
           :key="name"
           class="color-item"
@@ -26,39 +61,6 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-
-// 简单的颜色状态
-const color = ref('#1890ff')
-const loading = ref(false)
-const theme = ref(null)
-
-// 模拟主题生成
-const generateTheme = (inputColor: string) => {
-  loading.value = true
-  
-  setTimeout(() => {
-    theme.value = {
-      semanticColors: {
-        primary: inputColor,
-        success: '#52c41a',
-        warning: '#faad14',
-        danger: '#f5222d',
-        gray: '#8c8c8c'
-      }
-    }
-    loading.value = false
-  }, 500)
-}
-
-// 监听颜色变化
-import { watch } from 'vue'
-watch(color, (newColor) => {
-  generateTheme(newColor)
-}, { immediate: true })
-</script>
 
 <style scoped>
 .simple-app {

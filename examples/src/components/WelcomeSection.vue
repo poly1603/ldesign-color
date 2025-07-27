@@ -1,84 +1,3 @@
-<template>
-  <section id="welcome" class="welcome-section">
-    <div class="hero">
-      <div class="hero-content">
-        <h1 class="hero-title">
-          🎨 高性能颜色生成库
-        </h1>
-        <p class="hero-description">
-          输入一个主色调，智能生成完整的配色方案。支持语义化颜色、明暗模式、12/14色阶生成。
-        </p>
-
-        <!-- 快速体验 -->
-        <div class="quick-demo">
-          <div class="demo-input">
-            <label for="quick-color">选择主色调：</label>
-            <input
-              id="quick-color"
-              type="color"
-              v-model="quickColor"
-              class="color-input"
-            />
-            <span class="color-value">{{ quickColor }}</span>
-          </div>
-
-          <!-- 生成的语义化颜色 -->
-          <div v-if="quickTheme" class="semantic-colors">
-            <div
-              v-for="(color, name) in quickTheme.semanticColors"
-              :key="name"
-              class="color-item"
-              :style="{ backgroundColor: color }"
-              @click="copyColor(color)"
-              :title="`点击复制 ${color}`"
-            >
-              <span class="color-name">{{ name }}</span>
-              <span class="color-hex">{{ color }}</span>
-            </div>
-          </div>
-
-          <!-- 加载状态 -->
-          <div v-if="quickLoading" class="loading-state">
-            <div class="spinner"></div>
-            <span>正在生成主题...</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 特性展示 -->
-      <div class="features">
-        <div class="feature-grid">
-          <div
-            v-for="feature in features"
-            :key="feature.title"
-            class="feature-card"
-          >
-            <div class="feature-icon">{{ feature.icon }}</div>
-            <h3 class="feature-title">{{ feature.title }}</h3>
-            <p class="feature-description">{{ feature.description }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 统计数据 -->
-    <div class="stats">
-      <div class="stat-item">
-        <div class="stat-number">{{ stats.themes }}</div>
-        <div class="stat-label">已生成主题</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">{{ stats.colors }}</div>
-        <div class="stat-label">颜色总数</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">{{ stats.performance }}ms</div>
-        <div class="stat-label">平均生成时间</div>
-      </div>
-    </div>
-  </section>
-</template>
-
 <script setup lang="ts">
 import { generateTheme } from '@ldesign/color'
 import { onMounted, ref, watch } from 'vue'
@@ -89,15 +8,17 @@ const quickTheme = ref(null)
 const quickLoading = ref(false)
 
 // 生成主题的函数
-const generateQuickTheme = async (color: string) => {
+async function generateQuickTheme(color: string) {
   quickLoading.value = true
   try {
     // 使用库的generateTheme函数
     const theme = generateTheme(color)
     quickTheme.value = theme
-  } catch (error) {
+  }
+ catch (error) {
     console.error('生成主题失败:', error)
-  } finally {
+  }
+ finally {
     quickLoading.value = false
   }
 }
@@ -112,55 +33,56 @@ const features = [
   {
     icon: '🎯',
     title: '智能生成',
-    description: '基于色彩理论，自动生成和谐的语义化颜色'
+    description: '基于色彩理论，自动生成和谐的语义化颜色',
   },
   {
     icon: '🌓',
     title: '明暗模式',
-    description: '完美支持明暗主题切换，自动适配'
+    description: '完美支持明暗主题切换，自动适配',
   },
   {
     icon: '📊',
     title: '丰富色阶',
-    description: '12/14色阶设计，满足各种设计需求'
+    description: '12/14色阶设计，满足各种设计需求',
   },
   {
     icon: '⚡',
     title: '高性能',
-    description: 'Web Worker、缓存、防抖等多重优化'
+    description: 'Web Worker、缓存、防抖等多重优化',
   },
   {
     icon: '🔧',
     title: 'Vue友好',
-    description: '组合式API和开箱即用的组件'
+    description: '组合式API和开箱即用的组件',
   },
   {
     icon: '💪',
     title: 'TypeScript',
-    description: '完整的类型定义，开发体验一流'
-  }
+    description: '完整的类型定义，开发体验一流',
+  },
 ]
 
 // 统计数据
 const stats = ref({
   themes: 0,
   colors: 0,
-  performance: 0
+  performance: 0,
 })
 
 // 复制颜色到剪贴板
-const copyColor = async (color: string) => {
+async function copyColor(color: string) {
   try {
     await navigator.clipboard.writeText(color)
     console.log(`已复制颜色: ${color}`)
     // 这里可以添加提示消息
-  } catch (err) {
+  }
+ catch (err) {
     console.error('复制失败:', err)
   }
 }
 
 // 更新统计数据
-const updateStats = () => {
+function updateStats() {
   if (quickTheme.value) {
     stats.value.themes++
 
@@ -185,10 +107,109 @@ onMounted(() => {
   stats.value = {
     themes: Math.floor(Math.random() * 100) + 50,
     colors: Math.floor(Math.random() * 1000) + 500,
-    performance: Math.floor(Math.random() * 10) + 5
+    performance: Math.floor(Math.random() * 10) + 5,
   }
 })
 </script>
+
+<template>
+  <section id="welcome" class="welcome-section">
+    <div class="hero">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          🎨 高性能颜色生成库
+        </h1>
+        <p class="hero-description">
+          输入一个主色调，智能生成完整的配色方案。支持语义化颜色、明暗模式、12/14色阶生成。
+        </p>
+
+        <!-- 快速体验 -->
+        <div class="quick-demo">
+          <div class="demo-input">
+            <label for="quick-color">选择主色调：</label>
+            <input
+              id="quick-color"
+              v-model="quickColor"
+              type="color"
+              class="color-input"
+            >
+            <span class="color-value">{{ quickColor }}</span>
+          </div>
+
+          <!-- 生成的语义化颜色 -->
+          <div v-if="quickTheme" class="semantic-colors">
+            <div
+              v-for="(color, name) in quickTheme.semanticColors"
+              :key="name"
+              class="color-item"
+              :style="{ backgroundColor: color }"
+              :title="`点击复制 ${color}`"
+              @click="copyColor(color)"
+            >
+              <span class="color-name">{{ name }}</span>
+              <span class="color-hex">{{ color }}</span>
+            </div>
+          </div>
+
+          <!-- 加载状态 -->
+          <div v-if="quickLoading" class="loading-state">
+            <div class="spinner" />
+            <span>正在生成主题...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 特性展示 -->
+      <div class="features">
+        <div class="feature-grid">
+          <div
+            v-for="feature in features"
+            :key="feature.title"
+            class="feature-card"
+          >
+            <div class="feature-icon">
+              {{ feature.icon }}
+            </div>
+            <h3 class="feature-title">
+              {{ feature.title }}
+            </h3>
+            <p class="feature-description">
+              {{ feature.description }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 统计数据 -->
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-number">
+          {{ stats.themes }}
+        </div>
+        <div class="stat-label">
+          已生成主题
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">
+          {{ stats.colors }}
+        </div>
+        <div class="stat-label">
+          颜色总数
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">
+          {{ stats.performance }}ms
+        </div>
+        <div class="stat-label">
+          平均生成时间
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
 
 <style scoped>
 .welcome-section {
