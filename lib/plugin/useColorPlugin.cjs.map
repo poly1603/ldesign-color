@@ -1,0 +1,1 @@
+{"version":3,"file":"useColorPlugin.cjs","sources":["../../src/plugin/useColorPlugin.ts"],"sourcesContent":[null],"names":["useColorPlugin","plugin","inject","ColorPluginSymbol","Error"],"mappings":";;;;;;;;0DA2BgBA,GAAc,CAC5B,MAAMC,EAASC,SAAoBC,EAAAA,iBAAiB,EAEpD,GAAI,CAACF,EACH,MAAM,IAAIG,MACR;AAAA,6EAC8E,EAIlF,OAAOH,CACT"}

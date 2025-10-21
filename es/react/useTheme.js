@@ -1,0 +1,10 @@
+/*!
+ * ***********************************
+ * @ldesign/color v1.0.0           *
+ * Built with rollup               *
+ * Build time: 2024-10-21 14:32:31 *
+ * Build mode: production          *
+ * Minified: No                    *
+ * ***********************************
+ */import{createVNode as P,isVNode as b}from"vue";import{createContext as N,useMemo as a,useState as l,useCallback as u,useEffect as k,useContext as w}from"react";import{presetThemes as j}from"../themes/presets.js";import{ThemeManager as D}from"../themes/themeManager.js";function E(r){return typeof r=="function"||Object.prototype.toString.call(r)==="[object Object]"&&!b(r)}function c(r={}){const t=a(()=>new D(r),[]),[e,n]=l(null),[p,i]=l(!1),f=a(()=>e?.primaryColor||"",[e]),T=a(()=>e?.themeName||"",[e]),y=a(()=>e?.isDark||!1,[e]),d=u(async(o,s)=>{i(!0);try{const m=t.applyTheme(o,s);return n(m),m}finally{i(!1)}},[t]),C=u(async(o,s)=>{i(!0);try{const m=t.applyPresetTheme(o,s);return n(m),m}finally{i(!1)}},[t]),g=u(()=>{const o=t.restore();return o&&n(o),o},[t]),v=u(()=>{t.clear(),n(null)},[t]),x=u(()=>{const o=t.getCurrentTheme();return n(o),o},[t]);return k(()=>{if(r.immediate!==!1){const s=t.getCurrentTheme()||t.restore();s&&n(s)}const o=t.onChange(s=>{n(s)});return()=>{o(),t&&typeof t.destroy=="function"&&t.destroy()}},[]),{currentTheme:e,presets:j,isLoading:p,primaryColor:f,themeName:T,isDark:y,applyTheme:d,applyPresetTheme:C,restoreTheme:g,clearTheme:v,getCurrentTheme:x}}const h=N(void 0);function L({children:r,options:t={}}){const e=c(t),n=a(()=>e,[e.currentTheme,e.isLoading,e.primaryColor,e.themeName,e.isDark,e.applyTheme,e.applyPresetTheme,e.restoreTheme,e.clearTheme,e.getCurrentTheme]);return P(h.Provider,{value:n},E(r)?r:{default:()=>[r],_:2},8,["value"])}function M(){const r=w(h);if(!r)throw new Error("useThemeContext must be used within a ThemeProvider");return r}/*! End of @ldesign/color | Powered by @ldesign/builder */export{L as ThemeProvider,c as useTheme,M as useThemeContext};
+//# sourceMappingURL=useTheme.js.map
