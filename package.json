@@ -197,7 +197,9 @@
     "type-check": "tsc --noEmit --project tsconfig.json",
     "clean": "node -e \"const fs=require('fs'); ['es','lib','dist','.tsbuildinfo'].forEach(d=>{try{fs.rmSync(d,{recursive:true,force:true})}catch{}})\"",
     "prepublishOnly": "npm run clean && npm run build:all",
-    "postinstall": "echo '✨ @ldesign/color installed successfully!'"
+    "postinstall": "echo '✨ @ldesign/color installed successfully!'",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "lucide-react": "^0.546.0"
@@ -212,8 +214,10 @@
     "@vitejs/plugin-vue": "^4.0.0",
     "rimraf": "^5.0.0",
     "tsx": "^4.20.6",
-    "typescript": "^5.6.0",
-    "@ldesign/builder": "workspace:*"
+    "typescript": "^5.7.3",
+    "@ldesign/builder": "workspace:*",
+    "eslint": "^9.18.0",
+    "@antfu/eslint-config": "^6.0.0"
   },
   "peerDependenciesMeta": {
     "react": {
