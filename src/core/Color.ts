@@ -23,7 +23,7 @@ export class Color {
   // Lazy computed values - only cache hex string to save memory
   private _hex?: string;
   // Remove HSL/HSV cache to save memory (40 bytes each)
-  
+
   // Shared cache - reduced size
   private static cache = new ColorCache(50); // Further reduced to save memory
   // Object pool for reuse
@@ -52,13 +52,13 @@ export class Color {
     r = clamp(r | 0, 0, 255);
     g = clamp(g | 0, 0, 255);
     b = clamp(b | 0, 0, 255);
-    
+
     // Try to reuse from pool
     let color = this.pool.pop();
     if (!color) {
       color = new Color();
     }
-    
+
     color._value = (r << 16) | (g << 8) | b;
     color._alpha = a !== undefined ? clamp(a, 0, 1) : 1;
     color._hex = undefined;
@@ -139,17 +139,17 @@ export class Color {
     if (!includeAlpha && this._hex) {
       return this._hex;
     }
-    
+
     // Fast hex conversion using bit operations
-    const hex = `#${  (`000000${  this._value.toString(16)}`).slice(-6).toUpperCase()}`;
-    
+    const hex = `#${(`000000${this._value.toString(16)}`).slice(-6).toUpperCase()}`;
+
     if (!includeAlpha) {
       this._hex = hex;
       return hex;
     }
-    
+
     if (this._alpha < 1) {
-      const alpha = (`0${  ((this._alpha * 255) | 0).toString(16)}`).slice(-2);
+      const alpha = (`0${((this._alpha * 255) | 0).toString(16)}`).slice(-2);
       return hex + alpha;
     }
     return hex;
@@ -173,7 +173,21 @@ export class Color {
     }
     return rgb;
   }
-  
+
+  /**
+   * Get RGB values directly as tuple - No object allocation
+   * Use this for performance-critical paths
+   * @returns [r, g, b, alpha]
+   */
+  toRGBDirect(): [number, number, number, number] {
+    return [
+      (this._value >> 16) & 0xFF,
+      (this._value >> 8) & 0xFF,
+      this._value & 0xFF,
+      this._alpha
+    ];
+  }
+
   /**
    * Return RGB object to pool
    */
@@ -190,8 +204,8 @@ export class Color {
     const r = (this._value >> 16) & 0xFF;
     const g = (this._value >> 8) & 0xFF;
     const b = this._value & 0xFF;
-    
-    return this._alpha < 1 
+
+    return this._alpha < 1
       ? `rgba(${r}, ${g}, ${b}, ${this._alpha})`
       : `rgb(${r}, ${g}, ${b})`;
   }
@@ -227,6 +241,51 @@ export class Color {
     Color.returnRGB(rgb); // Return RGB to pool
     if (this._alpha < 1) hsv.a = this._alpha;
     return hsv;
+  }
+
+  /**
+   * Convert to OKLCH color space (perceptually uniform)
+   * Requires advanced color spaces module
+   */
+  toOKLCH(): import('../types').OKLCH {
+    const { rgbToOKLCH } = require('./advancedColorSpaces');
+    return rgbToOKLCH(this.toRGB());
+  }
+
+  /**
+   * Convert to OKLAB color space (perceptually uniform)
+   * Requires advanced color spaces module
+   */
+  toOKLAB(): import('../types').OKLAB {
+    const { rgbToOKLAB } = require('./advancedColorSpaces');
+    return rgbToOKLAB(this.toRGB());
+  }
+
+  /**
+   * Convert to LAB color space
+   * Requires advanced color spaces module
+   */
+  toLAB(): import('../types').LAB {
+    const { rgbToLAB } = require('./advancedColorSpaces');
+    return rgbToLAB(this.toRGB());
+  }
+
+  /**
+   * Convert to LCH color space
+   * Requires advanced color spaces module
+   */
+  toLCH(): import('../types').LCH {
+    const { rgbToLCH } = require('./advancedColorSpaces');
+    return rgbToLCH(this.toRGB());
+  }
+
+  /**
+   * Convert to XYZ color space
+   * Requires advanced color spaces module
+   */
+  toXYZ(): import('../types').XYZ {
+    const { rgbToXYZ } = require('./advancedColorSpaces');
+    return rgbToXYZ(this.toRGB());
   }
 
   /**
@@ -358,21 +417,21 @@ export class Color {
     const other = color instanceof Color ? color : new Color(color);
     const ratio = amount / 100;
     const invRatio = 1 - ratio;
-    
+
     // Direct bit manipulation
     const r1 = (this._value >> 16) & 0xFF;
     const g1 = (this._value >> 8) & 0xFF;
     const b1 = this._value & 0xFF;
-    
+
     const r2 = (other._value >> 16) & 0xFF;
     const g2 = (other._value >> 8) & 0xFF;
     const b2 = other._value & 0xFF;
-    
+
     const r = (r1 * invRatio + r2 * ratio) | 0;
     const g = (g1 * invRatio + g2 * ratio) | 0;
     const b = (b1 * invRatio + b2 * ratio) | 0;
     const alpha = this._alpha * invRatio + other._alpha * ratio;
-    
+
     return Color.fromRGB(r, g, b, alpha);
   }
 
@@ -513,7 +572,7 @@ export class Color {
     color._hex = undefined;
     return color;
   }
-  
+
   /**
    * Return color to pool for reuse
    */
@@ -533,7 +592,7 @@ export class Color {
   }
 
   /**
-   * Get distance to another color - Optimized
+   * Get distance to another color - Optimized (Euclidean distance in RGB)
    */
   distance(color: ColorInput): number {
     const other = color instanceof Color ? color : new Color(color);
@@ -545,11 +604,32 @@ export class Color {
   }
 
   /**
+   * Get perceptual color difference using Delta E 2000
+   * Returns a value where 0 = identical, <1 = imperceptible, 1-2 = barely perceptible
+   * Requires advanced color spaces module
+   */
+  deltaE2000(color: ColorInput): number {
+    const { deltaE2000 } = require('./advancedColorSpaces');
+    const other = color instanceof Color ? color : new Color(color);
+    return deltaE2000(this.toRGB(), other.toRGB());
+  }
+
+  /**
+   * Get perceptual color difference using OKLAB (faster than Delta E 2000)
+   * Requires advanced color spaces module
+   */
+  deltaEOKLAB(color: ColorInput): number {
+    const { deltaEOKLAB } = require('./advancedColorSpaces');
+    const other = color instanceof Color ? color : new Color(color);
+    return deltaEOKLAB(this.toRGB(), other.toRGB());
+  }
+
+  /**
    * Check if color is valid - Simple check
    */
   isValid(): boolean {
     return this._value >= 0 && this._value <= 0xFFFFFF &&
-           this._alpha >= 0 && this._alpha <= 1;
+      this._alpha >= 0 && this._alpha <= 1;
   }
 
   /**

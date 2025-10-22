@@ -121,3 +121,25 @@ export {
   insertCssVars,
   TAILWIND_SHADES
 } from './tailwindPalette';
+
+// Advanced color spaces
+export {
+  deltaE2000,
+  deltaEOKLAB,
+  labToLCH,
+  labToRGB,
+  labToXYZ,
+  lchToLAB,
+  lchToRGB,
+  oklabToOKLCH,
+  oklabToRGB,
+  oklchToOKLAB,
+  oklchToRGB,
+  rgbToLAB,
+  rgbToLCH,
+  rgbToOKLAB,
+  rgbToOKLCH,
+  rgbToXYZ,
+  xyzToLAB,
+  xyzToRGB
+} from './advancedColorSpaces';

@@ -11,6 +11,9 @@
 
 ### Core Features
 - **Multiple Color Formats**: RGB, HSL, HSV, HEX, HWB, Named Colors
+- **Advanced Color Spaces**: OKLCH, OKLAB, LAB, LCH, XYZ (NEW ✨)
+- **Perceptual Interpolation**: Smooth, vibrant gradients using OKLCH (NEW ✨)
+- **Delta E 2000**: Accurate perceptual color difference measurement (NEW ✨)
 - **Color Manipulation**: lighten, darken, saturate, desaturate, rotate, mix, blend
 - **Color Analysis**: luminance, contrast, WCAG compliance, color temperature
 - **Smart Palette Generation**: Tailwind-style, Material Design, semantic colors
@@ -55,30 +58,26 @@ pnpm add @ldesign/color
 ## 🚀 Quick Start
 
 ```typescript
-import { Color, ColorAdvanced, ColorAnimation } from '@ldesign/color';
+import { Color, interpolate, gradient } from '@ldesign/color';
 
 // Basic usage
 const color = new Color('#3498db');
 const lighter = color.lighten(20);
 const complementary = color.rotate(180);
 
-// Advanced color spaces
-const advanced = new ColorAdvanced('#e74c3c');
-const lab = advanced.toLAB();
-const deltaE = advanced.deltaE2000(new ColorAdvanced('#c0392b'));
+// Advanced color spaces (NEW!)
+const oklch = color.toOKLCH();  // Perceptually uniform
+const lab = color.toLAB();      // CIE L*a*b*
+const deltaE = color.deltaE2000(new Color('#c0392b')); // Perceptual difference
 
-// Animation
-const animation = new ColorAnimation();
-animation.fromTo(
-  new Color('#2ecc71'),
-  new Color('#9b59b6'),
-  {
-    duration: 1000,
-    easing: 'easeInOutCubic',
-    onUpdate: (color) => {
-      element.style.backgroundColor = color.toHex();
-    }
-  }
+// Smooth color interpolation (NEW!)
+const midColor = interpolate('#FF0080', '#00FF80', 0.5, { space: 'oklch' });
+
+// Beautiful gradients (NEW!)
+const colors = gradient(
+  ['#FF0080', '#FF8000', '#00FF80', '#0080FF'],
+  50,
+  { space: 'oklch', easing: 'ease-in-out' }
 );
 ```
 
@@ -188,10 +187,14 @@ npm run dev
 ## 📊 Performance
 
 - **Small Bundle Size**: Core ~8KB gzipped
+- **Tiny Memory Footprint**: Only 24 bytes per Color instance
 - **Tree-Shakeable**: Import only what you need
 - **Smart Caching**: LRU cache for expensive operations
-- **Optimized Algorithms**: Fast color space conversions
+- **Optimized Algorithms**: Fast color space conversions with bit operations
+- **Object Pooling**: Reduces garbage collection pressure
 - **Zero Dependencies**: No external runtime dependencies
+
+See [PERFORMANCE.md](./docs/PERFORMANCE.md) for detailed optimization guide.
 
 ## 🔧 Browser Support
 
@@ -209,9 +212,9 @@ MIT © LDesign Team
 <div align="center">
   <p>Built with ❤️ by the LDesign Team</p>
   <p>
-    <a href="#">Documentation</a> •
-    <a href="#">Examples</a> •
-    <a href="#">API Reference</a>
+    <a href="./docs/ADVANCED_COLOR_SPACES.md">Advanced Color Spaces</a> •
+    <a href="./docs/PERFORMANCE.md">Performance Guide</a> •
+    <a href="./examples/advanced-features.html">Live Demo</a>
   </p>
 </div>
 

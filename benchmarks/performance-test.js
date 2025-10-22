@@ -55,7 +55,7 @@ class PerformanceMonitor {
    */
   printResults() {
     console.log('\n=== 性能基准测试结果 ===\n');
-    
+
     for (const [name, result] of this.results) {
       console.log(`📊 ${name}`);
       console.log(`   迭代次数: ${result.iterations.toLocaleString()}`);
@@ -116,7 +116,7 @@ async function runBenchmarks() {
 
   monitor.measure('颜色变暗', () => {
     const color = new Color('#FF5733');
-    darken(10);
+    color.darken(10);
   });
 
   monitor.measure('颜色混合', () => {

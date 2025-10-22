@@ -11,7 +11,7 @@
 import { Color } from './core'
 
 // Accessibility tools
-export { 
+export {
   autoAdjustForWCAG,
   ColorAccessibility,
   getAccessibilityReport,
@@ -51,6 +51,36 @@ export { getColorName, getNamedColor, getNamedColorNames, isNamedColor, namedCol
 // Export core functionality
 export * from './core';
 
+// Export advanced color spaces
+export {
+  deltaE2000,
+  deltaEOKLAB,
+  labToLCH,
+  labToRGB,
+  labToXYZ,
+  lchToLAB,
+  lchToRGB,
+  oklabToOKLCH,
+  oklabToRGB,
+  oklchToOKLAB,
+  oklchToRGB,
+  rgbToLAB,
+  rgbToLCH,
+  rgbToOKLAB,
+  rgbToOKLCH,
+  rgbToXYZ,
+  xyzToLAB,
+  xyzToRGB
+} from './core/advancedColorSpaces';
+
+// Export interpolation
+export {
+  ColorInterpolator,
+  gradient,
+  interpolate,
+  mix as interpolateMix
+} from './animation/interpolation';
+
 // Export palette generators
 export * from './core/tailwindPalette';
 // Gradient generator
@@ -66,19 +96,19 @@ export {
 
 export type { GradientStop, LinearGradientOptions, RadialGradientOptions } from './gradient';
 // Locales
-export { 
-  deDE, 
-  enUS, 
-  esES, 
-  frFR, 
-  getLocale, 
-  itIT, 
-  jaJP, 
-  koKR, 
-  locales, 
-  ptBR, 
-  ruRU, 
-  zhCN 
+export {
+  deDE,
+  enUS,
+  esES,
+  frFR,
+  getLocale,
+  itIT,
+  jaJP,
+  koKR,
+  locales,
+  ptBR,
+  ruRU,
+  zhCN
 } from './locales'
 
 export type { ColorLocale, LocaleKey } from './locales'
@@ -143,11 +173,11 @@ export {
 } from './utils/errors';
 
 export type { ErrorCategory, ErrorSeverity, RecoverySuggestion } from './utils/errors';
-export { 
-  average, 
-  clamp, 
-  degreesToRadians, 
-  euclideanDistance, 
+export {
+  average,
+  clamp,
+  degreesToRadians,
+  euclideanDistance,
   lerp,
   mapRange,
   normalize,
@@ -167,7 +197,7 @@ export {
 } from './utils/memoryManager';
 
 export type { MemoryStats } from './utils/memoryManager';
-export { 
+export {
   isColorInput,
   isValidColorFormat,
   parseColorInput,

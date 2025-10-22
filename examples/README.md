@@ -2,6 +2,26 @@
 
 This directory contains examples demonstrating the usage of @ldesign/color library.
 
+## 🆕 New: Advanced Features Demo
+
+**File**: `advanced-features.html`
+
+Interactive demonstration of the latest features added in v1.1.0:
+- **OKLCH vs RGB Interpolation** - Visual comparison of gradient quality
+- **Delta E 2000** - Perceptual color difference measurement
+- **Advanced Color Spaces** - OKLCH, OKLAB, LAB, LCH, XYZ conversions
+- **Multi-Color Gradients** - Smooth transitions through multiple colors
+- **Performance Metrics** - Live benchmarking of new features
+
+To view this example:
+```bash
+# Build the library first (from package root)
+npm run build
+
+# Then open in browser
+open examples/advanced-features.html
+```
+
 ## Running the Examples
 
 1. Install dependencies:

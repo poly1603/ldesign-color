@@ -56,6 +56,16 @@
       "import": "./es/analyzer/*.js",
       "require": "./lib/analyzer/*.cjs"
     },
+    "./animation": {
+      "types": "./es/animation/index.d.ts",
+      "import": "./es/animation/index.js",
+      "require": "./lib/animation/index.cjs"
+    },
+    "./animation/*": {
+      "types": "./es/animation/*.d.ts",
+      "import": "./es/animation/*.js",
+      "require": "./lib/animation/*.cjs"
+    },
     "./brand": {
       "types": "./es/brand/index.d.ts",
       "import": "./es/brand/index.js",
@@ -166,13 +176,11 @@
       "import": "./es/vue/*.js",
       "require": "./lib/vue/*.cjs"
     },
-    "./css": "./dist/index.css",
-    "./dist/index.css": "./dist/index.css",
-    "./es/react/ThemePicker.css": "./es/react/ThemePicker.css",
+    "./es/react/index.css": "./es/react/index.css",
     "./es/vue/index.css": "./es/vue/index.css",
     "./es/vue/ThemePicker.vue.css": "./es/vue/ThemePicker.vue.css",
     "./es/vue/VueThemeModeSwitcher.vue.css": "./es/vue/VueThemeModeSwitcher.vue.css",
-    "./lib/react/ThemePicker.css": "./lib/react/ThemePicker.css",
+    "./lib/react/index.css": "./lib/react/index.css",
     "./lib/vue/index.css": "./lib/vue/index.css",
     "./lib/vue/ThemePicker.vue.css": "./lib/vue/ThemePicker.vue.css",
     "./lib/vue/VueThemeModeSwitcher.vue.css": "./lib/vue/VueThemeModeSwitcher.vue.css"
@@ -180,7 +188,6 @@
   "main": "./lib/index.cjs",
   "module": "./es/index.js",
   "types": "./es/index.d.ts",
-  "style": "./dist/index.css",
   "unpkg": "./dist/index.min.js",
   "jsdelivr": "./dist/index.min.js",
   "files": [
@@ -219,6 +226,7 @@
     "eslint": "^9.18.0",
     "@antfu/eslint-config": "^6.0.0"
   },
+  "style": "./dist/index.css",
   "peerDependenciesMeta": {
     "react": {
       "optional": true
