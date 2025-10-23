@@ -1,6 +1,12 @@
 <script setup lang="ts">
-import { Check, ChevronDown, Monitor, Moon, Sun } from 'lucide-vue-next'
-import { computed, inject, onMounted, onUnmounted, ref, watch } from 'vue'
+/**
+ * VueThemeModeSwitcher - 基于无头逻辑层重构
+ * 使用 @ldesign/shared 的协议和逻辑层
+ */
+import { computed, inject, onMounted, ref, watch } from 'vue'
+import type { SelectorConfig, SelectorOption } from '@ldesign/shared/protocols'
+import { useHeadlessSelector, useResponsivePopup } from '@ldesign/shared/composables'
+import { renderIcon } from '@ldesign/shared/icons'
 import { getLocale } from '../locales'
 
 export type ThemeMode = 'light' | 'dark' | 'system'
@@ -16,16 +22,11 @@ const emit = defineEmits<{
 }>()
 
 const STORAGE_KEY = props.storageKey || 'ld-theme-mode'
-const isOpen = ref(false)
 const currentMode = ref<ThemeMode>('system')
 const systemPreference = ref<'light' | 'dark'>('light')
 
-// 响应式国际化支持
-// 使用标准的 'locale' key
+// 国际化
 const appLocale = inject<any>('locale', null)
-
-// 调试日志已禁用以保持控制台干净
-
 const currentLocale = computed(() => {
   if (appLocale && appLocale.value) {
     return appLocale.value
@@ -35,15 +36,35 @@ const currentLocale = computed(() => {
 
 const locale = computed(() => getLocale(currentLocale.value))
 
-// 监听语言变化
-watch(currentLocale, (_newLocale) => {
-  // 响应式更新，无需日志
-})
+// 选择器配置（遵循协议）
+const config: SelectorConfig = {
+  icon: 'Monitor',
+  popupMode: 'auto',
+  listStyle: 'simple',
+  searchable: false,
+  breakpoint: 768
+}
 
-const modes = computed(() => [
-  { value: 'light' as const, label: locale.value.themeMode.light, icon: Sun },
-  { value: 'dark' as const, label: locale.value.themeMode.dark, icon: Moon },
-  { value: 'system' as const, label: locale.value.themeMode.system, icon: Monitor }
+// 模式选项
+const modes = computed<SelectorOption[]>(() => [
+  {
+    value: 'light',
+    label: locale.value.themeMode.light,
+    icon: '☀️',
+    metadata: { icon: 'Sun' }
+  },
+  {
+    value: 'dark',
+    label: locale.value.themeMode.dark,
+    icon: '🌙',
+    metadata: { icon: 'Moon' }
+  },
+  {
+    value: 'system',
+    label: locale.value.themeMode.system,
+    icon: '💻',
+    metadata: { icon: 'Monitor' }
+  }
 ])
 
 const currentModeLabel = computed(() => {
@@ -51,9 +72,9 @@ const currentModeLabel = computed(() => {
   return mode?.label || '主题'
 })
 
-const currentIcon = computed(() => {
+const currentModeIcon = computed(() => {
   const mode = modes.value.find(m => m.value === currentMode.value)
-  return mode?.icon || Sun
+  return mode?.icon || '💻'
 })
 
 const effectiveTheme = computed(() => {
@@ -64,49 +85,55 @@ const effectiveTheme = computed(() => {
 })
 
 // 监听系统主题变化
-const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+const mediaQuery = typeof window !== 'undefined' ? window.matchMedia('(prefers-color-scheme: dark)') : null
 
 const updateSystemPreference = () => {
-  systemPreference.value = mediaQuery.matches ? 'dark' : 'light'
+  if (mediaQuery) {
+    systemPreference.value = mediaQuery.matches ? 'dark' : 'light'
+  }
 }
 
 const applyTheme = (theme: 'light' | 'dark') => {
+  if (typeof document === 'undefined') return
+
   const root = document.documentElement
-  
-  // 使用 theme-mode 属性，与 theme.css 保持一致
+
   if (theme === 'dark') {
     root.setAttribute('theme-mode', 'dark')
   } else {
     root.removeAttribute('theme-mode')
   }
-  
-  // 同时设置 data-theme-mode 以保持兼容性
+
   root.setAttribute('data-theme-mode', theme)
-  
-  // 为了兼容其他主题系统，也设置常见的属性
   root.classList.remove('light', 'dark')
   root.classList.add(theme)
 }
 
-const toggleDropdown = () => {
-  isOpen.value = !isOpen.value
+const handleModeChange = (value: ThemeMode) => {
+  currentMode.value = value
+  localStorage.setItem(STORAGE_KEY, value)
+
+  emit('update:mode', value)
+  emit('change', value)
 }
 
-const changeMode = (mode: ThemeMode) => {
-  currentMode.value = mode
-  localStorage.setItem(STORAGE_KEY, mode)
-  isOpen.value = false
-  
-  emit('update:mode', mode)
-  emit('change', mode)
-}
+// 使用无头选择器
+const { state, actions, triggerRef, panelRef, activeIndexRef } = useHeadlessSelector({
+  options: modes,
+  modelValue: currentMode,
+  searchable: config.searchable,
+  onSelect: (value: ThemeMode) => handleModeChange(value)
+})
 
-const handleClickOutside = (event: MouseEvent) => {
-  const target = event.target as HTMLElement
-  if (!target.closest('.theme-mode-switcher')) {
-    isOpen.value = false
-  }
-}
+// 使用响应式弹出
+const { currentMode: popupMode, popupStyle } = useResponsivePopup({
+  mode: config.popupMode,
+  triggerRef,
+  panelRef,
+  placement: 'bottom-start',
+  breakpoint: config.breakpoint,
+  isOpen: computed(() => state.value.isOpen)
+})
 
 // 监听主题变化
 watch(effectiveTheme, (newTheme) => {
@@ -123,8 +150,10 @@ watch(systemPreference, () => {
 onMounted(() => {
   // 初始化系统主题偏好
   updateSystemPreference()
-  mediaQuery.addEventListener('change', updateSystemPreference)
-  
+  if (mediaQuery) {
+    mediaQuery.addEventListener('change', updateSystemPreference)
+  }
+
   // 从 localStorage 读取保存的主题模式
   const savedMode = localStorage.getItem(STORAGE_KEY) as ThemeMode | null
   if (savedMode && modes.value.some(m => m.value === savedMode)) {
@@ -132,73 +161,81 @@ onMounted(() => {
   } else if (props.defaultMode) {
     currentMode.value = props.defaultMode
   }
-  
+
   // 应用初始主题
   applyTheme(effectiveTheme.value)
-  
-  // 添加点击外部关闭下拉菜单的事件监听
-  document.addEventListener('click', handleClickOutside)
-})
-
-onUnmounted(() => {
-  mediaQuery.removeEventListener('change', updateSystemPreference)
-  document.removeEventListener('click', handleClickOutside)
 })
 </script>
 
 <template>
   <div class="theme-mode-switcher">
-    <button class="theme-mode-button" :title="currentModeLabel" @click="toggleDropdown">
-      <component :is="currentIcon" class="theme-icon" />
+    <button ref="triggerRef" class="theme-mode-button" :title="currentModeLabel" :aria-expanded="state.isOpen"
+      @click="actions.toggle">
+      <span class="theme-icon">{{ currentModeIcon }}</span>
       <span class="theme-label">{{ currentModeLabel }}</span>
-      <ChevronDown class="arrow" :class="{ open: isOpen }" />
+      <svg class="arrow" :class="{ open: state.isOpen }" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="m6 9 6 6 6-6" />
+      </svg>
     </button>
-    <transition name="dropdown">
-      <div v-if="isOpen" class="theme-dropdown" @click.stop>
-        <button
-          v-for="mode in modes"
-          :key="mode.value"
-          class="theme-option"
-          :class="{ active: currentMode === mode.value }"
-          @click="changeMode(mode.value)"
-        >
-          <component :is="mode.icon" class="option-icon" />
-          <span class="option-label">{{ mode.label }}</span>
-          <Check v-if="currentMode === mode.value" class="check-icon" />
-        </button>
-      </div>
-    </transition>
+
+    <Teleport to="body">
+      <transition name="selector-panel">
+        <div v-if="state.isOpen" ref="panelRef" class="theme-dropdown"
+          :class="{ 'theme-dropdown-dialog': popupMode === 'dialog' }" :style="popupStyle" @click.stop>
+          <button v-for="(option, index) in state.filteredOptions" :key="option.value" class="theme-option" :class="{
+            'active': state.selectedValue === option.value,
+            'hover': state.activeIndex === index
+          }" @click="actions.select(option.value)" @mouseenter="activeIndexRef = index">
+            <span class="option-icon">{{ option.icon }}</span>
+            <span class="option-label">{{ option.label }}</span>
+            <svg v-if="state.selectedValue === option.value" class="check-icon" xmlns="http://www.w3.org/2000/svg"
+              width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+          </button>
+        </div>
+      </transition>
+    </Teleport>
   </div>
 </template>
 
 <style scoped>
 .theme-mode-switcher {
   position: relative;
+  display: inline-block;
 }
 
 .theme-mode-button {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background: var(--ld-bg-color-component, var(--color-background-secondary));
-  border: 1px solid var(--ld-component-border, var(--color-border));
-  border-radius: 8px;
-  color: var(--ld-text-color-primary, var(--color-text-primary));
-  font-size: 14px;
-  font-weight: 500;
+  gap: var(--size-spacing-md);
+  padding: var(--size-spacing-md) var(--size-spacing-lg);
+  background: var(--color-bg-container);
+  border: var(--size-border-width-thin) solid var(--color-border-light);
+  border-radius: var(--size-radius-lg);
+  color: var(--color-text-primary);
+  font-size: var(--size-font-base);
+  font-weight: var(--size-font-weight-medium);
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all var(--size-duration-fast) var(--size-ease-out);
 }
 
 .theme-mode-button:hover {
-  background: var(--ld-bg-color-component-hover, var(--color-primary-100));
-  border-color: var(--ld-brand-color-light, var(--color-primary-200));
+  background: var(--color-bg-component-hover);
+  border-color: var(--color-border);
+}
+
+.theme-mode-button[aria-expanded="true"] {
+  border-color: var(--color-primary-default);
+  box-shadow: 0 0 0 2px var(--color-primary-lighter);
 }
 
 .theme-icon {
-  width: 18px;
-  height: 18px;
+  font-size: 18px;
+  line-height: 1;
 }
 
 .theme-label {
@@ -206,57 +243,61 @@ onUnmounted(() => {
 }
 
 .arrow {
-  width: 16px;
-  height: 16px;
-  transition: transform 0.3s;
+  transition: transform 0.2s ease;
+  color: #666;
 }
 
 .arrow.open {
   transform: rotate(180deg);
 }
 
+/* 弹窗面板 - 使用 CSS 变量统一样式 */
 .theme-dropdown {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 8px;
-  background: var(--ld-bg-color-container, var(--color-background));
-  border: 1px solid var(--ld-component-border, var(--color-border));
-  border-radius: 8px;
-  box-shadow: var(--ld-shadow-2, 0 4px 12px rgba(0, 0, 0, 0.1));
+  min-width: 180px;
+  background: var(--color-bg-container);
+  border: var(--size-border-width-thin) solid var(--color-border-lighter);
+  border-radius: var(--size-radius-xl);
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
-  z-index: 1000;
-  min-width: 160px;
+  padding: var(--size-spacing-xs);
 }
 
+.theme-dropdown-dialog {
+  max-width: 90vw;
+  max-height: 80vh;
+}
+
+/* 选项样式 - 使用 CSS 变量统一样式 */
 .theme-option {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--size-spacing-lg);
   width: 100%;
-  padding: 10px 16px;
+  padding: var(--size-spacing-lg) var(--size-spacing-xl);
   background: none;
   border: none;
-  color: var(--ld-text-color-primary, var(--color-text-primary));
-  font-size: 14px;
+  color: var(--color-text-primary);
+  font-size: var(--size-font-base);
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background var(--size-duration-fast) var(--size-ease-out);
   text-align: left;
+  border-radius: var(--size-radius-md);
 }
 
-.theme-option:hover {
-  background: var(--ld-bg-color-component, var(--color-background-secondary));
+.theme-option:hover,
+.theme-option.hover {
+  background: var(--color-bg-component-hover);
 }
 
 .theme-option.active {
-  background: var(--ld-brand-color-light, var(--color-primary-100));
-  color: var(--ld-brand-color, var(--color-primary-default));
-  font-weight: 600;
+  background: color-mix(in srgb, var(--color-primary-default) 8%, transparent);
+  color: var(--color-primary-default);
+  font-weight: var(--size-font-weight-semibold);
 }
 
 .option-icon {
-  width: 18px;
-  height: 18px;
+  font-size: 18px;
+  line-height: 1;
 }
 
 .option-label {
@@ -264,44 +305,28 @@ onUnmounted(() => {
 }
 
 .check-icon {
-  width: 16px;
-  height: 16px;
-  color: var(--ld-brand-color, var(--color-primary-default));
+  color: #667eea;
 }
 
-/* Dropdown animation */
-.dropdown-enter-active,
-.dropdown-leave-active {
-  transition: opacity 0.3s, transform 0.3s;
+/* Dropdown animation - 统一标准 */
+.selector-panel-enter-active {
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.dropdown-enter-from,
-.dropdown-leave-to {
+.selector-panel-leave-active {
+  transition: all 0.2s cubic-bezier(0.4, 0, 1, 1);
+}
+
+.selector-panel-enter-from {
   opacity: 0;
-  transform: translateY(-10px);
+  transform: translateY(-8px) scale(0.96);
 }
 
-/* Dark mode specific styles */
-:root[theme-mode="dark"] .theme-mode-button {
-  background: var(--ld-bg-color-component);
-  border-color: var(--ld-component-border);
+.selector-panel-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
 }
 
-:root[theme-mode="dark"] .theme-mode-button:hover {
-  background: var(--ld-bg-color-component-hover);
-  border-color: var(--ld-brand-color-light);
-}
-
-:root[theme-mode="dark"] .theme-dropdown {
-  background: var(--ld-bg-color-container);
-  border-color: var(--ld-component-border);
-}
-
-:root[theme-mode="dark"] .theme-option:hover {
-  background: var(--ld-bg-color-component);
-}
-
-:root[theme-mode="dark"] .theme-option.active {
-  background: var(--ld-brand-color-light);
-}
+/* 深色模式会自动通过 CSS 变量切换,无需额外定义 */
+/* CSS 变量在 :root[data-theme-mode='dark'] 下会自动更新 */
 </style>
