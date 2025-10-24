@@ -532,7 +532,6 @@ watch(() => props.modelValue, (newValue) => {
 
 .ld-theme-picker__label {
   display: block;
-  margin-bottom: 12px;
   font-size: 13px;
   color: #595959;
   font-weight: 500;
