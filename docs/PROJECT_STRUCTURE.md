@@ -82,47 +82,61 @@ The `@ldesign/color` library is organized into a modular, feature-based structur
 ## Module Organization
 
 ### Core Module (`src/core/`)
+
 The heart of the library containing the basic `Color` class and fundamental operations:
+
 - **Color.ts**: Main color class with basic manipulation methods
 - **conversions.ts**: Functions for converting between color formats (RGB, HSL, HSV, HEX)
 - **manipulations.ts**: Color manipulation functions (mix, blend, tint, shade)
 - **analysis.ts**: Color analysis functions (luminance, contrast, WCAG compliance)
 
 ### Advanced Module (`src/advanced/`) - Planned
+
 Professional color space support:
+
 - LAB, LCH, XYZ color spaces
 - OKLAB, OKLCH perceptually uniform spaces
 - Delta E color difference calculations
 - Color temperature analysis
 
 ### Animation Module (`src/animation/`) - Planned
+
 Smooth color transitions and animations:
+
 - Frame-based interpolation
 - Easing functions
 - Keyframe animations
 - Spring physics
 
 ### Plugin System (`src/plugins/`) - Planned
+
 Extensible architecture for custom functionality:
+
 - Plugin registration and management
 - Built-in plugins (CMYK, effects, etc.)
 - Hook system for lifecycle events
 
 ### Visualization Module (`src/visualization/`) - Planned
+
 Tools for visualizing colors:
+
 - SVG color wheel generation
 - Gradient builders
 - Palette visualizations
 - 3D color space representations
 
 ### Utilities (`src/utils/`)
+
 Shared utility functions:
+
 - **cache.ts**: LRU cache for expensive operations
 - **math.ts**: Mathematical utility functions
 - **validators.ts**: Input validation and parsing
 
 ### Constants (`src/constants/`)
+
 Static data and configurations:
+
 - **namedColors.ts**: CSS named color definitions
 
 ## Build Outputs
@@ -136,6 +150,7 @@ The library is built into multiple formats for different use cases:
 ## Type Definitions
 
 All TypeScript type definitions are centralized in `src/types.ts`, providing:
+
 - Color format interfaces (RGB, HSL, HSV, etc.)
 - Configuration options
 - Plugin interfaces
@@ -144,6 +159,7 @@ All TypeScript type definitions are centralized in `src/types.ts`, providing:
 ## Testing Strategy
 
 Tests are organized to mirror the source structure:
+
 - Unit tests for each module
 - Integration tests for cross-module functionality
 - Performance benchmarks

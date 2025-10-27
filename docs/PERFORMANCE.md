@@ -9,8 +9,9 @@
 ### Color Instance Size
 
 Each `Color` instance uses only **24 bytes** of memory:
+
 - `_value` (32-bit RGB): 8 bytes
-- `_alpha`: 8 bytes  
+- `_alpha`: 8 bytes
 - `_hex` (cached): 8 bytes
 
 Compare this to storing RGB as object properties (~80 bytes with V8 overhead).
@@ -21,14 +22,14 @@ The library uses object pooling to reduce garbage collection pressure:
 
 ```typescript
 // ✅ Good: Reuses objects from pool
-const color = Color.fromRGB(255, 100, 50);
+const color = Color.fromRGB(255, 100, 50)
 // ... use color ...
-color.release(); // Return to pool
+color.release() // Return to pool
 
 // ✅ Good: Automatic pooling
-const colors = [];
+const colors = []
 for (let i = 0; i < 1000; i++) {
-  colors.push(Color.random());
+  colors.push(Color.random())
 }
 // Pool automatically manages memory
 ```
@@ -36,11 +37,14 @@ for (let i = 0; i < 1000; i++) {
 ### Memory Management
 
 ```typescript
-import { memoryManager, getMemoryStats, cleanupMemory } from '@ldesign/color';
+import { cleanupMemory, getMemoryStats, memoryManager } from '@ldesign/color'
+
+// Configure memory limits
+import { setAutoCleanup, setMemoryLimit } from '@ldesign/color'
 
 // Check memory usage
-const stats = getMemoryStats();
-console.log(stats);
+const stats = getMemoryStats()
+console.log(stats)
 // {
 //   colorPoolSize: 10,
 //   colorCacheSize: 45,
@@ -50,12 +54,9 @@ console.log(stats);
 // }
 
 // Manual cleanup (usually not needed)
-cleanupMemory();
-
-// Configure memory limits
-import { setMemoryLimit, setAutoCleanup } from '@ldesign/color';
-setMemoryLimit(100); // MB
-setAutoCleanup(true); // Enable automatic cleanup
+cleanupMemory()
+setMemoryLimit(100) // MB
+setAutoCleanup(true) // Enable automatic cleanup
 ```
 
 ## Performance Optimization Techniques
@@ -67,14 +68,14 @@ When you need RGB values in tight loops, use `toRGBDirect()` to avoid object all
 ```typescript
 // ❌ Slow: Allocates object on each call
 for (let i = 0; i < 100000; i++) {
-  const rgb = color.toRGB();
-  processPixel(rgb.r, rgb.g, rgb.b);
+  const rgb = color.toRGB()
+  processPixel(rgb.r, rgb.g, rgb.b)
 }
 
 // ✅ Fast: Returns tuple, no allocation
 for (let i = 0; i < 100000; i++) {
-  const [r, g, b, a] = color.toRGBDirect();
-  processPixel(r, g, b);
+  const [r, g, b, a] = color.toRGBDirect()
+  processPixel(r, g, b)
 }
 ```
 
@@ -85,17 +86,17 @@ for (let i = 0; i < 100000; i++) {
 Use batch processing for multiple colors:
 
 ```typescript
-import { batchProcess, batchConvert, batchManipulate } from '@ldesign/color';
+import { batchConvert, batchManipulate, batchProcess } from '@ldesign/color'
 
 // ❌ Slow: Individual operations
-const results = colors.map(c => new Color(c).lighten(20).toHex());
+const results = colors.map(c => new Color(c).lighten(20).toHex())
 
 // ✅ Fast: Batch processing
 const results = await batchProcess(
   colors,
-  (color) => color.lighten(20).toHex(),
+  color => color.lighten(20).toHex(),
   { parallel: true, chunkSize: 100 }
-);
+)
 ```
 
 **Speedup**: Up to 5x faster for large datasets
@@ -105,26 +106,26 @@ const results = await batchProcess(
 ```typescript
 // ❌ Slow: Recalculates every time
 function processColor(color) {
-  const hsl = color.toHSL(); // Computed each time
-  const oklch = color.toOKLCH(); // Computed each time
-  return someCalculation(hsl, oklch);
+  const hsl = color.toHSL() // Computed each time
+  const oklch = color.toOKLCH() // Computed each time
+  return someCalculation(hsl, oklch)
 }
 
 // ✅ Fast: Cache conversions
-const conversionCache = new Map();
+const conversionCache = new Map()
 
 function processColor(color) {
-  const key = color.toHex();
-  
+  const key = color.toHex()
+
   if (!conversionCache.has(key)) {
     conversionCache.set(key, {
       hsl: color.toHSL(),
       oklch: color.toOKLCH()
-    });
+    })
   }
-  
-  const { hsl, oklch } = conversionCache.get(key);
-  return someCalculation(hsl, oklch);
+
+  const { hsl, oklch } = conversionCache.get(key)
+  return someCalculation(hsl, oklch)
 }
 ```
 
@@ -132,15 +133,15 @@ function processColor(color) {
 
 Different color spaces have different performance characteristics:
 
-| Operation | Time (μs) | Use Case |
-|-----------|-----------|----------|
-| RGB operations | 0.001 | Direct pixel manipulation |
-| HSL conversion | 0.008 | Basic color adjustments |
-| HSV conversion | 0.007 | Brightness/saturation |
-| OKLCH conversion | 0.015 | Gradients, interpolation |
-| LAB conversion | 0.018 | Print workflows |
-| Delta E 2000 | 0.045 | Precise color matching |
-| OKLAB distance | 0.013 | Fast perceptual comparison |
+| Operation        | Time (μs) | Use Case                   |
+| ---------------- | --------- | -------------------------- |
+| RGB operations   | 0.001     | Direct pixel manipulation  |
+| HSL conversion   | 0.008     | Basic color adjustments    |
+| HSV conversion   | 0.007     | Brightness/saturation      |
+| OKLCH conversion | 0.015     | Gradients, interpolation   |
+| LAB conversion   | 0.018     | Print workflows            |
+| Delta E 2000     | 0.045     | Precise color matching     |
+| OKLAB distance   | 0.013     | Fast perceptual comparison |
 
 **Rule of thumb**: Use the simplest space that works for your use case.
 
@@ -150,14 +151,14 @@ Different color spaces have different performance characteristics:
 // ❌ Slow: Creates new interpolator each time
 function getGradient(start, end) {
   return Array.from({ length: 100 }, (_, i) => {
-    return interpolate(start, end, i / 99, { space: 'oklch' });
-  });
+    return interpolate(start, end, i / 99, { space: 'oklch' })
+  })
 }
 
 // ✅ Fast: Reuse interpolator
 function getGradient(start, end) {
-  const interpolator = new ColorInterpolator(start, end, { space: 'oklch' });
-  return interpolator.steps(100);
+  const interpolator = new ColorInterpolator(start, end, { space: 'oklch' })
+  return interpolator.steps(100)
 }
 ```
 
@@ -168,17 +169,17 @@ function getGradient(start, end) {
 For applications that don't need all features:
 
 ```typescript
-import { lazyLoad, preloadModules } from '@ldesign/color';
+import { lazyLoad, preloadModules } from '@ldesign/color'
 
 // Lazy load advanced features only when needed
 async function useAdvancedFeatures() {
-  const { ColorAnalyzer } = await lazyLoad('analyzer');
+  const { ColorAnalyzer } = await lazyLoad('analyzer')
   // Use analyzer...
 }
 
 // Preload critical modules during idle time
 if ('requestIdleCallback' in window) {
-  requestIdleCallback(() => preloadModules());
+  requestIdleCallback(() => preloadModules())
 }
 ```
 
@@ -187,9 +188,9 @@ if ('requestIdleCallback' in window) {
 For CPU-intensive color operations:
 
 ```typescript
-import { BatchColorProcessor } from '@ldesign/color/performance';
+import { BatchColorProcessor } from '@ldesign/color/performance'
 
-const processor = new BatchColorProcessor();
+const processor = new BatchColorProcessor()
 
 // Process 10,000 colors in Web Worker
 const results = await processor.batchManipulate(
@@ -197,7 +198,7 @@ const results = await processor.batchManipulate(
   'lighten',
   20,
   { useWorker: true }
-);
+)
 ```
 
 ## Benchmarks
@@ -288,25 +289,25 @@ Generate 1,000 color gradient:
 Use the built-in performance monitor:
 
 ```typescript
-import { performanceMonitor } from '@ldesign/color/utils/performanceMonitor';
+import { performanceMonitor } from '@ldesign/color/utils/performanceMonitor'
 
 // Enable monitoring (disabled by default)
-performanceMonitor.enable();
+performanceMonitor.enable()
 
 // Your code
-performanceMonitor.start('myOperation');
+performanceMonitor.start('myOperation')
 for (let i = 0; i < 1000; i++) {
-  const color = new Color('#FF0000');
-  color.lighten(10);
+  const color = new Color('#FF0000')
+  color.lighten(10)
 }
-performanceMonitor.end('myOperation');
+performanceMonitor.end('myOperation')
 
 // View results
-console.log(performanceMonitor.getStats('myOperation'));
+console.log(performanceMonitor.getStats('myOperation'))
 // { count: 1, avgDuration: 15.2, lastDuration: 15.2 }
 
 // Full report
-performanceMonitor.report();
+performanceMonitor.report()
 ```
 
 ## Real-World Example: Image Color Extraction
@@ -314,35 +315,35 @@ performanceMonitor.report();
 Here's an optimized example of extracting colors from an image:
 
 ```typescript
-import { Color, batchProcess } from '@ldesign/color';
+import { batchProcess, Color } from '@ldesign/color'
 
 async function extractColors(imageData) {
-  const { data, width, height } = imageData;
-  const pixels = [];
-  
+  const { data, width, height } = imageData
+  const pixels = []
+
   // Sample every 10th pixel to reduce work
   for (let i = 0; i < data.length; i += 40) {
-    const [r, g, b] = [data[i], data[i + 1], data[i + 2]];
-    pixels.push({ r, g, b });
+    const [r, g, b] = [data[i], data[i + 1], data[i + 2]]
+    pixels.push({ r, g, b })
   }
-  
+
   // Batch process to find dominant colors
   const results = await batchProcess(
     pixels,
     (color) => {
-      const oklch = color.toOKLCH();
+      const oklch = color.toOKLCH()
       return {
         color: color.toHex(),
         lightness: oklch.l,
         chroma: oklch.c,
         hue: oklch.h
-      };
+      }
     },
     { parallel: true, chunkSize: 500 }
-  );
-  
+  )
+
   // K-means clustering (simplified)
-  return clusterColors(results, 5);
+  return clusterColors(results, 5)
 }
 ```
 
@@ -380,5 +381,3 @@ We're continuously working on performance improvements:
 - GPU acceleration for image operations
 
 Stay tuned for updates!
-
-

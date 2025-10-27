@@ -1,317 +1,305 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ldesign/color - Advanced Features Demo</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>@ldesign/color - Advanced Features Demo</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        padding: 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      padding: 40px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-    }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 16px;
-      padding: 40px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    }
+      h1 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 2.5em;
+      }
 
-    h1 {
-      color: #333;
-      margin-bottom: 10px;
-      font-size: 2.5em;
-    }
+      .subtitle {
+        color: #666;
+        margin-bottom: 40px;
+        font-size: 1.1em;
+      }
 
-    .subtitle {
-      color: #666;
-      margin-bottom: 40px;
-      font-size: 1.1em;
-    }
+      .section {
+        margin-bottom: 50px;
+      }
 
-    .section {
-      margin-bottom: 50px;
-    }
+      h2 {
+        color: #444;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 3px solid #667eea;
+        font-size: 1.8em;
+      }
 
-    h2 {
-      color: #444;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 3px solid #667eea;
-      font-size: 1.8em;
-    }
+      .demo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+        gap: 10px;
+        margin: 20px 0;
+      }
 
-    .demo-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-      gap: 10px;
-      margin: 20px 0;
-    }
+      .color-box {
+        aspect-ratio: 1;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        transition: transform 0.2s;
+        cursor: pointer;
+      }
 
-    .color-box {
-      aspect-ratio: 1;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-      transition: transform 0.2s;
-      cursor: pointer;
-    }
+      .color-box:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
 
-    .color-box:hover {
-      transform: scale(1.1);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-    }
+      .info-box {
+        background: #f8f9fa;
+        border-left: 4px solid #667eea;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+      }
 
-    .info-box {
-      background: #f8f9fa;
-      border-left: 4px solid #667eea;
-      padding: 20px;
-      border-radius: 8px;
-      margin: 20px 0;
-    }
+      .info-box h3 {
+        color: #667eea;
+        margin-bottom: 10px;
+      }
 
-    .info-box h3 {
-      color: #667eea;
-      margin-bottom: 10px;
-    }
+      .info-box code {
+        background: #e9ecef;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: 'Courier New', monospace;
+        color: #d63384;
+      }
 
-    .info-box code {
-      background: #e9ecef;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: 'Courier New', monospace;
-      color: #d63384;
-    }
+      .comparison {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin: 20px 0;
+      }
 
-    .comparison {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin: 20px 0;
-    }
+      .comparison-item {
+        text-align: center;
+      }
 
-    .comparison-item {
-      text-align: center;
-    }
+      .comparison-item h4 {
+        margin: 10px 0;
+        color: #555;
+      }
 
-    .comparison-item h4 {
-      margin: 10px 0;
-      color: #555;
-    }
+      .large-color-box {
+        height: 100px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
 
-    .large-color-box {
-      height: 100px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: bold;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin: 20px 0;
+      }
 
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin: 20px 0;
-    }
+      .stat-card {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
 
-    .stat-card {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
+      .stat-card .label {
+        font-size: 0.9em;
+        opacity: 0.9;
+        margin-bottom: 5px;
+      }
 
-    .stat-card .label {
-      font-size: 0.9em;
-      opacity: 0.9;
-      margin-bottom: 5px;
-    }
+      .stat-card .value {
+        font-size: 1.8em;
+        font-weight: bold;
+      }
 
-    .stat-card .value {
-      font-size: 1.8em;
-      font-weight: bold;
-    }
+      .button {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 1em;
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      }
 
-    .button {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-size: 1em;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-    }
+      .button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+      }
 
-    .button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
-    }
+      .button:active {
+        transform: translateY(0);
+      }
+    </style>
+  </head>
 
-    .button:active {
-      transform: translateY(0);
-    }
-  </style>
-</head>
+  <body>
+    <div class="container">
+      <h1>🎨 @ldesign/color Advanced Features</h1>
+      <p class="subtitle">Demonstrating OKLCH, OKLAB, Delta E 2000, and Color Interpolation</p>
 
-<body>
-  <div class="container">
-    <h1>🎨 @ldesign/color Advanced Features</h1>
-    <p class="subtitle">Demonstrating OKLCH, OKLAB, Delta E 2000, and Color Interpolation</p>
-
-    <!-- Section 1: Color Interpolation -->
-    <div class="section">
-      <h2>1. Perceptually Uniform Interpolation (OKLCH)</h2>
-      <div class="info-box">
-        <h3>What is OKLCH?</h3>
-        <p>OKLCH is a perceptually uniform color space that produces smooth, natural-looking gradients.
-          Unlike RGB interpolation, OKLCH avoids muddy intermediate colors.</p>
-        <p><code>oklch(lightness chroma hue)</code></p>
-      </div>
-
-      <div class="comparison">
-        <div class="comparison-item">
-          <h4>RGB Interpolation (Old)</h4>
-          <div class="demo-grid" id="rgb-gradient"></div>
-          <p style="color: #999; font-size: 0.9em; margin-top: 10px;">
-            Notice the muddy brown in the middle
+      <!-- Section 1: Color Interpolation -->
+      <div class="section">
+        <h2>1. Perceptually Uniform Interpolation (OKLCH)</h2>
+        <div class="info-box">
+          <h3>What is OKLCH?</h3>
+          <p>
+            OKLCH is a perceptually uniform color space that produces smooth, natural-looking gradients. Unlike RGB
+            interpolation, OKLCH avoids muddy intermediate colors.
           </p>
+          <p><code>oklch(lightness chroma hue)</code></p>
         </div>
-        <div class="comparison-item">
-          <h4>OKLCH Interpolation (New) ✨</h4>
-          <div class="demo-grid" id="oklch-gradient"></div>
-          <p style="color: #667eea; font-size: 0.9em; margin-top: 10px;">
-            Smooth, vibrant colors throughout!
-          </p>
-        </div>
-      </div>
-    </div>
 
-    <!-- Section 2: Delta E 2000 -->
-    <div class="section">
-      <h2>2. Delta E 2000 - Perceptual Color Difference</h2>
-      <div class="info-box">
-        <h3>What is Delta E?</h3>
-        <p>Delta E 2000 measures how different two colors appear to the human eye.</p>
-        <ul style="margin-top: 10px; margin-left: 20px;">
-          <li><strong>0</strong> = Identical colors</li>
-          <li><strong>&lt; 1</strong> = Imperceptible difference</li>
-          <li><strong>1-2</strong> = Barely perceptible</li>
-          <li><strong>2-10</strong> = Noticeable difference</li>
-          <li><strong>&gt; 10</strong> = Very different</li>
-        </ul>
-      </div>
-
-      <div id="delta-e-demo"></div>
-      <button class="button" onclick="generateNewColors()" style="margin-top: 20px;">
-        Generate New Color Pair
-      </button>
-    </div>
-
-    <!-- Section 3: Advanced Color Spaces -->
-    <div class="section">
-      <h2>3. Color Space Conversions</h2>
-      <div class="demo-grid">
-        <div class="large-color-box" id="demo-color" style="background: #FF6B6B; grid-column: 1 / -1;">
-          #FF6B6B
+        <div class="comparison">
+          <div class="comparison-item">
+            <h4>RGB Interpolation (Old)</h4>
+            <div class="demo-grid" id="rgb-gradient"></div>
+            <p style="color: #999; font-size: 0.9em; margin-top: 10px">Notice the muddy brown in the middle</p>
+          </div>
+          <div class="comparison-item">
+            <h4>OKLCH Interpolation (New) ✨</h4>
+            <div class="demo-grid" id="oklch-gradient"></div>
+            <p style="color: #667eea; font-size: 0.9em; margin-top: 10px">Smooth, vibrant colors throughout!</p>
+          </div>
         </div>
       </div>
 
-      <div class="stats" id="color-spaces"></div>
+      <!-- Section 2: Delta E 2000 -->
+      <div class="section">
+        <h2>2. Delta E 2000 - Perceptual Color Difference</h2>
+        <div class="info-box">
+          <h3>What is Delta E?</h3>
+          <p>Delta E 2000 measures how different two colors appear to the human eye.</p>
+          <ul style="margin-top: 10px; margin-left: 20px">
+            <li><strong>0</strong> = Identical colors</li>
+            <li><strong>&lt; 1</strong> = Imperceptible difference</li>
+            <li><strong>1-2</strong> = Barely perceptible</li>
+            <li><strong>2-10</strong> = Noticeable difference</li>
+            <li><strong>&gt; 10</strong> = Very different</li>
+          </ul>
+        </div>
 
-      <button class="button" onclick="changeColor()" style="margin-top: 20px;">
-        Try Another Color
-      </button>
-    </div>
-
-    <!-- Section 4: Smooth Gradients -->
-    <div class="section">
-      <h2>4. Multi-Color Smooth Gradients</h2>
-      <div class="info-box">
-        <h3>Creating Beautiful Gradients</h3>
-        <p>Generate smooth gradients through multiple colors using perceptually uniform interpolation.</p>
+        <div id="delta-e-demo"></div>
+        <button class="button" onclick="generateNewColors()" style="margin-top: 20px">Generate New Color Pair</button>
       </div>
 
-      <div class="demo-grid" id="multi-gradient" style="grid-template-columns: repeat(20, 1fr);"></div>
+      <!-- Section 3: Advanced Color Spaces -->
+      <div class="section">
+        <h2>3. Color Space Conversions</h2>
+        <div class="demo-grid">
+          <div class="large-color-box" id="demo-color" style="background: #ff6b6b; grid-column: 1 / -1">#FF6B6B</div>
+        </div>
+
+        <div class="stats" id="color-spaces"></div>
+
+        <button class="button" onclick="changeColor()" style="margin-top: 20px">Try Another Color</button>
+      </div>
+
+      <!-- Section 4: Smooth Gradients -->
+      <div class="section">
+        <h2>4. Multi-Color Smooth Gradients</h2>
+        <div class="info-box">
+          <h3>Creating Beautiful Gradients</h3>
+          <p>Generate smooth gradients through multiple colors using perceptually uniform interpolation.</p>
+        </div>
+
+        <div class="demo-grid" id="multi-gradient" style="grid-template-columns: repeat(20, 1fr)"></div>
+      </div>
+
+      <!-- Section 5: Performance Stats -->
+      <div class="section">
+        <h2>5. Performance Metrics</h2>
+        <div class="stats" id="performance-stats"></div>
+      </div>
     </div>
 
-    <!-- Section 5: Performance Stats -->
-    <div class="section">
-      <h2>5. Performance Metrics</h2>
-      <div class="stats" id="performance-stats"></div>
-    </div>
-  </div>
+    <script type="module">
+      // Import from the built library
+      import { Color, interpolate, gradient, ColorInterpolator } from '../es/index.js'
 
-  <script type="module">
-    // Import from the built library
-    import {
-      Color,
-      interpolate,
-      gradient,
-      ColorInterpolator
-    } from '../es/index.js';
+      // Section 1: RGB vs OKLCH Interpolation
+      function createGradients() {
+        const start = new Color('#FF0080') // Magenta
+        const end = new Color('#00FF80') // Green
 
-    // Section 1: RGB vs OKLCH Interpolation
-    function createGradients() {
-      const start = new Color('#FF0080');  // Magenta
-      const end = new Color('#00FF80');    // Green
+        // RGB Interpolation
+        const rgbContainer = document.getElementById('rgb-gradient')
+        const rgbInterpolator = new ColorInterpolator(start, end, { space: 'rgb' })
+        const rgbColors = rgbInterpolator.steps(12)
 
-      // RGB Interpolation
-      const rgbContainer = document.getElementById('rgb-gradient');
-      const rgbInterpolator = new ColorInterpolator(start, end, { space: 'rgb' });
-      const rgbColors = rgbInterpolator.steps(12);
+        rgbColors.forEach((color) => {
+          const box = document.createElement('div')
+          box.className = 'color-box'
+          box.style.backgroundColor = color.toHex()
+          box.title = color.toHex()
+          rgbContainer.appendChild(box)
+        })
 
-      rgbColors.forEach(color => {
-        const box = document.createElement('div');
-        box.className = 'color-box';
-        box.style.backgroundColor = color.toHex();
-        box.title = color.toHex();
-        rgbContainer.appendChild(box);
-      });
+        // OKLCH Interpolation
+        const oklchContainer = document.getElementById('oklch-gradient')
+        const oklchInterpolator = new ColorInterpolator(start, end, { space: 'oklch' })
+        const oklchColors = oklchInterpolator.steps(12)
 
-      // OKLCH Interpolation
-      const oklchContainer = document.getElementById('oklch-gradient');
-      const oklchInterpolator = new ColorInterpolator(start, end, { space: 'oklch' });
-      const oklchColors = oklchInterpolator.steps(12);
+        oklchColors.forEach((color) => {
+          const box = document.createElement('div')
+          box.className = 'color-box'
+          box.style.backgroundColor = color.toHex()
+          box.title = color.toHex()
+          oklchContainer.appendChild(box)
+        })
+      }
 
-      oklchColors.forEach(color => {
-        const box = document.createElement('div');
-        box.className = 'color-box';
-        box.style.backgroundColor = color.toHex();
-        box.title = color.toHex();
-        oklchContainer.appendChild(box);
-      });
-    }
+      // Section 2: Delta E Demo
+      window.generateNewColors = function () {
+        const container = document.getElementById('delta-e-demo')
+        container.innerHTML = ''
 
-    // Section 2: Delta E Demo
-    window.generateNewColors = function () {
-      const container = document.getElementById('delta-e-demo');
-      container.innerHTML = '';
+        const color1 = Color.random()
+        const color2 = Color.random()
 
-      const color1 = Color.random();
-      const color2 = Color.random();
+        const deltaE = color1.deltaE2000(color2)
+        const deltaEOKLAB = color1.deltaEOKLAB(color2)
+        const rgbDistance = color1.distance(color2)
 
-      const deltaE = color1.deltaE2000(color2);
-      const deltaEOKLAB = color1.deltaEOKLAB(color2);
-      const rgbDistance = color1.distance(color2);
-
-      const html = `
+        const html = `
         <div class="comparison">
           <div class="comparison-item">
             <div class="large-color-box" style="background: ${color1.toHex()}">
@@ -342,32 +330,32 @@
             <div class="value">${deltaE < 1 ? 'Imperceptible' : deltaE < 2 ? 'Barely visible' : deltaE < 10 ? 'Noticeable' : 'Very different'}</div>
           </div>
         </div>
-      `;
+      `
 
-      container.innerHTML = html;
-    };
+        container.innerHTML = html
+      }
 
-    // Section 3: Color Spaces
-    const demoColors = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#A8E6CF', '#FF8C94', '#6C5CE7'];
-    let colorIndex = 0;
+      // Section 3: Color Spaces
+      const demoColors = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#A8E6CF', '#FF8C94', '#6C5CE7']
+      let colorIndex = 0
 
-    window.changeColor = function () {
-      colorIndex = (colorIndex + 1) % demoColors.length;
-      displayColorSpaces(new Color(demoColors[colorIndex]));
-    };
+      window.changeColor = function () {
+        colorIndex = (colorIndex + 1) % demoColors.length
+        displayColorSpaces(new Color(demoColors[colorIndex]))
+      }
 
-    function displayColorSpaces(color) {
-      document.getElementById('demo-color').style.background = color.toHex();
-      document.getElementById('demo-color').textContent = color.toHex();
+      function displayColorSpaces(color) {
+        document.getElementById('demo-color').style.background = color.toHex()
+        document.getElementById('demo-color').textContent = color.toHex()
 
-      const oklch = color.toOKLCH();
-      const oklab = color.toOKLAB();
-      const lab = color.toLAB();
-      const lch = color.toLCH();
-      const hsl = color.toHSL();
+        const oklch = color.toOKLCH()
+        const oklab = color.toOKLAB()
+        const lab = color.toLAB()
+        const lch = color.toLCH()
+        const hsl = color.toHSL()
 
-      const container = document.getElementById('color-spaces');
-      container.innerHTML = `
+        const container = document.getElementById('color-spaces')
+        container.innerHTML = `
         <div class="stat-card">
           <div class="label">OKLCH</div>
           <div class="value" style="font-size: 1.2em;">
@@ -412,60 +400,60 @@
           <div class="label">Luminance</div>
           <div class="value">${color.getLuminance().toFixed(3)}</div>
         </div>
-      `;
-    }
-
-    // Section 4: Multi-color Gradient
-    function createMultiGradient() {
-      const colors = [
-        new Color('#FF0080'),
-        new Color('#FF8000'),
-        new Color('#FFFF00'),
-        new Color('#00FF80'),
-        new Color('#0080FF')
-      ];
-
-      const gradientColors = gradient(colors, 60, { space: 'oklch', easing: 'ease-in-out' });
-      const container = document.getElementById('multi-gradient');
-
-      gradientColors.forEach(color => {
-        const box = document.createElement('div');
-        box.className = 'color-box';
-        box.style.backgroundColor = color.toHex();
-        box.title = color.toHex();
-        container.appendChild(box);
-      });
-    }
-
-    // Section 5: Performance Metrics
-    function measurePerformance() {
-      const iterations = 10000;
-      const testColor1 = new Color('#FF6B6B');
-      const testColor2 = new Color('#4ECDC4');
-
-      // Measure interpolation
-      const interpolationStart = performance.now();
-      for (let i = 0; i < iterations; i++) {
-        interpolate(testColor1, testColor2, Math.random(), { space: 'oklch' });
+      `
       }
-      const interpolationTime = performance.now() - interpolationStart;
 
-      // Measure Delta E
-      const deltaEStart = performance.now();
-      for (let i = 0; i < iterations; i++) {
-        testColor1.deltaE2000(testColor2);
+      // Section 4: Multi-color Gradient
+      function createMultiGradient() {
+        const colors = [
+          new Color('#FF0080'),
+          new Color('#FF8000'),
+          new Color('#FFFF00'),
+          new Color('#00FF80'),
+          new Color('#0080FF'),
+        ]
+
+        const gradientColors = gradient(colors, 60, { space: 'oklch', easing: 'ease-in-out' })
+        const container = document.getElementById('multi-gradient')
+
+        gradientColors.forEach((color) => {
+          const box = document.createElement('div')
+          box.className = 'color-box'
+          box.style.backgroundColor = color.toHex()
+          box.title = color.toHex()
+          container.appendChild(box)
+        })
       }
-      const deltaETime = performance.now() - deltaEStart;
 
-      // Measure color space conversion
-      const conversionStart = performance.now();
-      for (let i = 0; i < iterations; i++) {
-        testColor1.toOKLCH();
-      }
-      const conversionTime = performance.now() - conversionStart;
+      // Section 5: Performance Metrics
+      function measurePerformance() {
+        const iterations = 10000
+        const testColor1 = new Color('#FF6B6B')
+        const testColor2 = new Color('#4ECDC4')
 
-      const container = document.getElementById('performance-stats');
-      container.innerHTML = `
+        // Measure interpolation
+        const interpolationStart = performance.now()
+        for (let i = 0; i < iterations; i++) {
+          interpolate(testColor1, testColor2, Math.random(), { space: 'oklch' })
+        }
+        const interpolationTime = performance.now() - interpolationStart
+
+        // Measure Delta E
+        const deltaEStart = performance.now()
+        for (let i = 0; i < iterations; i++) {
+          testColor1.deltaE2000(testColor2)
+        }
+        const deltaETime = performance.now() - deltaEStart
+
+        // Measure color space conversion
+        const conversionStart = performance.now()
+        for (let i = 0; i < iterations; i++) {
+          testColor1.toOKLCH()
+        }
+        const conversionTime = performance.now() - conversionStart
+
+        const container = document.getElementById('performance-stats')
+        container.innerHTML = `
         <div class="stat-card">
           <div class="label">OKLCH Interpolation</div>
           <div class="value">${(interpolationTime / iterations).toFixed(4)} ms</div>
@@ -482,16 +470,15 @@
           <div class="label">Iterations</div>
           <div class="value">${iterations.toLocaleString()}</div>
         </div>
-      `;
-    }
+      `
+      }
 
-    // Initialize
-    createGradients();
-    generateNewColors();
-    displayColorSpaces(new Color('#FF6B6B'));
-    createMultiGradient();
-    measurePerformance();
-  </script>
-</body>
-
+      // Initialize
+      createGradients()
+      generateNewColors()
+      displayColorSpaces(new Color('#FF6B6B'))
+      createMultiGradient()
+      measurePerformance()
+    </script>
+  </body>
 </html>

@@ -1,6 +1,6 @@
 /**
  * @ldesign/color - Named Colors
- * 
+ *
  * CSS named color definitions
  */
 
@@ -26,7 +26,7 @@ export const namedColorsMap = new Map<string, string>([
   ['navy', '#000080'],
   ['fuchsia', '#FF00FF'],
   ['purple', '#800080'],
-  
+
   // Extended colors
   ['aliceblue', '#F0F8FF'],
   ['antiquewhite', '#FAEBD7'],
@@ -157,46 +157,46 @@ export const namedColorsMap = new Map<string, string>([
   ['wheat', '#F5DEB3'],
   ['whitesmoke', '#F5F5F5'],
   ['yellowgreen', '#9ACD32'],
-  
+
   // System colors
-  ['transparent', 'rgba(0,0,0,0)']
-]);
+  ['transparent', 'rgba(0,0,0,0)'],
+])
 
 // Backward compatibility export
-export const namedColors = Object.fromEntries(namedColorsMap);
+export const namedColors = Object.fromEntries(namedColorsMap)
 
-export type NamedColor = keyof typeof namedColors;
+export type NamedColor = keyof typeof namedColors
 
 /**
  * Get a color by name - Use Map for O(1) lookup
  */
 export function getNamedColor(name: string): string | undefined {
-  return namedColorsMap.get(name.toLowerCase());
+  return namedColorsMap.get(name.toLowerCase())
 }
 
 /**
  * Check if a string is a valid named color
  */
 export function isNamedColor(name: unknown): name is NamedColor {
-  return typeof name === 'string' && namedColorsMap.has(name.toLowerCase());
+  return typeof name === 'string' && namedColorsMap.has(name.toLowerCase())
 }
 
 /**
  * Get all named color names - Return array from Map keys
  */
 export function getNamedColorNames(): string[] {
-  return Array.from(namedColorsMap.keys());
+  return Array.from(namedColorsMap.keys())
 }
 
 // Pre-computed reverse map for faster lookups
-const hexToNameMap = new Map<string, string>();
+const hexToNameMap = new Map<string, string>()
 for (const [name, hex] of namedColorsMap) {
-  hexToNameMap.set(hex.toUpperCase(), name);
+  hexToNameMap.set(hex.toUpperCase(), name)
 }
 
 /**
  * Get the name of a color from its hex value - Use reverse map for O(1) lookup
  */
 export function getColorName(hex: string): string | undefined {
-  return hexToNameMap.get(hex.toUpperCase());
+  return hexToNameMap.get(hex.toUpperCase())
 }

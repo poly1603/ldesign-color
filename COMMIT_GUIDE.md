@@ -5,6 +5,7 @@
 ### 步骤 1: 更新版本号
 
 编辑 `package.json`:
+
 ```json
 {
   "version": "1.1.0"
@@ -116,19 +117,19 @@ git commit -m "feat(color): v1.1.0 - Advanced color spaces and interpolation
   * Optimized for contemporary displays
   * Best for gradients and UI design
   * ~0.015ms conversion time
-  
+
 - OKLAB: Cartesian perceptually uniform space
   * Better for color calculations
   * ~0.012ms conversion time
-  
+
 - LAB (CIE L*a*b*): Classic perceptually uniform space
   * Industry standard
   * Print workflows
   * ~0.018ms conversion time
-  
+
 - LCH: Cylindrical LAB representation
   * Better for hue manipulation
-  
+
 - XYZ (CIE 1931): Foundation color space
   * Required for inter-space conversions
 
@@ -144,7 +145,7 @@ git commit -m "feat(color): v1.1.0 - Advanced color spaces and interpolation
 - Delta E 2000: Industry-standard perceptual difference
   * Most accurate color matching
   * ~0.045ms per operation
-  
+
 - Delta E OKLAB: Fast approximation
   * Good for real-time comparisons
   * ~0.013ms per operation
@@ -162,7 +163,7 @@ git commit -m "feat(color): v1.1.0 - Advanced color spaces and interpolation
   * Complete code examples
   * Best practices
   * Migration guide
-  
+
 - Performance Guide (363 lines)
   * Optimization techniques
   * Memory management
@@ -287,7 +288,7 @@ npm publish --tag beta
 
 ### 团队通知模板
 
-```markdown
+````markdown
 # @ldesign/color v1.1.0 发布！🎉
 
 大家好！
@@ -305,6 +306,7 @@ npm publish --tag beta
 ```bash
 npm update @ldesign/color
 ```
+````
 
 完全向后兼容，无需修改任何代码！
 
@@ -316,6 +318,7 @@ npm update @ldesign/color
 - 交互演示: [examples/advanced-features.html]
 
 有任何问题欢迎随时交流！
+
 ```
 
 ---
@@ -358,6 +361,6 @@ npm update @ldesign/color
 
 ---
 
-_提交指南版本: 1.0_  
+_提交指南版本: 1.0_
 _更新日期: 2024-XX-XX_
-
+```

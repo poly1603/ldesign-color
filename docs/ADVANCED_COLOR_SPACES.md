@@ -21,26 +21,28 @@ Perceptually uniform color spaces solve these problems by organizing colors base
 **What it is**: A cylindrical representation of OKLAB, designed by Björn Ottosson for modern displays.
 
 **When to use**:
+
 - Color interpolation and gradients
 - UI color generation
 - Modern web applications
 - Any time you need smooth, natural-looking colors
 
 **Properties**:
+
 - `l` (lightness): 0-1 (0 = black, 1 = white)
 - `c` (chroma): 0-0.4 (0 = gray, higher = more saturated)
 - `h` (hue): 0-360 degrees
 
 ```typescript
-import { Color } from '@ldesign/color';
-
-const color = new Color('#FF6B6B');
-const oklch = color.toOKLCH();
-console.log(oklch); // { l: 0.68, c: 0.20, h: 25 }
+import { Color } from '@ldesign/color' // { l: 0.68, c: 0.20, h: 25 }
 
 // Create from OKLCH
-import { oklchToRGB } from '@ldesign/color';
-const rgb = oklchToRGB({ l: 0.68, c: 0.20, h: 25 });
+import { oklchToRGB } from '@ldesign/color'
+
+const color = new Color('#FF6B6B')
+const oklch = color.toOKLCH()
+console.log(oklch)
+const rgb = oklchToRGB({ l: 0.68, c: 0.20, h: 25 })
 ```
 
 ### OKLAB
@@ -48,37 +50,41 @@ const rgb = oklchToRGB({ l: 0.68, c: 0.20, h: 25 });
 **What it is**: A perceptually uniform color space optimized for modern displays.
 
 **When to use**:
+
 - When you need Cartesian coordinates instead of cylindrical
 - Color distance calculations
 - Advanced color manipulation
 
 **Properties**:
+
 - `l` (lightness): 0-1
 - `a` (green-red axis): -0.4 to 0.4
 - `b` (blue-yellow axis): -0.4 to 0.4
 
 ```typescript
-const oklab = color.toOKLAB();
-console.log(oklab); // { l: 0.68, a: 0.18, b: 0.09 }
+const oklab = color.toOKLAB()
+console.log(oklab) // { l: 0.68, a: 0.18, b: 0.09 }
 ```
 
-### LAB (CIE L*a*b*)
+### LAB (CIE L*a*b\*)
 
 **What it is**: The classic perceptually uniform color space, designed in 1976.
 
 **When to use**:
+
 - Print workflows
 - Legacy systems requiring LAB
 - When you need compatibility with Adobe products
 
 **Properties**:
+
 - `l` (lightness): 0-100
 - `a` (green-red axis): -128 to 127
 - `b` (blue-yellow axis): -128 to 127
 
 ```typescript
-const lab = color.toLAB();
-console.log(lab); // { l: 62.5, a: 42.3, b: 25.6 }
+const lab = color.toLAB()
+console.log(lab) // { l: 62.5, a: 42.3, b: 25.6 }
 ```
 
 ### LCH (Cylindrical LAB)
@@ -86,12 +92,13 @@ console.log(lab); // { l: 62.5, a: 42.3, b: 25.6 }
 **What it is**: LAB in cylindrical coordinates, easier for hue rotation.
 
 **When to use**:
+
 - When working with LAB but need hue control
 - Color harmony generation in LAB space
 
 ```typescript
-const lch = color.toLCH();
-console.log(lch); // { l: 62.5, c: 49.5, h: 31.2 }
+const lch = color.toLCH()
+console.log(lch) // { l: 62.5, c: 49.5, h: 31.2 }
 ```
 
 ### XYZ (CIE 1931)
@@ -99,13 +106,14 @@ console.log(lch); // { l: 62.5, c: 49.5, h: 31.2 }
 **What it is**: The foundation color space based on human color matching experiments.
 
 **When to use**:
+
 - Converting between color spaces
 - Scientific color calculations
 - Advanced color science applications
 
 ```typescript
-const xyz = color.toXYZ();
-console.log(xyz); // { x: 41.2, y: 21.3, z: 1.9 }
+const xyz = color.toXYZ()
+console.log(xyz) // { x: 41.2, y: 21.3, z: 1.9 }
 ```
 
 ## Color Interpolation
@@ -115,11 +123,13 @@ console.log(xyz); // { x: 41.2, y: 21.3, z: 1.9 }
 Compare these two gradients from red (#FF0000) to cyan (#00FFFF):
 
 **RGB Interpolation (Traditional)**:
+
 ```
 Red → Brown → Gray → Cyan
 ```
 
 **OKLCH Interpolation (New)**:
+
 ```
 Red → Orange → Yellow → Green → Cyan
 ```
@@ -129,26 +139,26 @@ The OKLCH gradient maintains vibrant, saturated colors throughout!
 ### Usage
 
 ```typescript
-import { interpolate, ColorInterpolator, gradient } from '@ldesign/color';
+import { ColorInterpolator, gradient, interpolate } from '@ldesign/color'
 
 // Simple interpolation
-const midpoint = interpolate('#FF0080', '#00FF80', 0.5, { space: 'oklch' });
+const midpoint = interpolate('#FF0080', '#00FF80', 0.5, { space: 'oklch' })
 
 // Create interpolator for multiple values
 const interpolator = new ColorInterpolator('#FF0080', '#00FF80', {
   space: 'oklch',
   easing: 'ease-in-out'
-});
+})
 
-const colors = interpolator.steps(10); // Get 10 colors
-const customColor = interpolator.at(0.75); // Get color at 75%
+const colors = interpolator.steps(10) // Get 10 colors
+const customColor = interpolator.at(0.75) // Get color at 75%
 
 // Multi-color gradient
 const rainbow = gradient(
   ['#FF0080', '#FF8000', '#FFFF00', '#00FF80', '#0080FF'],
   50,
   { space: 'oklch' }
-);
+)
 ```
 
 ### Available Spaces
@@ -177,40 +187,40 @@ Delta E is a metric for measuring how different two colors appear to humans.
 
 ### Understanding Delta E Values
 
-| Delta E | Perception |
-|---------|------------|
-| 0 | Identical colors |
-| < 1 | Imperceptible to human eyes |
-| 1 - 2 | Barely perceptible difference |
-| 2 - 10 | Noticeable difference |
-| > 10 | Very different colors |
+| Delta E | Perception                    |
+| ------- | ----------------------------- |
+| 0       | Identical colors              |
+| < 1     | Imperceptible to human eyes   |
+| 1 - 2   | Barely perceptible difference |
+| 2 - 10  | Noticeable difference         |
+| > 10    | Very different colors         |
 
 ### Usage
 
 ```typescript
-const color1 = new Color('#FF6B6B');
-const color2 = new Color('#FF8C94');
+const color1 = new Color('#FF6B6B')
+const color2 = new Color('#FF8C94')
 
 // Delta E 2000 (most accurate, slower)
-const deltaE = color1.deltaE2000(color2);
-console.log(deltaE); // 8.42
+const deltaE = color1.deltaE2000(color2)
+console.log(deltaE) // 8.42
 
 // OKLAB distance (faster, good approximation)
-const deltaEOKLAB = color1.deltaEOKLAB(color2);
-console.log(deltaEOKLAB); // 0.042
+const deltaEOKLAB = color1.deltaEOKLAB(color2)
+console.log(deltaEOKLAB) // 0.042
 
 // RGB distance (least accurate, fastest)
-const rgbDist = color1.distance(color2);
-console.log(rgbDist); // 35.11
+const rgbDist = color1.distance(color2)
+console.log(rgbDist) // 35.11
 ```
 
 ### When to Use Each
 
-| Method | Accuracy | Speed | Use Case |
-|--------|----------|-------|----------|
-| `deltaE2000()` | Highest | Slowest | Final validation, accessibility |
-| `deltaEOKLAB()` | High | Fast | Real-time comparisons, sorting |
-| `distance()` | Low | Fastest | Quick checks, approximations |
+| Method          | Accuracy | Speed   | Use Case                        |
+| --------------- | -------- | ------- | ------------------------------- |
+| `deltaE2000()`  | Highest  | Slowest | Final validation, accessibility |
+| `deltaEOKLAB()` | High     | Fast    | Real-time comparisons, sorting  |
+| `distance()`    | Low      | Fastest | Quick checks, approximations    |
 
 ## Performance Considerations
 
@@ -224,14 +234,14 @@ console.log(rgbDist); // 35.11
 ```typescript
 // ❌ Slow: Creates objects
 for (let i = 0; i < 10000; i++) {
-  const rgb = color.toRGB();
-  doSomething(rgb.r, rgb.g, rgb.b);
+  const rgb = color.toRGB()
+  doSomething(rgb.r, rgb.g, rgb.b)
 }
 
 // ✅ Fast: Direct tuple access
 for (let i = 0; i < 10000; i++) {
-  const [r, g, b] = color.toRGBDirect();
-  doSomething(r, g, b);
+  const [r, g, b] = color.toRGBDirect()
+  doSomething(r, g, b)
 }
 ```
 
@@ -239,13 +249,13 @@ for (let i = 0; i < 10000; i++) {
 
 On a modern CPU (single operation):
 
-| Operation | Time |
-|-----------|------|
-| OKLCH conversion | ~0.015 ms |
-| OKLAB conversion | ~0.012 ms |
-| LAB conversion | ~0.018 ms |
-| Delta E 2000 | ~0.045 ms |
-| OKLAB distance | ~0.013 ms |
+| Operation           | Time      |
+| ------------------- | --------- |
+| OKLCH conversion    | ~0.015 ms |
+| OKLAB conversion    | ~0.012 ms |
+| LAB conversion      | ~0.018 ms |
+| Delta E 2000        | ~0.045 ms |
+| OKLAB distance      | ~0.013 ms |
 | OKLCH interpolation | ~0.025 ms |
 
 ## Migration Guide
@@ -254,24 +264,24 @@ On a modern CPU (single operation):
 
 ```typescript
 // Before
+// After
+import { ColorInterpolator } from '@ldesign/color'
+
 function oldGradient(start, end, steps) {
-  const results = [];
+  const results = []
   for (let i = 0; i < steps; i++) {
-    const t = i / (steps - 1);
-    const r = start.red + (end.red - start.red) * t;
-    const g = start.green + (end.green - start.green) * t;
-    const b = start.blue + (end.blue - start.blue) * t;
-    results.push(new Color({ r, g, b }));
+    const t = i / (steps - 1)
+    const r = start.red + (end.red - start.red) * t
+    const g = start.green + (end.green - start.green) * t
+    const b = start.blue + (end.blue - start.blue) * t
+    results.push(new Color({ r, g, b }))
   }
-  return results;
+  return results
 }
 
-// After
-import { ColorInterpolator } from '@ldesign/color';
-
 function newGradient(start, end, steps) {
-  const interpolator = new ColorInterpolator(start, end, { space: 'oklch' });
-  return interpolator.steps(steps);
+  const interpolator = new ColorInterpolator(start, end, { space: 'oklch' })
+  return interpolator.steps(steps)
 }
 ```
 
@@ -279,12 +289,12 @@ function newGradient(start, end, steps) {
 
 ```typescript
 // Before: Hue interpolation issues
-const hsl1 = color1.toHSL();
-const hsl2 = color2.toHSL();
-const midHue = (hsl1.h + hsl2.h) / 2; // Wrong: doesn't handle 0°/360° wrap
+const hsl1 = color1.toHSL()
+const hsl2 = color2.toHSL()
+const midHue = (hsl1.h + hsl2.h) / 2 // Wrong: doesn't handle 0°/360° wrap
 
 // After: Proper hue interpolation
-const mid = interpolate(color1, color2, 0.5, { space: 'oklch' });
+const mid = interpolate(color1, color2, 0.5, { space: 'oklch' })
 ```
 
 ## Best Practices
@@ -309,34 +319,34 @@ const mid = interpolate(color1, color2, 0.5, { space: 'oklch' });
 ### Accessible Color Pairs
 
 ```typescript
-import { Color } from '@ldesign/color';
+import { Color } from '@ldesign/color'
 
 function findAccessibleVariant(baseColor, backgroundColor) {
-  let variant = new Color(baseColor);
-  
+  let variant = new Color(baseColor)
+
   while (variant.contrast(backgroundColor) < 4.5) {
-    const oklch = variant.toOKLCH();
-    oklch.l *= 0.9; // Darken
-    variant = oklchToRGB(oklch);
+    const oklch = variant.toOKLCH()
+    oklch.l *= 0.9 // Darken
+    variant = oklchToRGB(oklch)
   }
-  
-  return variant;
+
+  return variant
 }
 ```
 
 ### Smooth Color Scale
 
 ```typescript
-import { gradient } from '@ldesign/color';
+import { gradient } from '@ldesign/color'
 
 function createColorScale(baseColor, count = 10) {
-  const oklch = baseColor.toOKLCH();
-  
+  const oklch = baseColor.toOKLCH()
+
   // Create lighter and darker versions
-  const lightest = oklchToRGB({ ...oklch, l: 0.95 });
-  const darkest = oklchToRGB({ ...oklch, l: 0.20 });
-  
-  return gradient([lightest, baseColor, darkest], count, { space: 'oklch' });
+  const lightest = oklchToRGB({ ...oklch, l: 0.95 })
+  const darkest = oklchToRGB({ ...oklch, l: 0.20 })
+
+  return gradient([lightest, baseColor, darkest], count, { space: 'oklch' })
 }
 ```
 
@@ -344,28 +354,30 @@ function createColorScale(baseColor, count = 10) {
 
 ```typescript
 function groupSimilarColors(colors, threshold = 5) {
-  const groups = [];
-  const used = new Set();
-  
+  const groups = []
+  const used = new Set()
+
   for (let i = 0; i < colors.length; i++) {
-    if (used.has(i)) continue;
-    
-    const group = [colors[i]];
-    used.add(i);
-    
+    if (used.has(i))
+      continue
+
+    const group = [colors[i]]
+    used.add(i)
+
     for (let j = i + 1; j < colors.length; j++) {
-      if (used.has(j)) continue;
-      
+      if (used.has(j))
+        continue
+
       if (colors[i].deltaE2000(colors[j]) < threshold) {
-        group.push(colors[j]);
-        used.add(j);
+        group.push(colors[j])
+        used.add(j)
       }
     }
-    
-    groups.push(group);
+
+    groups.push(group)
   }
-  
-  return groups;
+
+  return groups
 }
 ```
 
@@ -379,5 +391,3 @@ function groupSimilarColors(colors, threshold = 5) {
 ## API Reference
 
 See the main [README.md](../README.md) for complete API documentation.
-
-

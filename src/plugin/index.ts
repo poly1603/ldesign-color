@@ -1,15 +1,17 @@
 /**
  * @ldesign/color - Plugin System
- * 
+ *
  * Color theme plugin for Vue 3 applications
  */
 
 import type { App, ComputedRef, Ref } from 'vue'
 import type { ColorLocale } from '../locales'
+import type { PresetTheme } from '../themes/presets'
+import type { ThemeOptions, ThemeState } from '../themes/themeManager'
 import { inject, ref } from 'vue'
 import { getLocale } from '../locales'
-import { type PresetTheme, presetThemes } from '../themes/presets'
-import { ThemeManager, type ThemeOptions, type ThemeState } from '../themes/themeManager'
+import { presetThemes } from '../themes/presets'
+import { ThemeManager } from '../themes/themeManager'
 
 /**
  * Color plugin configuration options
@@ -223,7 +225,7 @@ export const ColorPluginSymbol = Symbol('ColorPlugin')
 /**
  * 判断是否�?Ref
  */
-const isRef = <T>(v: any): v is Ref<T> => {
+function isRef<T>(v: any): v is Ref<T> {
   return v && typeof v === 'object' && 'value' in v && '_rawValue' in v
 }
 
@@ -243,7 +245,8 @@ function useSmartLocale(options: ColorPluginOptions): Ref<string> {
     if (injected && injected.value) {
       return injected
     }
-  } catch { }
+  }
+  catch { }
 
   // 优先�?：创建独立的locale并监听全局事件
   const locale = ref('zh-CN')
@@ -294,7 +297,7 @@ export function createColorPlugin(options: ColorPluginOptions = {}): ColorPlugin
 
   // 兼容旧的 computed 接口
   const localeMessages = {
-    get value() { return getLocaleData() }
+    get value() { return getLocaleData() },
   } as ComputedRef<ColorLocale>
 
   // Merge options with defaults
@@ -321,9 +324,10 @@ export function createColorPlugin(options: ColorPluginOptions = {}): ColorPlugin
   if (mergedOptions.presets === 'all') {
     // Use all built-in presets, excluding disabled ones
     availablePresets = presetThemes.filter(
-      preset => !mergedOptions.disabledPresets.includes(preset.name)
+      preset => !mergedOptions.disabledPresets.includes(preset.name),
     )
-  } else {
+  }
+  else {
     // Use custom presets
     availablePresets = mergedOptions.presets
   }
@@ -362,14 +366,16 @@ export function createColorPlugin(options: ColorPluginOptions = {}): ColorPlugin
           return await mergedOptions.storage.getItem(key)
         }
 
-        if (typeof window === 'undefined') return null
+        if (typeof window === 'undefined')
+          return null
 
         const storageImpl = mergedOptions.storageType === 'sessionStorage'
           ? window.sessionStorage
           : window.localStorage
 
         return storageImpl.getItem(key)
-      } catch (error) {
+      }
+      catch (error) {
         mergedOptions.hooks?.onError?.(error as Error)
         return null
       }
@@ -382,14 +388,16 @@ export function createColorPlugin(options: ColorPluginOptions = {}): ColorPlugin
           return
         }
 
-        if (typeof window === 'undefined') return
+        if (typeof window === 'undefined')
+          return
 
         const storageImpl = mergedOptions.storageType === 'sessionStorage'
           ? window.sessionStorage
           : window.localStorage
 
         storageImpl.setItem(key, value)
-      } catch (error) {
+      }
+      catch (error) {
         mergedOptions.hooks?.onError?.(error as Error)
       }
     },
@@ -401,17 +409,19 @@ export function createColorPlugin(options: ColorPluginOptions = {}): ColorPlugin
           return
         }
 
-        if (typeof window === 'undefined') return
+        if (typeof window === 'undefined')
+          return
 
         const storageImpl = mergedOptions.storageType === 'sessionStorage'
           ? window.sessionStorage
           : window.localStorage
 
         storageImpl.removeItem(key)
-      } catch (error) {
+      }
+      catch (error) {
         mergedOptions.hooks?.onError?.(error as Error)
       }
-    }
+    },
   }
 
   // Wrap applyTheme with hooks and persistence
@@ -423,7 +433,7 @@ export function createColorPlugin(options: ColorPluginOptions = {}): ColorPlugin
       if (mergedOptions.hooks?.beforeChange) {
         const shouldContinue = await mergedOptions.hooks.beforeChange(
           { primaryColor: colorOrName, themeName: colorOrName } as ThemeState,
-          oldTheme
+          oldTheme,
         )
         if (shouldContinue === false) {
           throw new Error('Theme change cancelled by beforeChange hook')
@@ -449,7 +459,8 @@ export function createColorPlugin(options: ColorPluginOptions = {}): ColorPlugin
       await mergedOptions.hooks?.afterChange?.(newTheme)
 
       return newTheme
-    } catch (error) {
+    }
+    catch (error) {
       mergedOptions.hooks?.onError?.(error as Error)
       throw error
     }
@@ -473,7 +484,7 @@ export function createColorPlugin(options: ColorPluginOptions = {}): ColorPlugin
       if (stored) {
         const customThemes = JSON.parse(stored) as PresetTheme[]
         // Add custom themes to available presets
-        customThemes.forEach(theme => {
+        customThemes.forEach((theme) => {
           if (!availablePresets.find(p => p.name === theme.name)) {
             availablePresets.push({ ...theme, custom: true })
           }
@@ -481,7 +492,8 @@ export function createColorPlugin(options: ColorPluginOptions = {}): ColorPlugin
         // Re-sort after adding custom themes
         availablePresets = sortPresets(availablePresets)
       }
-    } catch (error) {
+    }
+    catch (error) {
       mergedOptions.hooks?.onError?.(error as Error)
     }
   }
@@ -491,7 +503,8 @@ export function createColorPlugin(options: ColorPluginOptions = {}): ColorPlugin
     try {
       const customThemes = availablePresets.filter(p => p.custom)
       await storage.setItem(CUSTOM_THEMES_KEY, JSON.stringify(customThemes))
-    } catch (error) {
+    }
+    catch (error) {
       mergedOptions.hooks?.onError?.(error as Error)
     }
   }
@@ -507,11 +520,13 @@ export function createColorPlugin(options: ColorPluginOptions = {}): ColorPlugin
         const theme = JSON.parse(stored) as ThemeState
         await applyTheme(theme.themeName || theme.primaryColor)
         await mergedOptions.hooks?.onLoad?.(theme)
-      } else if (mergedOptions.defaultTheme) {
+      }
+      else if (mergedOptions.defaultTheme) {
         // Apply default theme
         await applyTheme(mergedOptions.defaultTheme)
       }
-    } catch (error) {
+    }
+    catch (error) {
       mergedOptions.hooks?.onError?.(error as Error)
     }
   }
@@ -528,7 +543,7 @@ export function createColorPlugin(options: ColorPluginOptions = {}): ColorPlugin
     const customTheme: PresetTheme = {
       ...theme,
       custom: true,
-      order: theme.order ?? (Math.max(...availablePresets.map(p => p.order ?? 0)) + 1)
+      order: theme.order ?? (Math.max(...availablePresets.map(p => p.order ?? 0)) + 1),
     }
 
     availablePresets.push(customTheme)
@@ -603,7 +618,8 @@ export function createColorPlugin(options: ColorPluginOptions = {}): ColorPlugin
           // 发现共享的 locale，使用它
           // Use sharedLocale instead
           // WeakMap will automatically handle cache invalidation
-        } else {
+        }
+        else {
           // 没有共享的 locale，提供自己的
           app.provide('locale', currentLocale)
         }
@@ -633,7 +649,7 @@ export function createColorPlugin(options: ColorPluginOptions = {}): ColorPlugin
       // Register app unmount cleanup
       // Note: _scope is internal API and may not be available
       // Use app.unmount hook if available in future versions
-    }
+    },
   }
 
   return plugin
@@ -643,5 +659,3 @@ export function createColorPlugin(options: ColorPluginOptions = {}): ColorPlugin
  * Default export
  */
 export default createColorPlugin
-
-

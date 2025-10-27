@@ -19,14 +19,14 @@ export interface ReactThemeModeSwitcherProps {
 const modes: ThemeModeOption[] = [
   { value: 'light', label: '浅色', icon: Sun },
   { value: 'dark', label: '深色', icon: Moon },
-  { value: 'system', label: '跟随系统', icon: Monitor }
+  { value: 'system', label: '跟随系统', icon: Monitor },
 ]
 
 export const ReactThemeModeSwitcher: React.FC<ReactThemeModeSwitcherProps> = ({
   defaultMode = 'system',
   storageKey = 'ld-theme-mode',
   onModeChange,
-  className = ''
+  className = '',
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [currentMode, setCurrentMode] = useState<ThemeMode>(defaultMode)
@@ -43,17 +43,18 @@ export const ReactThemeModeSwitcher: React.FC<ReactThemeModeSwitcherProps> = ({
   // 应用主题到 DOM
   const applyTheme = useCallback((theme: 'light' | 'dark') => {
     const root = document.documentElement
-    
+
     // 使用 theme-mode 属性，与 theme.css 保持一致
     if (theme === 'dark') {
       root.setAttribute('theme-mode', 'dark')
-    } else {
+    }
+    else {
       root.removeAttribute('theme-mode')
     }
-    
+
     // 同时设置 data-theme-mode 以保持兼容性
     root.setAttribute('data-theme-mode', theme)
-    
+
     // 为了兼容其他主题系统，也设置常见的属性
     root.classList.remove('light', 'dark')
     root.classList.add(theme)
@@ -98,15 +99,16 @@ export const ReactThemeModeSwitcher: React.FC<ReactThemeModeSwitcherProps> = ({
   // 监听系统主题变化
   useEffect(() => {
     updateSystemPreference()
-    
+
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
     const handleChange = () => updateSystemPreference()
-    
+
     // 兼容不同浏览器的事件监听方法
     if (mediaQuery.addEventListener) {
       mediaQuery.addEventListener('change', handleChange)
       return () => mediaQuery.removeEventListener('change', handleChange)
-    } else {
+    }
+    else {
       // 旧版本浏览器的兼容处理
       mediaQuery.addListener(handleChange)
       return () => mediaQuery.removeListener(handleChange)
@@ -138,13 +140,13 @@ export const ReactThemeModeSwitcher: React.FC<ReactThemeModeSwitcherProps> = ({
         <span className="theme-label">{currentModeConfig.label}</span>
         <ChevronDown className={`arrow ${isOpen ? 'open' : ''}`} />
       </button>
-      
+
       {isOpen && (
         <div className="theme-dropdown">
-          {modes.map(mode => {
+          {modes.map((mode) => {
             const Icon = mode.icon
             const isActive = currentMode === mode.value
-            
+
             return (
               <button
                 key={mode.value}
@@ -159,8 +161,9 @@ export const ReactThemeModeSwitcher: React.FC<ReactThemeModeSwitcherProps> = ({
           })}
         </div>
       )}
-      
-      <style>{`
+
+      <style>
+        {`
         .theme-mode-switcher {
           position: relative;
         }
@@ -281,7 +284,8 @@ export const ReactThemeModeSwitcher: React.FC<ReactThemeModeSwitcherProps> = ({
         :root[theme-mode="dark"] .theme-option.active {
           background: var(--ld-brand-color-light);
         }
-      `}</style>
+      `}
+      </style>
     </div>
   )
 }

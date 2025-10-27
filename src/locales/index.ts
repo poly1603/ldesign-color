@@ -56,14 +56,14 @@ export const zhCN: ColorLocale = {
       forest: '森林绿',
       midnight: '午夜蓝',
       lavender: '薰衣草',
-      coral: '珊瑚红'
-    }
+      coral: '珊瑚红',
+    },
   },
   themeMode: {
     light: '浅色',
     dark: '深色',
-    system: '跟随系统'
-  }
+    system: '跟随系统',
+  },
 }
 
 export const enUS: ColorLocale = {
@@ -96,14 +96,14 @@ export const enUS: ColorLocale = {
       forest: 'Forest Green',
       midnight: 'Midnight Blue',
       lavender: 'Lavender',
-      coral: 'Coral'
-    }
+      coral: 'Coral',
+    },
   },
   themeMode: {
     light: 'Light',
     dark: 'Dark',
-    system: 'Follow System'
-  }
+    system: 'Follow System',
+  },
 }
 
 export const jaJP: ColorLocale = {
@@ -136,14 +136,14 @@ export const jaJP: ColorLocale = {
       forest: '森林の緑',
       midnight: '真夜中の青',
       lavender: 'ラベンダー',
-      coral: '珊瑚色'
-    }
+      coral: '珊瑚色',
+    },
   },
   themeMode: {
     light: 'ライト',
     dark: 'ダーク',
-    system: 'システムに従う'
-  }
+    system: 'システムに従う',
+  },
 }
 
 export const koKR: ColorLocale = {
@@ -176,14 +176,14 @@ export const koKR: ColorLocale = {
       forest: '숲 초록',
       midnight: '자정 파랑',
       lavender: '라벤더',
-      coral: '산호색'
-    }
+      coral: '산호색',
+    },
   },
   themeMode: {
     light: '밝은 테마',
     dark: '어두운 테마',
-    system: '시스템 따라가기'
-  }
+    system: '시스템 따라가기',
+  },
 }
 
 export const deDE: ColorLocale = {
@@ -216,14 +216,14 @@ export const deDE: ColorLocale = {
       forest: 'Waldgrün',
       midnight: 'Mitternachtsblau',
       lavender: 'Lavendel',
-      coral: 'Koralle'
-    }
+      coral: 'Koralle',
+    },
   },
   themeMode: {
     light: 'Hell',
     dark: 'Dunkel',
-    system: 'Systemeinstellung folgen'
-  }
+    system: 'Systemeinstellung folgen',
+  },
 }
 
 export const frFR: ColorLocale = {
@@ -256,14 +256,14 @@ export const frFR: ColorLocale = {
       forest: 'Vert forêt',
       midnight: 'Bleu minuit',
       lavender: 'Lavande',
-      coral: 'Corail'
-    }
+      coral: 'Corail',
+    },
   },
   themeMode: {
     light: 'Clair',
     dark: 'Sombre',
-    system: 'Suivre le système'
-  }
+    system: 'Suivre le système',
+  },
 }
 
 export const esES: ColorLocale = {
@@ -296,14 +296,14 @@ export const esES: ColorLocale = {
       forest: 'Verde bosque',
       midnight: 'Azul medianoche',
       lavender: 'Lavanda',
-      coral: 'Coral'
-    }
+      coral: 'Coral',
+    },
   },
   themeMode: {
     light: 'Claro',
     dark: 'Oscuro',
-    system: 'Seguir sistema'
-  }
+    system: 'Seguir sistema',
+  },
 }
 
 export const itIT: ColorLocale = {
@@ -336,14 +336,14 @@ export const itIT: ColorLocale = {
       forest: 'Verde foresta',
       midnight: 'Blu mezzanotte',
       lavender: 'Lavanda',
-      coral: 'Corallo'
-    }
+      coral: 'Corallo',
+    },
   },
   themeMode: {
     light: 'Chiaro',
     dark: 'Scuro',
-    system: 'Segui sistema'
-  }
+    system: 'Segui sistema',
+  },
 }
 
 export const ptBR: ColorLocale = {
@@ -376,14 +376,14 @@ export const ptBR: ColorLocale = {
       forest: 'Verde floresta',
       midnight: 'Azul meia-noite',
       lavender: 'Lavanda',
-      coral: 'Coral'
-    }
+      coral: 'Coral',
+    },
   },
   themeMode: {
     light: 'Claro',
     dark: 'Escuro',
-    system: 'Seguir sistema'
-  }
+    system: 'Seguir sistema',
+  },
 }
 
 export const ruRU: ColorLocale = {
@@ -416,14 +416,14 @@ export const ruRU: ColorLocale = {
       forest: 'Лесной зеленый',
       midnight: 'Полуночный синий',
       lavender: 'Лаванда',
-      coral: 'Коралловый'
-    }
+      coral: 'Коралловый',
+    },
   },
   themeMode: {
     light: 'Светлая',
     dark: 'Темная',
-    system: 'Следовать за системой'
-  }
+    system: 'Следовать за системой',
+  },
 }
 
 export const locales = {
@@ -447,7 +447,7 @@ export const locales = {
   'es': esES,
   'it': itIT,
   'pt': ptBR,
-  'ru': ruRU
+  'ru': ruRU,
 }
 
 export type LocaleKey = keyof typeof locales

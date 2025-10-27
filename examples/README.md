@@ -7,6 +7,7 @@ This directory contains examples demonstrating the usage of @ldesign/color libra
 **File**: `advanced-features.html`
 
 Interactive demonstration of the latest features added in v1.1.0:
+
 - **OKLCH vs RGB Interpolation** - Visual comparison of gradient quality
 - **Delta E 2000** - Perceptual color difference measurement
 - **Advanced Color Spaces** - OKLCH, OKLAB, LAB, LCH, XYZ conversions
@@ -14,6 +15,7 @@ Interactive demonstration of the latest features added in v1.1.0:
 - **Performance Metrics** - Live benchmarking of new features
 
 To view this example:
+
 ```bash
 # Build the library first (from package root)
 npm run build
@@ -25,11 +27,13 @@ open examples/advanced-features.html
 ## Running the Examples
 
 1. Install dependencies:
+
 ```bash
 npm install
 ```
 
 2. Start the development server:
+
 ```bash
 npm run dev
 ```
@@ -39,11 +43,13 @@ npm run dev
 ## Features Demonstrated
 
 ### Color Palette Generation
+
 - **Primary Palette**: Generates 11 shades from a primary color
 - **Semantic Palettes**: Automatically generates success, warning, danger, and info color palettes
 - **Gray Scale**: Creates a 14-level grayscale palette
 
 ### Interactive Features
+
 - Color picker to choose primary color
 - Real-time palette generation
 - Click to copy color values
@@ -51,7 +57,9 @@ npm run dev
 - Auto-apply theme to page elements
 
 ### CSS Variables
+
 The example generates standard CSS variables that can be used in your projects:
+
 - `--color-primary-[1-11]`
 - `--color-success-[1-11]`
 - `--color-warning-[1-11]`
@@ -77,11 +85,11 @@ The example demonstrates how to import and use the @ldesign/color library:
 
 ```javascript
 import { Color } from '@ldesign/color/core/Color'
-import { 
+import {
+  generateCSSVariables,
+  generateGrayScale,
   generateNumberedPalette,
   generateSemanticColors,
-  generateGrayScale,
-  generateCSSVariables,
   insertCSSVariables
 } from '@ldesign/color/core/palette'
 

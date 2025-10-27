@@ -3,166 +3,169 @@
  * 集成 DeepSeek API 提供智能配色建议
  */
 
-import type { ColorScheme, ColorSchemeType } from '../schemes';
-import { Color } from '../core/Color';
-import { ColorSchemeGenerator } from '../schemes';
+import type { ColorScheme, ColorSchemeType } from '../schemes'
+import { Color } from '../core/Color'
+import { ColorSchemeGenerator } from '../schemes'
 
 /**
  * AI 配色请求选项
  */
 export interface AIColorOptions {
-  apiKey?: string;
-  apiUrl?: string;
-  model?: string;
-  temperature?: number;
-  maxTokens?: number;
-  language?: 'zh' | 'en';
+  apiKey?: string
+  apiUrl?: string
+  model?: string
+  temperature?: number
+  maxTokens?: number
+  language?: 'zh' | 'en'
 }
 
 /**
  * AI 配色建议结果
  */
 export interface AIColorSuggestion {
-  colors: Color[];
-  scheme: ColorScheme;
-  description: string;
-  reasoning: string;
-  tags: string[];
-  confidence: number;
+  colors: Color[]
+  scheme: ColorScheme
+  description: string
+  reasoning: string
+  tags: string[]
+  confidence: number
 }
 
 /**
  * 配色上下文
  */
 export interface ColorContext {
-  industry?: string;
-  mood?: string[];
-  target?: string;
-  season?: string;
-  style?: string;
+  industry?: string
+  mood?: string[]
+  target?: string
+  season?: string
+  style?: string
   preferences?: {
-    warm?: boolean;
-    vibrant?: boolean;
-    minimal?: boolean;
-  };
+    warm?: boolean
+    vibrant?: boolean
+    minimal?: boolean
+  }
 }
 
 /**
  * DeepSeek AI 配色助手
  */
 export class ColorAI {
-  private apiKey: string;
-  private apiUrl: string;
-  private model: string;
-  private defaultOptions: AIColorOptions;
-  
+  private apiKey: string
+  private apiUrl: string
+  private model: string
+  private defaultOptions: AIColorOptions
+
   constructor(options: AIColorOptions = {}) {
-    this.apiKey = options.apiKey || 'sk-37b7e5f545814da1923cae055b498c9a';
-    this.apiUrl = options.apiUrl || 'https://api.deepseek.com/v1/chat/completions';
-    this.model = options.model || 'deepseek-chat';
+    this.apiKey = options.apiKey || 'sk-37b7e5f545814da1923cae055b498c9a'
+    this.apiUrl = options.apiUrl || 'https://api.deepseek.com/v1/chat/completions'
+    this.model = options.model || 'deepseek-chat'
     this.defaultOptions = {
       temperature: options.temperature || 0.7,
       maxTokens: options.maxTokens || 500,
-      language: options.language || 'zh'
-    };
+      language: options.language || 'zh',
+    }
   }
-  
+
   /**
    * 获取 AI 配色建议
    */
   async getSuggestions(
     context: ColorContext,
-    count = 3
+    count = 3,
   ): Promise<AIColorSuggestion[]> {
-    const prompt = this.buildPrompt(context);
-    
+    const prompt = this.buildPrompt(context)
+
     try {
-      const response = await this.callAPI(prompt);
-      const suggestions = this.parseResponse(response);
-      
+      const response = await this.callAPI(prompt)
+      const suggestions = this.parseResponse(response)
+
       // 生成配色方案
-      const results: AIColorSuggestion[] = [];
+      const results: AIColorSuggestion[] = []
       for (const suggestion of suggestions.slice(0, count)) {
         const colors = suggestion.colors.map((c: string) => new Color(c))
         const scheme = ColorSchemeGenerator.generate(
           colors[0],
           suggestion.schemeType as ColorSchemeType,
-          { count: colors.length }
-        );
-        
+          { count: colors.length },
+        )
+
         results.push({
           colors,
           scheme,
           description: suggestion.description,
           reasoning: suggestion.reasoning,
           tags: suggestion.tags || [],
-          confidence: suggestion.confidence || 0.8
-        });
+          confidence: suggestion.confidence || 0.8,
+        })
       }
-      
-      return results;
-    } catch (error) {
-      console.error('AI color suggestion failed:', error);
+
+      return results
+    }
+    catch (error) {
+      console.error('AI color suggestion failed:', error)
       // 回退到本地算法
-      return this.getFallbackSuggestions(context, count);
+      return this.getFallbackSuggestions(context, count)
     }
   }
-  
+
   /**
    * 分析现有配色
    */
   async analyzeColorScheme(
     colors: Color[],
-    context?: ColorContext
+    context?: ColorContext,
   ): Promise<{
-    analysis: string;
-    strengths: string[];
-    weaknesses: string[];
-    suggestions: string[];
-    score: number;
+    analysis: string
+    strengths: string[]
+    weaknesses: string[]
+    suggestions: string[]
+    score: number
   }> {
-    const colorHexes = colors.map(c => c.toHex());
-    const prompt = this.buildAnalysisPrompt(colorHexes, context);
-    
+    const colorHexes = colors.map(c => c.toHex())
+    const prompt = this.buildAnalysisPrompt(colorHexes, context)
+
     try {
-      const response = await this.callAPI(prompt);
-      return this.parseAnalysisResponse(response);
-    } catch (error) {
-      console.error('AI color analysis failed:', error);
+      const response = await this.callAPI(prompt)
+      return this.parseAnalysisResponse(response)
+    }
+    catch (error) {
+      console.error('AI color analysis failed:', error)
       // 回退到本地分析
-      return this.getLocalAnalysis(colors);
+      return this.getLocalAnalysis(colors)
     }
   }
-  
+
   /**
    * 获取配色灵感
    */
   async getInspiration(
     keyword: string,
-    style?: string
+    style?: string,
   ): Promise<{
-    palette: Color[];
-    description: string;
-    keywords: string[];
+    palette: Color[]
+    description: string
+    keywords: string[]
   }> {
-    const prompt = this.buildInspirationPrompt(keyword, style);
-    
+    const prompt = this.buildInspirationPrompt(keyword, style)
+
     try {
-      const response = await this.callAPI(prompt);
-      const result = this.parseInspirationResponse(response);
-      
+      const response = await this.callAPI(prompt)
+      const result = this.parseInspirationResponse(response)
+
       return {
         palette: result.colors.map((c: string) => new Color(c)),
         description: result.description,
-        keywords: result.keywords
+        keywords: result.keywords,
       }
-    } catch (error) {
-      console.error('AI inspiration failed:', error);
+    }
+    catch (error) {
+      console.error('AI inspiration failed:', error)
       // 回退到预设灵感
-      return this.getPresetInspiration(keyword);
+      return this.getPresetInspiration(keyword)
     }
   }
-  
+
   /**
    * 调用 DeepSeek API
    */
@@ -171,7 +174,7 @@ export class ColorAI {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`
+        'Authorization': `Bearer ${this.apiKey}`,
       },
       body: JSON.stringify({
         model: this.model,
@@ -180,33 +183,33 @@ export class ColorAI {
             role: 'system',
             content: this.defaultOptions.language === 'zh'
               ? '你是一个专业的色彩设计师，精通色彩理论、设计心理学和品牌设计。请基于用户需求提供专业的配色建议。'
-              : 'You are a professional color designer with expertise in color theory, design psychology, and brand design. Please provide professional color suggestions based on user needs.'
+              : 'You are a professional color designer with expertise in color theory, design psychology, and brand design. Please provide professional color suggestions based on user needs.',
           },
           {
             role: 'user',
-            content: prompt
-          }
+            content: prompt,
+          },
         ],
         temperature: this.defaultOptions.temperature,
         max_tokens: this.defaultOptions.maxTokens,
-        response_format: { type: "json_object" }
-      })
-    });
-    
+        response_format: { type: 'json_object' },
+      }),
+    })
+
     if (!response.ok) {
-      throw new Error(`API call failed: ${response.statusText}`);
+      throw new Error(`API call failed: ${response.statusText}`)
     }
-    
-    const data = await response.json();
-    return JSON.parse(data.choices[0].message.content);
+
+    const data = await response.json()
+    return JSON.parse(data.choices[0].message.content)
   }
-  
+
   /**
    * 构建提示词
    */
   private buildPrompt(context: ColorContext): string {
-    const lang = this.defaultOptions.language;
-    
+    const lang = this.defaultOptions.language
+
     if (lang === 'zh') {
       return `
 请根据以下需求生成配色方案：
@@ -230,8 +233,9 @@ export class ColorAI {
     }
   ]
 }
-      `.trim();
-    } else {
+      `.trim()
+    }
+    else {
       return `
 Generate color schemes based on:
 - Industry: ${context.industry || 'General'}
@@ -254,16 +258,16 @@ Return JSON with 3 color schemes:
     }
   ]
 }
-      `.trim();
+      `.trim()
     }
   }
-  
+
   /**
    * 构建分析提示词
    */
   private buildAnalysisPrompt(colors: string[], context?: ColorContext): string {
-    const lang = this.defaultOptions.language;
-    
+    const lang = this.defaultOptions.language
+
     if (lang === 'zh') {
       return `
 分析以下配色方案：
@@ -278,8 +282,9 @@ ${context ? `应用场景：${JSON.stringify(context)}` : ''}
   "suggestions": ["建议1", "建议2"],
   "score": 85
 }
-      `.trim();
-    } else {
+      `.trim()
+    }
+    else {
       return `
 Analyze this color scheme:
 Colors: ${colors.join(', ')}
@@ -293,16 +298,16 @@ Return JSON analysis:
   "suggestions": ["suggestion1", "suggestion2"],
   "score": 85
 }
-      `.trim();
+      `.trim()
     }
   }
-  
+
   /**
    * 构建灵感提示词
    */
   private buildInspirationPrompt(keyword: string, style?: string): string {
-    const lang = this.defaultOptions.language;
-    
+    const lang = this.defaultOptions.language
+
     if (lang === 'zh') {
       return `
 为"${keyword}"生成配色灵感${style ? `，风格：${style}` : ''}。
@@ -313,8 +318,9 @@ Return JSON analysis:
   "description": "配色描述和灵感来源",
   "keywords": ["关键词1", "关键词2", "关键词3"]
 }
-      `.trim();
-    } else {
+      `.trim()
+    }
+    else {
       return `
 Generate color inspiration for "${keyword}"${style ? `, style: ${style}` : ''}.
 
@@ -324,17 +330,17 @@ Return JSON:
   "description": "Color description and inspiration",
   "keywords": ["keyword1", "keyword2", "keyword3"]
 }
-      `.trim();
+      `.trim()
     }
   }
-  
+
   /**
    * 解析响应
    */
   private parseResponse(response: any): any[] {
-    return response.suggestions || [];
+    return response.suggestions || []
   }
-  
+
   /**
    * 解析分析响应
    */
@@ -344,10 +350,10 @@ Return JSON:
       strengths: response.strengths || [],
       weaknesses: response.weaknesses || [],
       suggestions: response.suggestions || [],
-      score: response.score || 70
-    };
+      score: response.score || 70,
+    }
   }
-  
+
   /**
    * 解析灵感响应
    */
@@ -355,46 +361,50 @@ Return JSON:
     return {
       colors: response.colors || [],
       description: response.description || '',
-      keywords: response.keywords || []
-    };
+      keywords: response.keywords || [],
+    }
   }
-  
+
   /**
    * 回退建议（当 API 不可用时）
    */
   private getFallbackSuggestions(
     context: ColorContext,
-    count: number
+    count: number,
   ): AIColorSuggestion[] {
-    const suggestions: AIColorSuggestion[] = [];
-    
+    const suggestions: AIColorSuggestion[] = []
+
     // 基于上下文生成基础颜色
-    let baseHue = 210; // 默认蓝色
-    
-    if (context.mood?.includes('活力')) baseHue = 30;
-    if (context.mood?.includes('自然')) baseHue = 120;
-    if (context.mood?.includes('优雅')) baseHue = 270;
-    if (context.preferences?.warm) baseHue = 20;
-    
+    let baseHue = 210 // 默认蓝色
+
+    if (context.mood?.includes('活力'))
+      baseHue = 30
+    if (context.mood?.includes('自然'))
+      baseHue = 120
+    if (context.mood?.includes('优雅'))
+      baseHue = 270
+    if (context.preferences?.warm)
+      baseHue = 20
+
     for (let i = 0; i < count; i++) {
-      const baseColor = Color.fromHSL(baseHue + i * 30, 70, 50);
-      const schemeType: ColorSchemeType = ['analogous', 'complementary', 'triadic'][i] as ColorSchemeType;
-      
-      const scheme = ColorSchemeGenerator.generate(baseColor, schemeType, { count: 5 });
-      
+      const baseColor = Color.fromHSL(baseHue + i * 30, 70, 50)
+      const schemeType: ColorSchemeType = ['analogous', 'complementary', 'triadic'][i] as ColorSchemeType
+
+      const scheme = ColorSchemeGenerator.generate(baseColor, schemeType, { count: 5 })
+
       suggestions.push({
         colors: scheme.colors,
         scheme,
         description: `基于${scheme.description}的配色方案`,
         reasoning: '根据您的需求自动生成',
         tags: context.mood || [],
-        confidence: 0.6
-      });
+        confidence: 0.6,
+      })
     }
-    
-    return suggestions;
+
+    return suggestions
   }
-  
+
   /**
    * 本地分析
    */
@@ -403,51 +413,51 @@ Return JSON:
       type: 'custom' as ColorSchemeType,
       base: colors[0],
       colors,
-      description: 'Custom scheme'
-    });
-    
+      description: 'Custom scheme',
+    })
+
     return {
       analysis: `配色和谐度：${harmony}%`,
       strengths: harmony > 70 ? ['色彩和谐', '视觉舒适'] : [],
       weaknesses: harmony < 50 ? ['色彩冲突', '缺乏统一性'] : [],
       suggestions: ['考虑使用更协调的色彩方案'],
-      score: harmony
-    };
+      score: harmony,
+    }
   }
-  
+
   /**
    * 预设灵感
    */
   private getPresetInspiration(keyword: string): any {
     const inspirations: Record<string, any> = {
-      '海洋': {
+      海洋: {
         palette: ['#006994', '#00A8E8', '#00C9FF', '#7EC8E3', '#FFFFFF'].map((c: string) => new Color(c)),
         description: '深邃的海洋蓝配合清新的天空蓝，营造宁静致远的氛围',
-        keywords: ['宁静', '深邃', '清新']
+        keywords: ['宁静', '深邃', '清新'],
       },
-      '森林': {
+      森林: {
         palette: ['#2D5016', '#3A7D44', '#69B578', '#95D5B2', '#D5F2E3'].map((c: string) => new Color(c)),
         description: '从深绿到浅绿的自然渐变，展现生机勃勃的森林气息',
-        keywords: ['自然', '生机', '和谐']
+        keywords: ['自然', '生机', '和谐'],
       },
-      '日落': {
+      日落: {
         palette: ['#FF6B35', '#F77825', '#FFB700', '#FFCB47', '#FFE5AD'].map((c: string) => new Color(c)),
         description: '温暖的橙黄色调，捕捉夕阳西下的美好瞬间',
-        keywords: ['温暖', '浪漫', '希望']
-      }
-    };
-    
+        keywords: ['温暖', '浪漫', '希望'],
+      },
+    }
+
     const defaultPalette = {
       palette: ColorSchemeGenerator.generate(
         new Color('#3498db'),
         'analogous',
-        { count: 5 }
+        { count: 5 },
       ).colors,
       description: `基于"${keyword}"的配色灵感`,
-      keywords: [keyword, '创意', '设计']
-    };
-    
-    return inspirations[keyword] || defaultPalette;
+      keywords: [keyword, '创意', '设计'],
+    }
+
+    return inspirations[keyword] || defaultPalette
   }
 }
 
@@ -455,8 +465,8 @@ Return JSON:
  * 创建 AI 配色助手实例
  */
 export function createColorAI(options?: AIColorOptions): ColorAI {
-  return new ColorAI(options);
+  return new ColorAI(options)
 }
 
 // 默认实例
-export const colorAI = new ColorAI();
+export const colorAI = new ColorAI()

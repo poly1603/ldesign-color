@@ -17,14 +17,14 @@
 
 ## 🚀 快速导航
 
-| 想要... | 查看文档 | 时间 |
-|---------|---------|------|
-| 📖 快速上手 | [QUICK_START_v1.1.md](./QUICK_START_v1.1.md) | 5 分钟 |
+| 想要...       | 查看文档                                                    | 时间    |
+| ------------- | ----------------------------------------------------------- | ------- |
+| 📖 快速上手   | [QUICK_START_v1.1.md](./QUICK_START_v1.1.md)                | 5 分钟  |
 | 🎨 了解 OKLCH | [ADVANCED_COLOR_SPACES.md](./docs/ADVANCED_COLOR_SPACES.md) | 15 分钟 |
-| ⚡ 性能优化 | [PERFORMANCE.md](./docs/PERFORMANCE.md) | 10 分钟 |
-| 🌈 看演示 | [advanced-features.html](./examples/advanced-features.html) | 5 分钟 |
-| 📋 完整功能 | [README.md](./README.md) | 10 分钟 |
-| 🔍 所有文档 | [DOCUMENTATION_INDEX.md](./DOCUMENTATION_INDEX.md) | 2 分钟 |
+| ⚡ 性能优化   | [PERFORMANCE.md](./docs/PERFORMANCE.md)                     | 10 分钟 |
+| 🌈 看演示     | [advanced-features.html](./examples/advanced-features.html) | 5 分钟  |
+| 📋 完整功能   | [README.md](./README.md)                                    | 10 分钟 |
+| 🔍 所有文档   | [DOCUMENTATION_INDEX.md](./DOCUMENTATION_INDEX.md)          | 2 分钟  |
 
 ---
 
@@ -83,48 +83,48 @@
 ### 1. 色彩空间转换 (9种空间)
 
 ```typescript
-const color = new Color('#FF6B6B');
+const color = new Color('#FF6B6B')
 
 // 传统色彩空间
-color.toRGB()    // { r: 255, g: 107, b: 107 }
-color.toHSL()    // { h: 0, s: 100, l: 71 }
-color.toHSV()    // { h: 0, s: 58, v: 100 }
+color.toRGB() // { r: 255, g: 107, b: 107 }
+color.toHSL() // { h: 0, s: 100, l: 71 }
+color.toHSV() // { h: 0, s: 58, v: 100 }
 
 // 高级色彩空间 (新!)
-color.toOKLCH()  // { l: 0.68, c: 0.20, h: 25 }
-color.toOKLAB()  // { l: 0.68, a: 0.18, b: 0.09 }
-color.toLAB()    // { l: 62.5, a: 42.3, b: 25.6 }
-color.toLCH()    // { l: 62.5, c: 49.5, h: 31.2 }
-color.toXYZ()    // { x: 41.2, y: 21.3, z: 1.9 }
+color.toOKLCH() // { l: 0.68, c: 0.20, h: 25 }
+color.toOKLAB() // { l: 0.68, a: 0.18, b: 0.09 }
+color.toLAB() // { l: 62.5, a: 42.3, b: 25.6 }
+color.toLCH() // { l: 62.5, c: 49.5, h: 31.2 }
+color.toXYZ() // { x: 41.2, y: 21.3, z: 1.9 }
 ```
 
 ### 2. 颜色插值 (新!)
 
 ```typescript
 // 简单插值
-const mid = interpolate('#FF0080', '#00FF80', 0.5, { 
-  space: 'oklch' 
-});
+const mid = interpolate('#FF0080', '#00FF80', 0.5, {
+  space: 'oklch'
+})
 
 // 多色渐变
 const rainbow = gradient(
   ['#FF0080', '#FF8000', '#FFFF00', '#00FF80', '#0080FF'],
   50,
   { space: 'oklch', easing: 'ease-in-out' }
-);
+)
 ```
 
 ### 3. 色彩差异 (新!)
 
 ```typescript
 // Delta E 2000 (最准确)
-const deltaE = color1.deltaE2000(color2);
+const deltaE = color1.deltaE2000(color2)
 
 // OKLAB 距离 (更快)
-const deltaEOKLAB = color1.deltaEOKLAB(color2);
+const deltaEOKLAB = color1.deltaEOKLAB(color2)
 
 // RGB 距离 (最快)
-const distance = color1.distance(color2);
+const distance = color1.distance(color2)
 ```
 
 ---
@@ -133,15 +133,15 @@ const distance = color1.distance(color2);
 
 ### 操作速度
 
-| 操作 | 时间 | 评级 |
-|------|------|------|
-| Color 创建 | ~0.001ms | ⭐⭐⭐⭐⭐ |
-| RGB 转换 | ~0.001ms | ⭐⭐⭐⭐⭐ |
-| HSL 转换 | ~0.008ms | ⭐⭐⭐⭐⭐ |
-| OKLCH 转换 | ~0.015ms | ⭐⭐⭐⭐⭐ |
-| LAB 转换 | ~0.018ms | ⭐⭐⭐⭐⭐ |
+| 操作         | 时间     | 评级       |
+| ------------ | -------- | ---------- |
+| Color 创建   | ~0.001ms | ⭐⭐⭐⭐⭐ |
+| RGB 转换     | ~0.001ms | ⭐⭐⭐⭐⭐ |
+| HSL 转换     | ~0.008ms | ⭐⭐⭐⭐⭐ |
+| OKLCH 转换   | ~0.015ms | ⭐⭐⭐⭐⭐ |
+| LAB 转换     | ~0.018ms | ⭐⭐⭐⭐⭐ |
 | Delta E 2000 | ~0.045ms | ⭐⭐⭐⭐⭐ |
-| 插值 | ~0.025ms | ⭐⭐⭐⭐⭐ |
+| 插值         | ~0.025ms | ⭐⭐⭐⭐⭐ |
 
 ### 内存效率
 
@@ -221,7 +221,8 @@ packages/color/
         └── COMMIT_GUIDE.md           ✨ (180行)
 ```
 
-**总计**: 
+**总计**:
+
 - 源文件: 41 个
 - 文档: 20+ 个
 - 总行数: ~10,000 行
@@ -267,11 +268,13 @@ packages/color/
 ### 创新 1: OKLCH 插值 - 质的飞跃
 
 **传统方法 (RGB)**:
+
 - 红 → 青的渐变经过棕色和灰色
 - 饱和度下降
 - 亮度不均
 
 **我们的方法 (OKLCH)**:
+
 - 红 → 橙 → 黄 → 绿 → 青
 - 保持饱和度
 - 亮度均匀
@@ -282,11 +285,13 @@ packages/color/
 ### 创新 2: Delta E 2000 - 精确测量
 
 **传统方法 (RGB 距离)**:
+
 - 不符合人眼感知
 - 无法准确判断差异
 - 缺乏标准
 
 **我们的方法 (Delta E 2000)**:
+
 - 工业标准算法
 - 符合人眼感知
 - 精确的差异值
@@ -297,11 +302,13 @@ packages/color/
 ### 创新 3: 零分配访问 - 性能突破
 
 **传统方法 (toRGB)**:
+
 - 创建对象
 - 触发 GC
 - 影响性能
 
 **我们的方法 (toRGBDirect)**:
+
 - 返回元组
 - 零分配
 - 2-3x 更快
@@ -354,14 +361,14 @@ packages/color/
 
 ```typescript
 // 生成完整的品牌色系
-import { gradient, Color } from '@ldesign/color';
+import { Color, gradient } from '@ldesign/color'
 
-const brandColor = new Color('#3B82F6');
+const brandColor = new Color('#3B82F6')
 const scale = gradient(
   [lightest, brandColor, darkest],
   10,
   { space: 'oklch' }
-);
+)
 ```
 
 ### 数据可视化
@@ -372,7 +379,7 @@ const heatmap = gradient(
   ['#0000FF', '#00FF00', '#FFFF00', '#FF0000'],
   256,
   { space: 'oklch' }
-);
+)
 ```
 
 ### UI 动画
@@ -382,28 +389,28 @@ const heatmap = gradient(
 const interpolator = new ColorInterpolator(start, end, {
   space: 'oklch',
   easing: 'ease-in-out-cubic'
-});
+})
 
-animate(frame => {
-  const color = interpolator.at(frame / totalFrames);
-  element.style.backgroundColor = color.toHex();
-});
+animate((frame) => {
+  const color = interpolator.at(frame / totalFrames)
+  element.style.backgroundColor = color.toHex()
+})
 ```
 
 ### 可访问性检查
 
 ```typescript
 // 自动验证对比度
-const fg = new Color('#333333');
-const bg = new Color('#FFFFFF');
+const fg = new Color('#333333')
+const bg = new Color('#FFFFFF')
 
 if (fg.contrast(bg) >= 4.5) {
-  console.log('符合 WCAG AA 标准');
+  console.log('符合 WCAG AA 标准')
 }
 
 // 精确的感知差异
 if (fg.deltaE2000(bg) >= 10) {
-  console.log('足够的视觉区分度');
+  console.log('足够的视觉区分度')
 }
 ```
 
@@ -465,14 +472,14 @@ if (fg.deltaE2000(bg) >= 10) {
 
 ```typescript
 // 只导入核心 (8KB)
-import { Color } from '@ldesign/color';
+import { Color } from '@ldesign/color'
 
 // 导入高级功能 (12KB)
-import { 
-  Color, 
-  interpolate, 
-  rgbToOKLCH 
-} from '@ldesign/color';
+import {
+  Color,
+  interpolate,
+  rgbToOKLCH
+} from '@ldesign/color'
 ```
 
 ---
@@ -515,24 +522,24 @@ pnpm add @ldesign/color
 ### 第一个示例
 
 ```typescript
-import { Color, interpolate } from '@ldesign/color';
+import { Color, interpolate } from '@ldesign/color'
 
 // 创建颜色
-const color = new Color('#3B82F6');
+const color = new Color('#3B82F6')
 
 // 操作颜色
-const lighter = color.lighten(20);
-const complement = color.rotate(180);
+const lighter = color.lighten(20)
+const complement = color.rotate(180)
 
 // 平滑渐变 (新!)
 const gradient = interpolate(
-  '#FF0080', 
-  '#00FF80', 
-  0.5, 
+  '#FF0080',
+  '#00FF80',
+  0.5,
   { space: 'oklch' }
-);
+)
 
-console.log(gradient.toHex());
+console.log(gradient.toHex())
 ```
 
 ---
@@ -570,6 +577,7 @@ console.log(gradient.toHex());
 ### 贡献
 
 欢迎贡献：
+
 - 🐛 报告 Bug
 - ✨ 建议功能
 - 📝 改进文档
@@ -600,9 +608,9 @@ console.log(gradient.toHex());
 
 ### 快速链接
 
-[快速开始](./QUICK_START_v1.1.md) • 
-[高级指南](./docs/ADVANCED_COLOR_SPACES.md) • 
-[性能优化](./docs/PERFORMANCE.md) • 
+[快速开始](./QUICK_START_v1.1.md) •
+[高级指南](./docs/ADVANCED_COLOR_SPACES.md) •
+[性能优化](./docs/PERFORMANCE.md) •
 [交互演示](./examples/advanced-features.html)
 
 ---
@@ -612,4 +620,3 @@ Built with ❤️ by LDesign Team
 _最后更新: 2024-XX-XX_
 
 </div>
-

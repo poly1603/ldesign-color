@@ -1,13 +1,25 @@
 /**
- * 渐变色生成器
- * 支持线性、径向、锥形和网格渐变
+ * @ldesign/color - Gradient Generator
+ *
+ * Comprehensive gradient generation supporting:
+ * - Linear, radial, and conic gradients
+ * - Mesh gradients
+ * - Smooth interpolation
+ * - Animated gradients
+ * - CSS code generation
+ *
+ * @module gradient
  */
 
 import type { ColorInput } from '../types'
 import { Color } from '../core/Color'
 
+// ============================================
+// Type Definitions
+// ============================================
+
 /**
- * 渐变色停止点
+ * Gradient color stop
  */
 export interface GradientStop {
   color: Color
@@ -15,341 +27,263 @@ export interface GradientStop {
 }
 
 /**
- * 渐变选项
+ * Gradient generation options
  */
 export interface GradientOptions {
   stops?: GradientStop[]
-  smoothing?: boolean // 平滑过渡
-  colorSpace?: 'rgb' | 'hsl' | 'lab' // 插值色彩空�?
+  smoothing?: boolean // Enable smooth transitions
+  colorSpace?: 'rgb' | 'hsl' | 'lab' // Interpolation color space
 }
 
 /**
- * 线性渐变选项
+ * Linear gradient options
  */
 export interface LinearGradientOptions extends GradientOptions {
-  angle?: number // 角度（度�?
-  repeating?: boolean // 是否重复
+  angle?: number // Angle in degrees
+  repeating?: boolean // Create repeating gradient
 }
 
 /**
- * 径向渐变选项
+ * Radial gradient options
  */
 export interface RadialGradientOptions extends GradientOptions {
   shape?: 'circle' | 'ellipse'
   size?: 'closest-side' | 'farthest-side' | 'closest-corner' | 'farthest-corner'
-  position?: { x: string | number; y: string | number }
+  position?: { x: string | number, y: string | number }
 }
 
 /**
- * 锥形渐变选项
+ * Conic gradient options
  */
 export interface ConicGradientOptions extends GradientOptions {
-  startAngle?: number // 起始角度
-  position?: { x: string | number; y: string | number }
+  startAngle?: number // Starting angle in degrees
+  position?: { x: string | number, y: string | number }
 }
 
 /**
- * 网格渐变选项
+ * Mesh gradient options
  */
 export interface MeshGradientOptions {
   colors: Color[][]
   smoothness?: number // 0-1
-  resolution?: number // 网格分辨�?
+  resolution?: number // Grid resolution
 }
 
+// ============================================
+// Gradient Generator Class
+// ============================================
+
 /**
- * 渐变生成器类
+ * Gradient generation utility class
  */
 export class GradientGenerator {
-  
   /**
-   * 生成线性渐�?
+   * Generate linear gradient CSS
+   *
+   * @param colors - Array of colors for gradient
+   * @param options - Linear gradient options
+   * @returns CSS linear-gradient string
+   * @example
+   * ```ts
+   * const css = GradientGenerator.linear(
+   *   ['#ff0000', '#0000ff'],
+   *   { angle: 90 }
+   * );
+   * ```
    */
   static linear(colors: ColorInput[], options: LinearGradientOptions = {}): string {
     const {
       angle = 90,
       repeating = false,
-      stops: customStops
+      stops: customStops,
     } = options
-    
-    // 优化：使用临时颜色对象并立即处理，避免大量Color实例占用内存
+
+    // Optimize: use temporary color objects and process immediately
     const stops = customStops || this.generateEvenStopsOptimized(colors)
-    
+
     const prefix = repeating ? 'repeating-linear-gradient' : 'linear-gradient'
-    const gradientStops = stops.map(stop => {
+    const gradientStops = stops.map((stop) => {
       const position = stop.position !== undefined ? ` ${stop.position}%` : ''
       return `${stop.color.toRGBString()}${position}`
     }).join(', ')
-    
+
     return `${prefix}(${angle}deg, ${gradientStops})`
   }
-  
+
   /**
-   * 生成径向渐变
+   * Generate radial gradient CSS
+   *
+   * @param colors - Array of colors
+   * @param options - Radial gradient options
+   * @returns CSS radial-gradient string
    */
   static radial(colors: ColorInput[], options: RadialGradientOptions = {}): string {
     const {
       shape = 'circle',
       size = 'farthest-corner',
       position = { x: 'center', y: 'center' },
-      stops: customStops
+      stops: customStops,
     } = options
-    
-    // 优化：避免创建不必要的Color对象
+
+    // Optimize: avoid creating unnecessary Color objects
     const stops = customStops || this.generateEvenStopsOptimized(colors)
-    
+
     const posStr = `${position.x} ${position.y}`
-    const gradientStops = stops.map(stop => {
+    const gradientStops = stops.map((stop) => {
       const pos = stop.position !== undefined ? ` ${stop.position}%` : ''
       return `${stop.color.toRGBString()}${pos}`
     }).join(', ')
-    
+
     return `radial-gradient(${shape} ${size} at ${posStr}, ${gradientStops})`
   }
-  
+
   /**
-   * 生成锥形渐变
+   * Generate conic gradient CSS
+   *
+   * @param colors - Array of colors
+   * @param options - Conic gradient options
+   * @returns CSS conic-gradient string
    */
   static conic(colors: ColorInput[], options: ConicGradientOptions = {}): string {
     const {
       startAngle = 0,
       position = { x: 'center', y: 'center' },
-      stops: customStops
+      stops: customStops,
     } = options
-    
-    // 优化：避免创建不必要的Color对象
+
+    // Optimize: avoid creating unnecessary Color objects
     const stops = customStops || this.generateEvenStopsOptimized(colors, true)
-    
+
     const posStr = `${position.x} ${position.y}`
-    const gradientStops = stops.map(stop => {
+    const gradientStops = stops.map((stop) => {
       const pos = stop.position !== undefined ? ` ${stop.position}deg` : ''
       return `${stop.color.toRGBString()}${pos}`
     }).join(', ')
-    
+
     const fromAngle = startAngle ? `from ${startAngle}deg ` : ''
     return `conic-gradient(${fromAngle}at ${posStr}, ${gradientStops})`
   }
-  
+
   /**
-   * 生成网格渐变（CSS Paint API�?
+   * Generate mesh gradient
+   *
+   * Creates a complex mesh gradient using bilinear interpolation.
+   *
+   * @param colors - 2D array of colors
+   * @param options - Mesh gradient options
+   * @returns Mesh gradient with CSS fallback and canvas renderer
    */
   static mesh(colors: Color[][], options: Partial<MeshGradientOptions> = {}): {
     css: string
     canvas: (ctx: CanvasRenderingContext2D, width: number, height: number) => void
   } {
     const {
-      smoothness = 0.5
+      smoothness = 0.5,
     } = options
-    
-    // CSS fallback - 使用多个线性渐变模�?
+
+    // CSS fallback - use multiple linear gradients
     const cssGradients: string[] = []
     for (let i = 0; i < colors.length - 1; i++) {
       const row = colors[i]
       const nextRow = colors[i + 1]
       for (let j = 0; j < row.length - 1; j++) {
         const tl = row[j]
-        // const _tr = row[j + 1] // unused but preserved for mesh structure
-        // const _bl = nextRow[j] // unused but preserved for mesh structure
         const br = nextRow[j + 1]
-        
-        // 创建对角渐变
+
+        // Create diagonal gradient
         const gradient = `linear-gradient(135deg, ${tl.toRGBString()} 0%, ${br.toRGBString()} 100%)`
         cssGradients.push(gradient)
       }
     }
-    
-    // Canvas 渲染函数
+
+    // Canvas render function
     const canvasRender = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
       const cellWidth = width / (colors[0].length - 1)
       const cellHeight = height / (colors.length - 1)
-      
+
       for (let i = 0; i < colors.length - 1; i++) {
         for (let j = 0; j < colors[i].length - 1; j++) {
           const x = j * cellWidth
           const y = i * cellHeight
-          
-        // 使用双线性插�?
-        GradientGenerator.drawBilinearGradient(
-          ctx,
-          x, y, cellWidth, cellHeight,
-          colors[i][j],
-          colors[i][j + 1],
-          colors[i + 1][j],
-          colors[i + 1][j + 1],
-          smoothness
-        )
+
+          // Use bilinear interpolation
+          GradientGenerator.drawBilinearGradient(
+            ctx,
+            x,
+            y,
+            cellWidth,
+            cellHeight,
+            colors[i][j],
+            colors[i][j + 1],
+            colors[i + 1][j],
+            colors[i + 1][j + 1],
+            smoothness,
+          )
         }
       }
     }
-    
+
     return {
       css: cssGradients.join(', '),
-      canvas: canvasRender
+      canvas: canvasRender,
     }
   }
-  
+
   /**
-   * 生成平均分布的停止点 - 保留原方法以兼容
-   */
-  // @ts-expect-error - Preserved for compatibility but not used
-  private static generateEvenStops(colors: Color[], isDegrees = false): GradientStop[] {
-    if (colors.length === 0) return []
-    if (colors.length === 1) {
-      return [{ color: colors[0], position: 0 }]
-    }
-    
-    const maxValue = isDegrees ? 360 : 100
-    return colors.map((color, index) => ({
-      color,
-      position: (index / (colors.length - 1)) * maxValue
-    }))
-  }
-  
-  /**
-   * 优化的生成平均分布停止点 - 延迟创建Color对象
-   */
-  private static generateEvenStopsOptimized(colors: ColorInput[], isDegrees = false): GradientStop[] {
-    if (colors.length === 0) return []
-    
-    const maxValue = isDegrees ? 360 : 100
-    const stops: GradientStop[] = []
-    
-    for (let index = 0; index < colors.length; index++) {
-      const color = new Color(colors[index])
-      stops.push({
-        color,
-        position: colors.length === 1 ? 0 : (index / (colors.length - 1)) * maxValue
-      })
-      
-      // 如果Color实例有dispose方法，使用完立即释放
-      if (typeof color.dispose === 'function') {
-        // 标记为待释放，在使用完后释放
-        (color as any)._pendingDispose = true
-      }
-    }
-    
-    return stops
-  }
-  
-  /**
-   * 绘制双线性渐变（用于网格渐变�?
-   */
-  private static drawBilinearGradient(
-    ctx: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    tl: Color, // top-left
-    tr: Color, // top-right
-    bl: Color, // bottom-left
-    br: Color, // bottom-right
-    smoothness: number
-  ) {
-    const steps = Math.max(2, Math.floor(smoothness * 20))
-    const stepWidth = width / steps
-    const stepHeight = height / steps
-    
-    for (let i = 0; i <= steps; i++) {
-      for (let j = 0; j <= steps; j++) {
-        const u = i / steps
-        const v = j / steps
-        
-        // 双线性插�?
-        const top = tl.mix(tr, u * 100)
-        const bottom = bl.mix(br, u * 100)
-        const color = top.mix(bottom, v * 100)
-        
-        ctx.fillStyle = color.toRGBString()
-        ctx.fillRect(
-          x + i * stepWidth,
-          y + j * stepHeight,
-          stepWidth + 1, // +1 避免间隙
-          stepHeight + 1
-        )
-      }
-    }
-  }
-  
-  /**
-   * 生成平滑渐变（使用贝塞尔曲线插值）
+   * Generate smooth gradient using Bezier curve interpolation
+   *
+   * @param colors - Array of colors
+   * @param steps - Number of gradient steps
+   * @returns Array of interpolated colors
    */
   static smooth(colors: ColorInput[], steps = 10): Color[] {
     if (colors.length < 2) {
       return colors.map(c => new Color(c))
     }
-    
+
     const colorObjs = colors.map(c => new Color(c))
     const result: Color[] = []
-    
+
     for (let i = 0; i < steps; i++) {
       const t = i / (steps - 1)
       const color = this.bezierInterpolation(colorObjs, t)
       result.push(color)
     }
-    
+
     return result
   }
-  
+
   /**
-   * 贝塞尔曲线颜色插值 - 优化递归内存使用
-   */
-  private static bezierInterpolation(colors: Color[], t: number): Color {
-    if (colors.length === 1) return colors[0]
-    
-    // 使用迭代代替递归，避免栈溢出和内存占用
-    let workingColors = colors
-    
-    while (workingColors.length > 1) {
-      const newColors: Color[] = []
-      for (let i = 0; i < workingColors.length - 1; i++) {
-        const mixed = workingColors[i].mix(workingColors[i + 1], t * 100)
-        newColors.push(mixed)
-      }
-      
-      // 清理中间Color对象
-      if (workingColors !== colors) {
-        for (const color of workingColors) {
-          if (typeof color.dispose === 'function' && (color as any)._intermediate) {
-            color.dispose()
-          }
-        }
-      }
-      
-      // 标记中间对象
-      newColors.forEach(c => (c as any)._intermediate = true)
-      workingColors = newColors
-    }
-    
-    return workingColors[0]
-  }
-  
-  /**
-   * 生成动画渐变配置
+   * Generate animated gradient configuration
+   *
+   * @param colors - Array of colors to animate
+   * @param duration - Animation duration in ms
+   * @param type - Gradient type
+   * @returns CSS and keyframes for animated gradient
    */
   static animated(
     colors: ColorInput[],
     duration = 3000,
-    type: 'linear' | 'radial' | 'conic' = 'linear'
+    type: 'linear' | 'radial' | 'conic' = 'linear',
   ): {
     css: string
     keyframes: string
   } {
-    // 优化：使用唯一但更短的动画名称
+    // Optimize: use unique but shorter animation names
     const animationName = `ga${Math.random().toString(36).substr(2, 9)}`
-    
-    // 生成关键帧 - 优化内存使用
+
+    // Generate keyframes - optimize memory usage
     const keyframeSteps: string[] = []
-    
+
     for (let index = 0; index < colors.length; index++) {
       const color = new Color(colors[index])
       const percent = (index / (colors.length - 1)) * 100
       const nextColor = new Color(colors[(index + 1) % colors.length])
-          
+
       let gradient = ''
       const hex1 = color.toHex()
       const hex2 = nextColor.toHex()
-      
+
       switch (type) {
         case 'linear':
           gradient = `linear-gradient(90deg, ${hex1}, ${hex2})`
@@ -361,66 +295,207 @@ export class GradientGenerator {
           gradient = `conic-gradient(at center center, ${hex1}, ${hex2})`
           break
       }
-      
+
       keyframeSteps.push(`${percent}% { background: ${gradient}; }`)
-      
-      // 立即释放Color对象
-      if (typeof color.dispose === 'function') color.dispose()
-      if (typeof nextColor.dispose === 'function') nextColor.dispose()
+
+      // Immediately dispose Color objects
+      if (typeof color.dispose === 'function')
+        color.dispose()
+      if (typeof nextColor.dispose === 'function')
+        nextColor.dispose()
     }
-    
+
     const keyframes = `
       @keyframes ${animationName} {
         ${keyframeSteps.join('\n')}
       }
     `
-    
-    // 生成CSS
+
+    // Generate CSS
     const css = `
       animation: ${animationName} ${duration}ms ease-in-out infinite;
       background-size: 200% 200%;
     `
-    
+
     return { css, keyframes }
   }
-  
+
   /**
-   * 生成渐变的CSS变量
+   * Generate CSS variables for gradient
+   *
+   * @param gradientName - Name for the gradient
+   * @param colors - Array of colors
+   * @param prefix - CSS variable prefix
+   * @returns Object with CSS variables
    */
   static toCSSVariables(
     gradientName: string,
     colors: ColorInput[],
-    prefix = 'gradient'
+    prefix = 'gradient',
   ): Record<string, string> {
     const variables: Record<string, string> = {}
     const hexColors: string[] = []
-    
-    // 优化：逐个处理颜色，避免同时持有所有Color对象
+
+    // Optimize: process colors one by one to avoid holding all Color objects
     for (let index = 0; index < colors.length; index++) {
       const color = new Color(colors[index])
       const hex = color.toHex()
       hexColors.push(hex)
       variables[`--${prefix}-${gradientName}-color-${index + 1}`] = hex
-      
-      // 立即释放Color对象
+
+      // Immediately dispose Color object
       if (typeof color.dispose === 'function') {
         color.dispose()
       }
     }
-    
-    // 渐变变量 - 直接使用优化后的方法
+
+    // Gradient variables - use optimized methods
     variables[`--${prefix}-${gradientName}-linear`] = GradientGenerator.linear(hexColors)
     variables[`--${prefix}-${gradientName}-radial`] = GradientGenerator.radial(hexColors)
     variables[`--${prefix}-${gradientName}-conic`] = GradientGenerator.conic(hexColors)
-    
+
     return variables
+  }
+
+  // ============================================
+  // Private Helper Methods
+  // ============================================
+
+  /**
+   * Generate evenly distributed stops - optimized to delay Color object creation
+   */
+  private static generateEvenStopsOptimized(colors: ColorInput[], isDegrees = false): GradientStop[] {
+    if (colors.length === 0)
+      return []
+
+    const maxValue = isDegrees ? 360 : 100
+    const stops: GradientStop[] = []
+
+    for (let index = 0; index < colors.length; index++) {
+      const color = new Color(colors[index])
+      stops.push({
+        color,
+        position: colors.length === 1 ? 0 : (index / (colors.length - 1)) * maxValue,
+      })
+
+      // Mark for disposal if Color has dispose method
+      if (typeof color.dispose === 'function') {
+        (color as any)._pendingDispose = true
+      }
+    }
+
+    return stops
+  }
+
+  /**
+   * Draw bilinear gradient (for mesh gradients)
+   */
+  private static drawBilinearGradient(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    tl: Color, // top-left
+    tr: Color, // top-right
+    bl: Color, // bottom-left
+    br: Color, // bottom-right
+    smoothness: number,
+  ) {
+    const steps = Math.max(2, Math.floor(smoothness * 20))
+    const stepWidth = width / steps
+    const stepHeight = height / steps
+
+    for (let i = 0; i <= steps; i++) {
+      for (let j = 0; j <= steps; j++) {
+        const u = i / steps
+        const v = j / steps
+
+        // Bilinear interpolation
+        const top = tl.mix(tr, u * 100)
+        const bottom = bl.mix(br, u * 100)
+        const color = top.mix(bottom, v * 100)
+
+        ctx.fillStyle = color.toRGBString()
+        ctx.fillRect(
+          x + i * stepWidth,
+          y + j * stepHeight,
+          stepWidth + 1, // +1 to avoid gaps
+          stepHeight + 1,
+        )
+      }
+    }
+  }
+
+  /**
+   * Bezier curve color interpolation - optimized to use iteration instead of recursion
+   */
+  private static bezierInterpolation(colors: Color[], t: number): Color {
+    if (colors.length === 1)
+      return colors[0]
+
+    // Use iteration instead of recursion to avoid stack overflow and memory usage
+    let workingColors = colors
+
+    while (workingColors.length > 1) {
+      const newColors: Color[] = []
+      for (let i = 0; i < workingColors.length - 1; i++) {
+        const mixed = workingColors[i].mix(workingColors[i + 1], t * 100)
+        newColors.push(mixed)
+      }
+
+      // Clean up intermediate Color objects
+      if (workingColors !== colors) {
+        for (const color of workingColors) {
+          if (typeof color.dispose === 'function' && (color as any)._intermediate) {
+            color.dispose()
+          }
+        }
+      }
+
+      // Mark intermediate objects
+      newColors.forEach(c => (c as any)._intermediate = true)
+      workingColors = newColors
+    }
+
+    return workingColors[0]
   }
 }
 
-// 导出便捷函数
+// ============================================
+// Convenience Functions
+// ============================================
+
 export const linearGradient = GradientGenerator.linear
 export const radialGradient = GradientGenerator.radial
 export const conicGradient = GradientGenerator.conic
 export const meshGradient = GradientGenerator.mesh
 export const smoothGradient = GradientGenerator.smooth
 export const animatedGradient = GradientGenerator.animated
+
+// ============================================
+// Advanced Gradient Features
+// ============================================
+
+// Re-export advanced gradient utilities
+export {
+  addGradientStops,
+  adjustGradientContrast,
+  analyzeGradient,
+  generateConicGradientCSS,
+  generateEasedGradient,
+  generateGradientWithMidpoints,
+  generateLinearGradientCSS,
+  generateRadialGradientCSS,
+  reverseGradient,
+  reverseGradientCSS,
+  sampleGradient,
+  smoothGradient as smoothGradientAdvanced,
+} from './advanced'
+
+export type {
+  AdvancedGradientStop,
+  ConicGradientCSSOptions,
+  LinearGradientCSSOptions,
+  RadialGradientCSSOptions,
+} from './advanced'

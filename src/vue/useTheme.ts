@@ -2,8 +2,8 @@
  * Vue 3 Composable for theme management
  */
 
-import type { PresetTheme } from '../themes/presets';
-import type { ThemeOptions, ThemeState } from '../themes/themeManager';
+import type { PresetTheme } from '../themes/presets'
+import type { ThemeOptions, ThemeState } from '../themes/themeManager'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { presetThemes } from '../themes/presets'
 import { ThemeManager } from '../themes/themeManager'
@@ -30,7 +30,8 @@ export function useTheme(options: UseThemeOptions = {}) {
       const theme = themeManager.applyTheme(colorOrName, themeOptions)
       currentTheme.value = theme
       return theme
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -42,7 +43,8 @@ export function useTheme(options: UseThemeOptions = {}) {
       const theme = themeManager.applyPresetTheme(name, themeOptions)
       currentTheme.value = theme
       return theme
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -112,7 +114,7 @@ export function useTheme(options: UseThemeOptions = {}) {
     applyPresetTheme,
     restoreTheme,
     clearTheme,
-    getCurrentTheme
+    getCurrentTheme,
   }
 }
 
@@ -126,12 +128,12 @@ export function createThemeProvider(options: UseThemeOptions = {}) {
   if (!globalThemeManager) {
     globalThemeManager = new ThemeManager(options)
   }
-  
+
   return {
     install(app: any) {
       app.provide('themeManager', globalThemeManager)
       app.config.globalProperties.$theme = globalThemeManager
-      
+
       // 应用卸载时清理
       app.unmount = new Proxy(app.unmount, {
         apply(target, thisArg, args) {
@@ -140,8 +142,8 @@ export function createThemeProvider(options: UseThemeOptions = {}) {
             globalThemeManager = null
           }
           return Reflect.apply(target, thisArg, args)
-        }
+        },
       })
-    }
+    },
   }
 }

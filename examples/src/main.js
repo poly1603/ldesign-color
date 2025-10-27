@@ -1,11 +1,8 @@
 import {
-  generateTailwindTheme,
-  generateThemePalettes,
-  generateThemedCssVariables,
-  injectThemedCssVariables,
-  setThemeMode,
+  applyThemeCssVars,
   generateThemeCssVars,
-  applyThemeCssVars
+  generateThemePalettes,
+  setThemeMode,
 } from '@ldesign/color/core'
 import { runAnalysis } from './analyze.js'
 
@@ -150,7 +147,7 @@ function renderPalette(palette, containerId) {
   const shadeOrder = isGray ? grayShadeOrder : regularShadeOrder
 
   // Sort and display based on the defined order
-  shadeOrder.forEach(level => {
+  shadeOrder.forEach((level) => {
     if (palette[level]) {
       const colorHex = palette[level]
       const box = document.createElement('div')
@@ -158,7 +155,7 @@ function renderPalette(palette, containerId) {
       box.style.backgroundColor = colorHex
 
       // Determine text color based on lightness for better contrast
-      const isLight = parseInt(level) <= 400
+      const isLight = Number.parseInt(level) <= 400
       box.style.color = isLight ? '#000' : '#fff'
 
       box.innerHTML = `
@@ -194,7 +191,7 @@ function showToast(message) {
 
 // Track current theme mode
 let currentTheme = 'light'
-let generatedThemes = { light: null, dark: null }
+const generatedThemes = { light: null, dark: null }
 
 // Generate and display theme
 function generateAndDisplayTheme() {
@@ -202,7 +199,7 @@ function generateAndDisplayTheme() {
 
   // Generate both light and dark themes
   const themes = generateThemePalettes(primaryHex, {
-    preserveInput: true
+    preserveInput: true,
   })
 
   // Store themes
@@ -236,7 +233,7 @@ function displayTheme(mode) {
   // Get custom name mappings
   const nameMap = {}
   const colorNames = ['primary', 'success', 'warning', 'danger', 'info', 'gray']
-  colorNames.forEach(name => {
+  colorNames.forEach((name) => {
     const customName = document.getElementById(`name-${name}`).value.trim()
     if (customName) {
       nameMap[name] = customName
@@ -250,16 +247,16 @@ function displayTheme(mode) {
       success: theme.success,
       warning: theme.warning,
       danger: theme.danger,
-      info: theme.info
+      info: theme.info,
     },
-    grays: theme.gray
+    grays: theme.gray,
   }
 
   // Generate CSS variables with custom configuration
   const cssVars = generateThemeCssVars(themeForCss, {
     prefix,
     suffixFormat,
-    nameMap
+    nameMap,
   })
 
   // Display complete CSS with both light and dark mode variables if available
@@ -271,9 +268,9 @@ function displayTheme(mode) {
         success: generatedThemes.light.success,
         warning: generatedThemes.light.warning,
         danger: generatedThemes.light.danger,
-        info: generatedThemes.light.info
+        info: generatedThemes.light.info,
       },
-      grays: generatedThemes.light.gray
+      grays: generatedThemes.light.gray,
     }
     const darkTheme = {
       colors: {
@@ -281,16 +278,17 @@ function displayTheme(mode) {
         success: generatedThemes.dark.success,
         warning: generatedThemes.dark.warning,
         danger: generatedThemes.dark.danger,
-        info: generatedThemes.dark.info
+        info: generatedThemes.dark.info,
       },
-      grays: generatedThemes.dark.gray
+      grays: generatedThemes.dark.gray,
     }
 
     const lightCss = generateThemeCssVars(lightTheme, { prefix, suffixFormat, nameMap })
     const darkCss = generateThemeCssVars(darkTheme, { prefix, suffixFormat, nameMap })
 
     fullCss = `/* Light Mode */\n:root {\n${lightCss}\n}\n\n/* Dark Mode */\n:root[data-theme-mode="dark"] {\n${darkCss}\n}`
-  } else {
+  }
+  else {
     fullCss = `:root {\n${cssVars}\n}`
   }
 
@@ -302,7 +300,7 @@ function displayTheme(mode) {
       prefix,
       suffixFormat,
       nameMap,
-      styleId: `ldesign-theme-${mode}`
+      styleId: `ldesign-theme-${mode}`,
     })
 
     // Apply the current theme mode using the proper function
@@ -357,7 +355,7 @@ document.getElementById('primaryColor').addEventListener('input', (e) => {
 
 document.getElementById('primaryHex').addEventListener('input', (e) => {
   const hex = e.target.value
-  if (/^#[0-9A-Fa-f]{6}$/.test(hex)) {
+  if (/^#[0-9A-F]{6}$/i.test(hex)) {
     document.getElementById('primaryColor').value = hex
     generateAndDisplayTheme()
   }
@@ -368,6 +366,5 @@ generateAndDisplayTheme()
 
 // Run analysis in console
 setTimeout(() => {
-  
   runAnalysis()
 }, 500)

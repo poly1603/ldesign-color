@@ -1,19 +1,19 @@
 /**
  * @ldesign/color - CSS Variables Generation with Theme Support
- * 
+ *
  * Functions for generating CSS custom properties with light/dark mode support
  */
 
-import type { ThemePalettes } from './darkMode';
+import type { ThemePalettes } from './darkMode'
 
 // Re-export ThemePalettes type
-export type { ThemePalettes } from './darkMode';
+export type { ThemePalettes } from './darkMode'
 
 /**
  * Generate CSS variable name from color name and shade
  */
 function generateCssVarName(colorName: string, shade: string): string {
-  return `--color-${colorName}-${shade}`;
+  return `--color-${colorName}-${shade}`
 }
 
 /**
@@ -22,30 +22,30 @@ function generateCssVarName(colorName: string, shade: string): string {
 function generatePaletteVars(colorName: string, palette: Record<string, string>): string {
   return Object.entries(palette)
     .map(([shade, hex]) => `  ${generateCssVarName(colorName, shade)}: ${hex};`)
-    .join('\n');
+    .join('\n')
 }
 
 /**
  * Generate CSS variables for all palettes in a theme
  */
 function generateThemeVars(theme: ThemePalettes['light'] | ThemePalettes['dark']): string {
-  const vars: string[] = [];
-  
+  const vars: string[] = []
+
   Object.entries(theme).forEach(([colorName, palette]) => {
-    vars.push(`  /* ${colorName.charAt(0).toUpperCase() + colorName.slice(1)} */`);
-    vars.push(generatePaletteVars(colorName, palette));
-  });
-  
-  return vars.join('\n');
+    vars.push(`  /* ${colorName.charAt(0).toUpperCase() + colorName.slice(1)} */`)
+    vars.push(generatePaletteVars(colorName, palette))
+  })
+
+  return vars.join('\n')
 }
 
 /**
  * Generate complete CSS with both light and dark mode variables
  */
 export function generateThemedCssVariables(palettes: ThemePalettes): string {
-  const lightVars = generateThemeVars(palettes.light);
-  const darkVars = generateThemeVars(palettes.dark);
-  
+  const lightVars = generateThemeVars(palettes.light)
+  const darkVars = generateThemeVars(palettes.dark)
+
   return `/* Light Mode (Default) */
 :root {
 ${lightVars}
@@ -54,7 +54,7 @@ ${lightVars}
 /* Dark Mode */
 :root[data-theme-mode='dark'] {
 ${darkVars}
-}`;
+}`
 }
 
 /**
@@ -210,8 +210,8 @@ export function generateSemanticCssVariables(palettes: ThemePalettes): string {
   /* ========== Legacy Aliases (for backward compatibility) ========== */
   --color-background: var(--color-bg-container);
   --color-background-secondary: var(--color-bg-container-secondary);
-  --color-background-tertiary: var(--color-bg-container-tertiary);`;
-  
+  --color-background-tertiary: var(--color-bg-container-tertiary);`
+
   const darkSemanticAliases = `
   /* ========== Background Colors (Dark Mode) ========== */
   /* Page & Container Backgrounds */
@@ -334,8 +334,8 @@ export function generateSemanticCssVariables(palettes: ThemePalettes): string {
   /* ========== Legacy Aliases (for backward compatibility) ========== */
   --color-background: var(--color-bg-container);
   --color-background-secondary: var(--color-bg-container-secondary);
-  --color-background-tertiary: var(--color-bg-container-tertiary);`;
-  
+  --color-background-tertiary: var(--color-bg-container-tertiary);`
+
   return `/* Light Mode (Default) */
 :root {
 ${generateThemeVars(palettes.light)}
@@ -346,53 +346,53 @@ ${semanticAliases}
 :root[data-theme-mode='dark'] {
 ${generateThemeVars(palettes.dark)}
 ${darkSemanticAliases}
-}`;
+}`
 }
 
 /**
  * Inject CSS variables into the document head
  */
 export function injectThemedCssVariables(palettes: ThemePalettes, includeSemantics: boolean = true): void {
-  const css = includeSemantics 
+  const css = includeSemantics
     ? generateSemanticCssVariables(palettes)
-    : generateThemedCssVariables(palettes);
-  
+    : generateThemedCssVariables(palettes)
+
   // Check if style element already exists
-  let styleElement = document.getElementById('ldesign-color-theme');
-  
+  let styleElement = document.getElementById('ldesign-color-theme')
+
   if (!styleElement) {
-    styleElement = document.createElement('style');
-    styleElement.id = 'ldesign-color-theme';
-    document.head.appendChild(styleElement);
+    styleElement = document.createElement('style')
+    styleElement.id = 'ldesign-color-theme'
+    document.head.appendChild(styleElement)
   }
-  
-  styleElement.textContent = css;
+
+  styleElement.textContent = css
 }
 
 /**
  * Toggle theme mode on the root element
  */
 export function setThemeMode(mode: 'light' | 'dark'): void {
-  const root = document.documentElement;
-  root.setAttribute('data-theme-mode', mode);
+  const root = document.documentElement
+  root.setAttribute('data-theme-mode', mode)
 }
 
 /**
  * Get current theme mode
  */
 export function getThemeMode(): 'light' | 'dark' {
-  const root = document.documentElement;
-  return root.getAttribute('data-theme-mode') === 'dark' ? 'dark' : 'light';
+  const root = document.documentElement
+  return root.getAttribute('data-theme-mode') === 'dark' ? 'dark' : 'light'
 }
 
 /**
  * Toggle between light and dark mode
  */
 export function toggleThemeMode(): 'light' | 'dark' {
-  const currentMode = getThemeMode();
-  const newMode = currentMode === 'light' ? 'dark' : 'light';
-  setThemeMode(newMode);
-  return newMode;
+  const currentMode = getThemeMode()
+  const newMode = currentMode === 'light' ? 'dark' : 'light'
+  setThemeMode(newMode)
+  return newMode
 }
 
 /**
@@ -400,28 +400,29 @@ export function toggleThemeMode(): 'light' | 'dark' {
  */
 export function initThemeMode(): void {
   // Check for saved preference
-  const savedMode = localStorage.getItem('theme-mode');
-  
+  const savedMode = localStorage.getItem('theme-mode')
+
   if (savedMode === 'dark' || savedMode === 'light') {
-    setThemeMode(savedMode);
-  } else {
-    // Check system preference
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setThemeMode(prefersDark ? 'dark' : 'light');
+    setThemeMode(savedMode)
   }
-  
+  else {
+    // Check system preference
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    setThemeMode(prefersDark ? 'dark' : 'light')
+  }
+
   // Listen for system preference changes
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
     if (!localStorage.getItem('theme-mode')) {
-      setThemeMode(e.matches ? 'dark' : 'light');
+      setThemeMode(e.matches ? 'dark' : 'light')
     }
-  });
+  })
 }
 
 /**
  * Save theme mode preference
  */
 export function saveThemeMode(mode: 'light' | 'dark'): void {
-  localStorage.setItem('theme-mode', mode);
-  setThemeMode(mode);
+  localStorage.setItem('theme-mode', mode)
+  setThemeMode(mode)
 }

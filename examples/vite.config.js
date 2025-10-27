@@ -1,14 +1,14 @@
+import path from 'node:path'
 import { defineConfig } from 'vite'
-import path from 'path'
 
 export default defineConfig({
   resolve: {
     alias: {
-      '@ldesign/color': path.resolve(__dirname, '../src')
-    }
+      '@ldesign/color': path.resolve(__dirname, '../src'),
+    },
   },
   server: {
     port: 3000,
-    open: true
-  }
+    open: true,
+  },
 })

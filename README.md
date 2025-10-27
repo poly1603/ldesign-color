@@ -10,21 +10,74 @@
 ## ✨ Features
 
 ### Core Features
+
 - **Multiple Color Formats**: RGB, HSL, HSV, HEX, HWB, Named Colors
-- **Advanced Color Spaces**: OKLCH, OKLAB, LAB, LCH, XYZ (NEW ✨)
-- **Perceptual Interpolation**: Smooth, vibrant gradients using OKLCH (NEW ✨)
-- **Delta E 2000**: Accurate perceptual color difference measurement (NEW ✨)
+- **Advanced Color Spaces**: OKLCH, OKLAB, LAB, LCH, XYZ ✨
+- **Perceptual Interpolation**: Smooth, vibrant gradients using OKLCH ✨
+- **Delta E 2000**: Accurate perceptual color difference measurement ✨
 - **Color Manipulation**: lighten, darken, saturate, desaturate, rotate, mix, blend
 - **Color Analysis**: luminance, contrast, WCAG compliance, color temperature
 - **Smart Palette Generation**: Tailwind-style, Material Design, semantic colors
 - **Accessibility Tools**: Color blindness simulation, WCAG auto-adjustment
 - **Color Schemes**: Monochromatic, complementary, triadic, and more
 - **Theme Management**: Import/export, system theme detection, persistence
-- **Smart Caching**: High-performance LRU cache for conversions
+- **Smart Caching**: High-performance LRU/LFU cache with persistence
 - **Immutable Operations**: All methods return new instances
 - **Chain Operations**: Fluent API for complex transformations
 
+### New in v1.1 🆕
+
+#### Design Systems Integration (6 Systems)
+
+- **Ant Design**: 10-shade palettes with semantic colors
+- **Chakra UI**: 50-900 scales with complete theme
+- **Material Design**: MD2 & MD3 with tonal system
+- **Carbon Design**: 10-level scales with full theme
+- **Fluent UI**: 17-level ramps with tokens
+- **Tailwind CSS**: Enhanced with semantic colors
+
+#### Advanced Tools
+
+- **Color Sorting**: 10 sorting criteria (hue, saturation, lightness, luminance, temperature, etc.)
+- **Color Clustering**: K-means with K-means++ initialization
+- **Nearest Color**: 5 distance metrics (euclidean, deltaE2000, deltaEOKLAB, HSL, HSV)
+- **Color Quantization**: K-means & Median-cut algorithms
+- **Color Filtering**: Multi-criteria filtering
+- **Color Deduplication**: Perceptual deduplication
+- **Statistics**: Comprehensive color distribution analysis
+
+#### Batch Processing
+
+- **Batch Conversion**: Process thousands of colors efficiently
+- **Batch Operations**: Apply operations to large datasets
+- **Streaming**: Process massive datasets with minimal memory
+- **Progress Tracking**: Real-time progress callbacks
+
+#### Enhanced Color Harmony
+
+- **10 Harmony Types**: Including clash and double-complementary
+- **5D Scoring**: Color balance, contrast, saturation, lightness, hue relation
+- **Auto Optimization**: Improve harmony scores automatically
+- **Nature Themes**: 5 preset natural color combinations
+- **Best Match**: Find optimal harmony type automatically
+
+#### Advanced Gradients
+
+- **Midpoint Control**: Precise transition control
+- **Eased Gradients**: 30+ easing functions
+- **Gradient Analysis**: Detect banding and contrast issues
+- **CSS Generators**: Linear, radial, conic with full options
+- **Gradient Operations**: Reverse, adjust contrast, smooth, sample
+
+#### Performance
+
+- **Object Pooling**: Reduce allocations by 60-80%
+- **Smart Caching**: Adaptive cache sizing
+- **Performance Monitoring**: Complete metrics and stats
+- **Memory Management**: Automatic cleanup and optimization
+
 ### Theme & Accessibility Features
+
 - **Theme Manager**: Apply, save, restore, import/export themes
 - **System Theme Detection**: Auto-detect light/dark mode preference
 - **Color Accessibility**: WCAG compliance checking and auto-adjustment
@@ -33,6 +86,7 @@
 - **Smart Schemes**: Generate harmonious color schemes automatically
 
 ### Advanced Utilities
+
 - **Natural Palette**: Generate natural-looking color scales
 - **CSS Variables**: Generate and inject CSS custom properties
 - **Dark Mode**: Automatic dark theme generation
@@ -40,6 +94,7 @@
 - **Plugin System**: Extensible architecture for custom features
 
 ### Framework Support
+
 - **React Components**: ThemePicker, useTheme hook
 - **Vue 3 Components**: ThemePicker, useTheme composable
 - **Framework Agnostic**: Works with any JavaScript framework
@@ -58,27 +113,27 @@ pnpm add @ldesign/color
 ## 🚀 Quick Start
 
 ```typescript
-import { Color, interpolate, gradient } from '@ldesign/color';
+import { Color, gradient, interpolate } from '@ldesign/color'
 
 // Basic usage
-const color = new Color('#3498db');
-const lighter = color.lighten(20);
-const complementary = color.rotate(180);
+const color = new Color('#3498db')
+const lighter = color.lighten(20)
+const complementary = color.rotate(180)
 
 // Advanced color spaces (NEW!)
-const oklch = color.toOKLCH();  // Perceptually uniform
-const lab = color.toLAB();      // CIE L*a*b*
-const deltaE = color.deltaE2000(new Color('#c0392b')); // Perceptual difference
+const oklch = color.toOKLCH() // Perceptually uniform
+const lab = color.toLAB() // CIE L*a*b*
+const deltaE = color.deltaE2000(new Color('#c0392b')) // Perceptual difference
 
 // Smooth color interpolation (NEW!)
-const midColor = interpolate('#FF0080', '#00FF80', 0.5, { space: 'oklch' });
+const midColor = interpolate('#FF0080', '#00FF80', 0.5, { space: 'oklch' })
 
 // Beautiful gradients (NEW!)
 const colors = gradient(
   ['#FF0080', '#FF8000', '#00FF80', '#0080FF'],
   50,
   { space: 'oklch', easing: 'ease-in-out' }
-);
+)
 ```
 
 ## 📖 API Overview
@@ -87,59 +142,59 @@ const colors = gradient(
 
 ```typescript
 // Creation
-const color = new Color('#ff5733');
-const color2 = Color.fromRGB(255, 87, 51);
-const color3 = Color.fromHSL(9, 100, 60);
-const random = Color.random();
+const color = new Color('#ff5733')
+const color2 = Color.fromRGB(255, 87, 51)
+const color3 = Color.fromHSL(9, 100, 60)
+const random = Color.random()
 
 // Conversions
-color.toHex();        // '#ff5733'
-color.toRGB();        // { r: 255, g: 87, b: 51 }
-color.toHSL();        // { h: 9, s: 100, l: 60 }
+color.toHex() // '#ff5733'
+color.toRGB() // { r: 255, g: 87, b: 51 }
+color.toHSL() // { h: 9, s: 100, l: 60 }
 
 // Manipulations
-color.lighten(20);    // 20% lighter
-color.darken(20);     // 20% darker
-color.saturate(30);   // 30% more saturated
-color.rotate(180);    // Rotate hue by 180°
+color.lighten(20) // 20% lighter
+color.darken(20) // 20% darker
+color.saturate(30) // 30% more saturated
+color.rotate(180) // Rotate hue by 180°
 
 // Analysis
-color.getLuminance(); // 0.364
-color.contrast('#000000'); // 7.59
-color.isLight();      // true
-color.isWCAGCompliant('#ffffff', 'AA'); // true
+color.getLuminance() // 0.364
+color.contrast('#000000') // 7.59
+color.isLight() // true
+color.isWCAGCompliant('#ffffff', 'AA') // true
 ```
 
 ### ColorAdvanced Class
 
 ```typescript
-const color = new ColorAdvanced('#e67e22');
+const color = new ColorAdvanced('#e67e22')
 
 // Professional color spaces
-color.toLAB();        // { l: 62.5, a: 31.3, b: 56.7 }
-color.toLCH();        // { l: 62.5, c: 64.7, h: 60.9 }
-color.toOKLAB();      // OKLAB color space
+color.toLAB() // { l: 62.5, a: 31.3, b: 56.7 }
+color.toLCH() // { l: 62.5, c: 64.7, h: 60.9 }
+color.toOKLAB() // OKLAB color space
 
 // Color analysis
-color.getColorTemperature(); // 3500 (warm)
-color.getColorPsychology();  // { energy: 'high', ... }
-color.deltaE2000(otherColor); // 2.3 (barely perceptible)
+color.getColorTemperature() // 3500 (warm)
+color.getColorPsychology() // { energy: 'high', ... }
+color.deltaE2000(otherColor) // 2.3 (barely perceptible)
 
 // Design systems
-color.toMaterialDesign(); // Material Design palette
-color.toAntDesign();       // Ant Design palette
+color.toMaterialDesign() // Material Design palette
+color.toAntDesign() // Ant Design palette
 ```
 
 ### Animation System
 
 ```typescript
-const animation = new ColorAnimation();
+const animation = new ColorAnimation()
 
 // Simple animation
 animation.fromTo(startColor, endColor, {
   duration: 1000,
   easing: 'easeInOutQuad'
-});
+})
 
 // Keyframe animation
 animation.animate([
@@ -149,7 +204,7 @@ animation.animate([
 ], {
   duration: 2000,
   iterations: Infinity
-});
+})
 ```
 
 ## 🏗 Project Structure
@@ -243,22 +298,22 @@ pnpm add @ldesign/color
 ## 快速开始
 
 ```typescript
-import { Color, color } from '@ldesign/color';
+import { Color, color } from '@ldesign/color'
 
 // 创建颜色实例
-const c1 = new Color('#3B82F6');
-const c2 = Color.fromRGB(59, 130, 246);
-const c3 = color('blue');
+const c1 = new Color('#3B82F6')
+const c2 = Color.fromRGB(59, 130, 246)
+const c3 = color('blue')
 
 // 颜色操作（链式调用）
 const result = c1
-  .lighten(20)     // 加亮 20%
-  .saturate(10)    // 增加饱和度
-  .rotate(30)      // 旋转色相 30度
-  .alpha(0.8);     // 设置透明度
+  .lighten(20) // 加亮 20%
+  .saturate(10) // 增加饱和度
+  .rotate(30) // 旋转色相 30度
+  .alpha(0.8) // 设置透明度
 
-console.log(result.toHex());      // 输出 HEX 格式
-console.log(result.toRGBString()); // 输出 RGB 字符串
+console.log(result.toHex()) // 输出 HEX 格式
+console.log(result.toRGBString()) // 输出 RGB 字符串
 ```
 
 ## 许可证

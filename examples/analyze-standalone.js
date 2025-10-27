@@ -1,75 +1,76 @@
-import { Color } from '../dist/index.js'
-import { generateTailwindScale, generateTailwindSemanticColors, generateTailwindGrayScale } from '../dist/index.js'
+import { Color, generateTailwindGrayScale, generateTailwindScale, generateTailwindSemanticColors } from '../dist/index.js'
 
 // Expected lightness values from tailwindcss-palette-generator
 const expectedLightness = {
-  '50': 98,
-  '100': 95,
-  '200': 90,
-  '300': 82,
-  '400': 64,
-  '500': 46,
-  '600': 33,
-  '700': 24,
-  '800': 14,
-  '900': 7,
-  '950': 4,
-  '1000': 2
+  50: 98,
+  100: 95,
+  200: 90,
+  300: 82,
+  400: 64,
+  500: 46,
+  600: 33,
+  700: 24,
+  800: 14,
+  900: 7,
+  950: 4,
+  1000: 2,
 }
 
 const grayExpectedLightness = {
-  '50': 98,
-  '100': 95,
-  '150': 93,
-  '200': 88,
-  '300': 80,
-  '400': 71,
-  '500': 60,
-  '600': 48,
-  '700': 37,
-  '800': 27,
-  '850': 20,
-  '900': 14,
-  '950': 9,
-  '1000': 5
+  50: 98,
+  100: 95,
+  150: 93,
+  200: 88,
+  300: 80,
+  400: 71,
+  500: 60,
+  600: 48,
+  700: 37,
+  800: 27,
+  850: 20,
+  900: 14,
+  950: 9,
+  1000: 5,
 }
 
 function analyzeColorScale(scaleName, scale, expected) {
   console.log(`\n=== ${scaleName} Analysis ===`)
   console.log('Shade | Hex      | L (actual) | L (expected) | Diff | H     | S')
   console.log('------|----------|------------|--------------|------|-------|-------')
-  
+
   let totalDiff = 0
   let count = 0
-  
+
   Object.entries(scale).forEach(([shade, hex]) => {
     const color = new Color(hex)
     const hsl = color.toHSL()
     const actualL = Math.round(hsl.l)
     const expectedL = expected[shade]
-    
+
     if (expectedL !== undefined) {
       const diff = Math.abs(actualL - expectedL)
       totalDiff += diff
       count++
-      
+
       console.log(
-        `${shade.padEnd(5)} | ${hex} | ${actualL.toString().padStart(10)} | ` +
-        `${expectedL.toString().padStart(12)} | ${diff.toString().padStart(4)} | ` +
-        `${Math.round(hsl.h).toString().padStart(5)} | ${Math.round(hsl.s).toString().padStart(5)}`
+        `${shade.padEnd(5)} | ${hex} | ${actualL.toString().padStart(10)} | `
+        + `${expectedL.toString().padStart(12)} | ${diff.toString().padStart(4)} | `
+        + `${Math.round(hsl.h).toString().padStart(5)} | ${Math.round(hsl.s).toString().padStart(5)}`,
       )
     }
   })
-  
+
   const avgDiff = count > 0 ? (totalDiff / count).toFixed(2) : 0
   console.log(`Average lightness difference: ${avgDiff}`)
-  
+
   // Check if good (avg diff < 5 is excellent, < 10 is good)
   if (avgDiff < 5) {
     console.log('✓ Excellent: Very close to expected lightness values')
-  } else if (avgDiff < 10) {
+  }
+  else if (avgDiff < 10) {
     console.log('✓ Good: Close to expected lightness values')
-  } else {
+  }
+  else {
     console.log('⚠ Warning: Significant deviation from expected lightness values')
   }
 }
@@ -110,13 +111,14 @@ Object.entries(grayScale).forEach(([shade, hex]) => {
   const expectedL = grayExpectedLightness[shade]
   const actualS = Math.round(hsl.s)
   const isPureGray = actualS === 0
-  
-  if (isPureGray) pureGrayCount++
-  
+
+  if (isPureGray)
+    pureGrayCount++
+
   console.log(
-    `${shade.padEnd(5)} | ${hex} | ${actualL.toString().padStart(10)} | ` +
-    `${(expectedL || '-').toString().padStart(12)} | ${actualS.toString().padStart(10)} | ` +
-    `${isPureGray ? '✓ Yes' : '✗ No'}`
+    `${shade.padEnd(5)} | ${hex} | ${actualL.toString().padStart(10)} | `
+    + `${(expectedL || '-').toString().padStart(12)} | ${actualS.toString().padStart(10)} | `
+    + `${isPureGray ? '✓ Yes' : '✗ No'}`,
   )
 })
 
@@ -126,7 +128,7 @@ console.log(`\n${pureGrayCount}/${Object.keys(grayScale).length} shades are pure
 console.log('\n=== Visual Preview ===')
 console.log('Primary scale visualization:')
 Object.entries(primaryScale).forEach(([shade, hex]) => {
-  console.log(`%c ${shade}: ${hex} `, `background: ${hex}; color: ${parseInt(shade) <= 400 ? '#000' : '#fff'}`)
+  console.log(`%c ${shade}: ${hex} `, `background: ${hex}; color: ${Number.parseInt(shade) <= 400 ? '#000' : '#fff'}`)
 })
 
 // Summary

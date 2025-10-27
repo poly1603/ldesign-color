@@ -20,7 +20,7 @@ export const ThemePicker: React.FC<ThemePickerProps> = ({
   showSearch = false,
   showCustom = false,
   prefix = 'ld',
-  storageKey
+  storageKey,
 }) => {
   const pickerRef = useRef<HTMLDivElement>(null)
   const [isOpen, setIsOpen] = useState(false)
@@ -35,10 +35,10 @@ export const ThemePicker: React.FC<ThemePickerProps> = ({
     themeName,
     applyTheme,
     applyPresetTheme,
-    restoreTheme
+    restoreTheme,
   } = useTheme({
     prefix,
-    storageKey
+    storageKey,
   })
 
   // Current color
@@ -52,7 +52,7 @@ export const ThemePicker: React.FC<ThemePickerProps> = ({
     return preset?.label || '主题色'
   }, [presets, themeName])
 
-// Build visible presets (prepend current custom color if not in presets)
+  // Build visible presets (prepend current custom color if not in presets)
   const visiblePresets = useMemo(() => {
     const list: PresetTheme[] = [...presets]
     const inPresets = list.some(p => p.color.toLowerCase() === (currentColor || '').toLowerCase())
@@ -64,18 +64,20 @@ export const ThemePicker: React.FC<ThemePickerProps> = ({
 
   // Filtered presets (if search enabled)
   const filteredPresets = useMemo(() => {
-    if (!searchQuery) return visiblePresets
+    if (!searchQuery)
+      return visiblePresets
     const query = searchQuery.toLowerCase()
     return visiblePresets.filter(preset =>
-      preset.label.toLowerCase().includes(query) ||
-      preset.name.toLowerCase().includes(query) ||
-      preset.color.toLowerCase().includes(query)
+      preset.label.toLowerCase().includes(query)
+      || preset.name.toLowerCase().includes(query)
+      || preset.color.toLowerCase().includes(query),
     )
   }, [visiblePresets, searchQuery])
 
   // Update dropdown position (prevent overflow on small screens)
   const updateDropdownPosition = useCallback(() => {
-    if (!pickerRef.current) return
+    if (!pickerRef.current)
+      return
 
     const rect = pickerRef.current.getBoundingClientRect()
     const dropdownHeight = 400
@@ -102,7 +104,7 @@ export const ThemePicker: React.FC<ThemePickerProps> = ({
       top: `${top}px`,
       left: `${left}px`,
       width: `${desiredWidth}px`,
-      zIndex: 9999
+      zIndex: 9999,
     })
   }, [])
 
@@ -179,21 +181,21 @@ export const ThemePicker: React.FC<ThemePickerProps> = ({
         style={{ backgroundColor: currentColor }}
         title={currentLabel}
       >
-        <span 
-          className="ld-theme-picker__color" 
+        <span
+          className="ld-theme-picker__color"
           style={{ backgroundColor: currentColor }}
         />
         {showArrow && (
-          <svg 
+          <svg
             className={`ld-theme-picker__arrow ${isOpen ? 'is-open' : ''}`}
-            width="12" 
-            height="12" 
+            width="12"
+            height="12"
             viewBox="0 0 12 12"
           >
-            <path 
-              d="M2.5 4.5L6 8L9.5 4.5" 
-              stroke="currentColor" 
-              strokeWidth="1.5" 
+            <path
+              d="M2.5 4.5L6 8L9.5 4.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
               fill="none"
             />
           </svg>
@@ -204,13 +206,13 @@ export const ThemePicker: React.FC<ThemePickerProps> = ({
         <div
           className="ld-theme-picker__dropdown"
           style={dropdownStyle}
-          onClick={(e) => e.stopPropagation()}
+          onClick={e => e.stopPropagation()}
         >
           {showSearch && (
             <div className="ld-theme-picker__search">
               <input
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 type="text"
                 placeholder="搜索颜色..."
                 className="ld-theme-picker__search-input"
@@ -225,14 +227,14 @@ export const ThemePicker: React.FC<ThemePickerProps> = ({
                 <div className="ld-theme-picker__custom-input">
                   <input
                     value={customColor}
-                    onChange={(e) => setCustomColor(e.target.value)}
+                    onChange={e => setCustomColor(e.target.value)}
                     type="color"
                     className="ld-theme-picker__color-input"
                   />
                   <input
                     value={customColor}
-                    onChange={(e) => setCustomColor(e.target.value)}
-                    onKeyUp={(e) => e.key === 'Enter' && handleCustomColor()}
+                    onChange={e => setCustomColor(e.target.value)}
+                    onKeyUp={e => e.key === 'Enter' && handleCustomColor()}
                     type="text"
                     placeholder="#000000"
                     className="ld-theme-picker__hex-input"
@@ -247,10 +249,10 @@ export const ThemePicker: React.FC<ThemePickerProps> = ({
               </div>
             )}
 
-<div className="ld-theme-picker__presets">
+            <div className="ld-theme-picker__presets">
               <label className="ld-theme-picker__label">选择主题色</label>
               <div className="ld-theme-picker__grid">
-                {filteredPresets.map((preset) => (
+                {filteredPresets.map(preset => (
                   <div
                     key={`${preset.name}-${preset.color}`}
                     className={`ld-theme-picker__preset ${
@@ -264,16 +266,16 @@ export const ThemePicker: React.FC<ThemePickerProps> = ({
                       title={preset.label}
                     >
                       {((preset.name === themeName) || (!themeName && preset.custom)) && (
-                        <svg 
-                          className="ld-theme-picker__check" 
-                          width="16" 
-                          height="16" 
+                        <svg
+                          className="ld-theme-picker__check"
+                          width="16"
+                          height="16"
                           viewBox="0 0 16 16"
                         >
-                          <path 
-                            d="M3 8L6 11L13 4" 
-                            stroke="white" 
-                            strokeWidth="2" 
+                          <path
+                            d="M3 8L6 11L13 4"
+                            stroke="white"
+                            strokeWidth="2"
                             fill="none"
                           />
                         </svg>

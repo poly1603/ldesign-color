@@ -1,6 +1,6 @@
 /**
  * @ldesign/color - Performance Monitor
- * 
+ *
  * 运行时性能监控工具
  */
 
@@ -38,17 +38,19 @@ class PerformanceMonitor {
    * 开始测量
    */
   start(name: string): void {
-    if (!this.enabled) return
+    if (!this.enabled)
+      return
 
     const metric = this.metrics.get(name)
     if (metric) {
       metric.count++
       metric.startTime = performance.now()
-    } else {
+    }
+    else {
       this.metrics.set(name, {
         name,
         startTime: performance.now(),
-        count: 1
+        count: 1,
       })
     }
   }
@@ -57,7 +59,8 @@ class PerformanceMonitor {
    * 结束测量
    */
   end(name: string): number | undefined {
-    if (!this.enabled) return undefined
+    if (!this.enabled)
+      return undefined
 
     const metric = this.metrics.get(name)
     if (!metric) {
@@ -75,7 +78,8 @@ class PerformanceMonitor {
    * 测量函数执行
    */
   measure<T>(name: string, fn: () => T): T {
-    if (!this.enabled) return fn()
+    if (!this.enabled)
+      return fn()
 
     this.start(name)
     const result = fn()
@@ -88,7 +92,8 @@ class PerformanceMonitor {
    * 异步测量
    */
   async measureAsync<T>(name: string, fn: () => Promise<T>): Promise<T> {
-    if (!this.enabled) return fn()
+    if (!this.enabled)
+      return fn()
 
     this.start(name)
     const result = await fn()
@@ -120,12 +125,13 @@ class PerformanceMonitor {
     lastDuration: number
   } | undefined {
     const metric = this.metrics.get(name)
-    if (!metric || !metric.duration) return undefined
+    if (!metric || !metric.duration)
+      return undefined
 
     return {
       count: metric.count,
       avgDuration: metric.duration / metric.count,
-      lastDuration: metric.duration
+      lastDuration: metric.duration,
     }
   }
 
@@ -180,10 +186,10 @@ export const performanceMonitor = new PerformanceMonitor()
 export function measurePerformance(target: any, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
   const originalMethod = descriptor.value
 
-  descriptor.value = function(...args: any[]) {
+  descriptor.value = function (...args: any[]) {
     return performanceMonitor.measure(
       `${target.constructor.name}.${propertyKey}`,
-      () => originalMethod.apply(this, args)
+      () => originalMethod.apply(this, args),
     )
   }
 
@@ -212,4 +218,3 @@ if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
 }
 
 export { PerformanceMonitor }
-

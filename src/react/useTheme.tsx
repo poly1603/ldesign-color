@@ -5,11 +5,10 @@
 /**
  * Create a theme provider context
  */
-import type { ReactNode } from 'react';
-import type { PresetTheme } from '../themes/presets';
-import type { ThemeOptions, ThemeState } from '../themes/themeManager';
-import { createContext, useCallback, useContext, useEffect, useMemo, useState  } from 'react'
-
+import type { ReactNode } from 'react'
+import type { PresetTheme } from '../themes/presets'
+import type { ThemeOptions, ThemeState } from '../themes/themeManager'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import { presetThemes } from '../themes/presets'
 import { ThemeManager } from '../themes/themeManager'
@@ -36,7 +35,8 @@ export function useTheme(options: UseThemeOptions = {}) {
       const theme = themeManager.applyTheme(colorOrName, themeOptions)
       setCurrentTheme(theme)
       return theme
-    } finally {
+    }
+    finally {
       setIsLoading(false)
     }
   }, [themeManager])
@@ -48,7 +48,8 @@ export function useTheme(options: UseThemeOptions = {}) {
       const theme = themeManager.applyPresetTheme(name, themeOptions)
       setCurrentTheme(theme)
       return theme
-    } finally {
+    }
+    finally {
       setIsLoading(false)
     }
   }, [themeManager])
@@ -114,7 +115,7 @@ export function useTheme(options: UseThemeOptions = {}) {
     applyPresetTheme,
     restoreTheme,
     clearTheme,
-    getCurrentTheme
+    getCurrentTheme,
   }
 }
 
@@ -141,7 +142,7 @@ export interface ThemeProviderProps {
 
 export function ThemeProvider({ children, options = {} }: ThemeProviderProps) {
   const theme = useTheme(options)
-  
+
   // 使用 memo 优化，防止不必要的重新渲染
   const contextValue = useMemo(() => theme, [
     theme.currentTheme,
@@ -153,9 +154,9 @@ export function ThemeProvider({ children, options = {} }: ThemeProviderProps) {
     theme.applyPresetTheme,
     theme.restoreTheme,
     theme.clearTheme,
-    theme.getCurrentTheme
+    theme.getCurrentTheme,
   ])
-  
+
   return (
     <ThemeContext.Provider value={contextValue}>
       {children}
