@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>调色板生成器 - @ldesign/color</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 2.5rem;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 40px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    label {
+      font-weight: 600;
+      color: #555;
+    }
+
+    input[type="color"] {
+      width: 60px;
+      height: 60px;
+      border: 3px solid #e0e0e0;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    select {
+      padding: 10px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      background: white;
+    }
+
+    .palette-section {
+      margin-bottom: 40px;
+    }
+
+    .palette-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: 12px;
+    }
+
+    .color-swatch {
+      aspect-ratio: 1;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 12px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .color-swatch:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .swatch-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .swatch-value {
+      font-size: 10px;
+      font-family: 'Courier New', monospace;
+      opacity: 0.9;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .export-section {
+      margin-top: 30px;
+      padding: 25px;
+      background: #f8f9fa;
+      border-radius: 12px;
+    }
+
+    .export-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+
+    .btn-secondary:hover {
+      background: #667eea;
+      color: white;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #333;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>🎨 调色板生成器</h1>
+    <p class="subtitle">一键生成专业的颜色调色板</p>
+
+    <div class="controls">
+      <div class="control-group">
+        <label>基础颜色:</label>
+        <input type="color" id="baseColor" value="#3498db">
+      </div>
+      <div class="control-group">
+        <label>调色板类型:</label>
+        <select id="paletteType">
+          <option value="tailwind">Tailwind CSS (50-900)</option>
+          <option value="natural">自然色阶 (10级)</option>
+          <option value="material">Material Design</option>
+          <option value="antd">Ant Design</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="palettesContainer"></div>
+
+    <div class="export-section">
+      <h3 style="margin-bottom: 15px; color: #333; text-align: center;">导出选项</h3>
+      <div class="export-buttons">
+        <button class="btn-primary" onclick="exportAsJSON()">📄 导出 JSON</button>
+        <button class="btn-primary" onclick="exportAsCSS()">📋 导出 CSS</button>
+        <button class="btn-secondary" onclick="exportAsSCSS()">🎨 导出 SCSS</button>
+        <button class="btn-secondary" onclick="copyToClipboard()">📎 复制到剪贴板</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module">
+    import { Color } from '../es/index.js'
+
+    const baseColorInput = document.getElementById('baseColor')
+    const paletteTypeSelect = document.getElementById('paletteType')
+    const palettesContainer = document.getElementById('palettesContainer')
+    const toast = document.getElementById('toast')
+
+    let currentPalettes = {}
+
+    function showToast(message) {
+      toast.textContent = message
+      toast.classList.add('show')
+      setTimeout(() => toast.classList.remove('show'), 2000)
+    }
+
+    function generatePalettes() {
+      const baseColor = new Color(baseColorInput.value)
+      const type = paletteTypeSelect.value
+      currentPalettes = {}
+
+      palettesContainer.innerHTML = ''
+
+      if (type === 'tailwind') {
+        const palette = baseColor.toTailwindPalette()
+        currentPalettes.tailwind = palette
+        renderPalette('Tailwind CSS 调色板', palette, ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900'])
+      } else if (type === 'natural') {
+        const palette = baseColor.toNaturalPalette(10)
+        const paletteObj = {}
+        palette.forEach((color, i) => {
+          paletteObj[\`\${i * 100}\`] = color
+        })
+        currentPalettes.natural = paletteObj
+        renderPalette('自然色阶', paletteObj, Object.keys(paletteObj))
+      } else if (type === 'material') {
+        // Material Design 调色板
+        const palette = {
+          50: baseColor.lighten(45).toHex(),
+          100: baseColor.lighten(35).toHex(),
+          200: baseColor.lighten(25).toHex(),
+          300: baseColor.lighten(15).toHex(),
+          400: baseColor.lighten(7).toHex(),
+          500: baseColor.toHex(),
+          600: baseColor.darken(7).toHex(),
+          700: baseColor.darken(15).toHex(),
+          800: baseColor.darken(25).toHex(),
+          900: baseColor.darken(35).toHex(),
+        }
+        currentPalettes.material = palette
+        renderPalette('Material Design 调色板', palette, Object.keys(palette))
+      } else if (type === 'antd') {
+        // Ant Design 风格
+        const palette = {}
+        for (let i = 1; i <= 10; i++) {
+          if (i < 6) {
+            palette[\`primary-\${i}\`] = baseColor.lighten((6 - i) * 10).toHex()
+          } else if (i === 6) {
+            palette[\`primary-\${i}\`] = baseColor.toHex()
+          } else {
+            palette[\`primary-\${i}\`] = baseColor.darken((i - 6) * 10).toHex()
+          }
+        }
+        currentPalettes.antd = palette
+        renderPalette('Ant Design 调色板', palette, Object.keys(palette))
+      }
+    }
+
+    function renderPalette(title, palette, keys) {
+      const section = document.createElement('div')
+      section.className = 'palette-section'
+
+      const titleDiv = document.createElement('div')
+      titleDiv.className = 'palette-title'
+      titleDiv.textContent = title
+
+      const grid = document.createElement('div')
+      grid.className = 'palette-grid'
+
+      keys.forEach(key => {
+        const color = palette[key]
+        const colorObj = new Color(color)
+        const isLight = colorObj.isLight()
+
+        const swatch = document.createElement('div')
+        swatch.className = 'color-swatch'
+        swatch.style.background = color
+        swatch.style.color = isLight ? '#000' : '#fff'
+
+        swatch.innerHTML = \`
+          <div class="swatch-label">\${key}</div>
+          <div class="swatch-value">\${color}</div>
+        \`
+
+        swatch.addEventListener('click', () => {
+          navigator.clipboard.writeText(color)
+          showToast(\`已复制: \${color}\`)
+        })
+
+        grid.appendChild(swatch)
+      })
+
+      section.appendChild(titleDiv)
+      section.appendChild(grid)
+      palettesContainer.appendChild(section)
+    }
+
+    window.exportAsJSON = function() {
+      const json = JSON.stringify(currentPalettes, null, 2)
+      const blob = new Blob([json], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'color-palette.json'
+      a.click()
+      URL.revokeObjectURL(url)
+      showToast('JSON 已导出')
+    }
+
+    window.exportAsCSS = function() {
+      let css = ':root {\\n'
+      Object.entries(currentPalettes).forEach(([type, palette]) => {
+        Object.entries(palette).forEach(([key, color]) => {
+          css += \`  --color-\${type}-\${key}: \${color};\\n\`
+        })
+      })
+      css += '}'
+
+      const blob = new Blob([css], { type: 'text/css' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'color-palette.css'
+      a.click()
+      URL.revokeObjectURL(url)
+      showToast('CSS 已导出')
+    }
+
+    window.exportAsSCSS = function() {
+      let scss = ''
+      Object.entries(currentPalettes).forEach(([type, palette]) => {
+        Object.entries(palette).forEach(([key, color]) => {
+          scss += \`\\$color-\${type}-\${key}: \${color};\\n\`
+        })
+      })
+
+      const blob = new Blob([scss], { type: 'text/plain' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'color-palette.scss'
+      a.click()
+      URL.revokeObjectURL(url)
+      showToast('SCSS 已导出')
+    }
+
+    window.copyToClipboard = function() {
+      const json = JSON.stringify(currentPalettes, null, 2)
+      navigator.clipboard.writeText(json)
+      showToast('已复制到剪贴板')
+    }
+
+    baseColorInput.addEventListener('input', generatePalettes)
+    paletteTypeSelect.addEventListener('change', generatePalettes)
+
+    // 初始化
+    generatePalettes()
+  </script>
+</body>
+
+</html>
