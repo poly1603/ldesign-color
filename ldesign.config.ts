@@ -4,7 +4,7 @@ export default defineConfig({
   input: 'src/index.ts',
 
   output: {
-    format: ['esm', 'cjs', ],
+    format: ['esm', 'cjs'],
     esm: {
       dir: 'es',
       preserveStructure: true,
