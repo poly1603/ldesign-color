@@ -2,9 +2,10 @@
   "name": "@ldesign/color",
   "type": "module",
   "version": "1.1.0-alpha.2",
-  "description": "A powerful, performant, and easy-to-use color manipulation library with design systems integration",
+  "description": "A powerful, performant, and easy-to-use color manipulation library with design systems integration (monorepo wrapper)",
   "author": "ldesign",
   "license": "MIT",
+  "private": true,
   "keywords": [
     "color",
     "color-manipulation",
@@ -175,6 +176,36 @@
       "types": "./es/vue/*.d.ts",
       "import": "./es/vue/*.js",
       "require": "./lib/vue/*.cjs"
+    },
+    "./svelte": {
+      "types": "./es/svelte/index.d.ts",
+      "import": "./es/svelte/index.js",
+      "require": "./lib/svelte/index.cjs"
+    },
+    "./svelte/*": {
+      "types": "./es/svelte/*.d.ts",
+      "import": "./es/svelte/*.js",
+      "require": "./lib/svelte/*.cjs"
+    },
+    "./solid": {
+      "types": "./es/solid/index.d.ts",
+      "import": "./es/solid/index.js",
+      "require": "./lib/solid/index.cjs"
+    },
+    "./solid/*": {
+      "types": "./es/solid/*.d.ts",
+      "import": "./es/solid/*.js",
+      "require": "./lib/solid/*.cjs"
+    },
+    "./angular": {
+      "types": "./es/angular/index.d.ts",
+      "import": "./es/angular/index.js",
+      "require": "./lib/angular/index.cjs"
+    },
+    "./angular/*": {
+      "types": "./es/angular/*.d.ts",
+      "import": "./es/angular/*.js",
+      "require": "./lib/angular/*.cjs"
     }
   },
   "main": "./lib/index.cjs",
@@ -190,23 +221,35 @@
     "package.json"
   ],
   "scripts": {
-    "build": "ldesign-builder build",
-    "dev": "tsc --watch --project tsconfig.build.json",
-    "type-check": "tsc --noEmit --project tsconfig.json",
-    "clean": "node -e \"const fs=require('fs'); ['es','lib','dist','.tsbuildinfo'].forEach(d=>{try{fs.rmSync(d,{recursive:true,force:true})}catch{}})\"",
-    "prepublishOnly": "npm run clean && npm run build:all",
-    "postinstall": "echo '✨ @ldesign/color installed successfully!'",
+    "build": "pnpm -r --filter='./packages/*' build",
+    "build:core": "pnpm --filter='@ldesign/color-core' build",
+    "build:vue": "pnpm --filter='@ldesign/color-vue' build",
+    "build:react": "pnpm --filter='@ldesign/color-react' build",
+    "build:svelte": "pnpm --filter='@ldesign/color-svelte' build",
+    "build:solid": "pnpm --filter='@ldesign/color-solid' build",
+    "build:angular": "pnpm --filter='@ldesign/color-angular' build",
+    "dev": "pnpm -r --parallel --filter='./packages/*' dev",
+    "dev:core": "pnpm --filter='@ldesign/color-core' dev",
+    "dev:vue": "pnpm --filter='@ldesign/color-vue' dev",
+    "dev:react": "pnpm --filter='@ldesign/color-react' dev",
+    "dev:svelte": "pnpm --filter='@ldesign/color-svelte' dev",
+    "dev:solid": "pnpm --filter='@ldesign/color-solid' dev",
+    "dev:angular": "pnpm --filter='@ldesign/color-angular' dev",
+    "type-check": "pnpm -r --filter='./packages/*' type-check",
+    "clean": "pnpm -r --filter='./packages/*' clean",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest",
     "test:watch": "vitest --watch",
     "test:coverage": "vitest --coverage",
-    "test:ui": "vitest --ui",
-    "bench": "tsx benchmarks/core.bench.ts"
+    "test:ui": "vitest --ui"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
-    "vue": ">=3.0.0"
+    "vue": ">=3.0.0",
+    "svelte": ">=3.0.0",
+    "solid-js": ">=1.0.0",
+    "@angular/core": ">=17.0.0"
   },
   "style": "./dist/index.css",
   "peerDependenciesMeta": {
@@ -215,10 +258,24 @@
     },
     "vue": {
       "optional": true
+    },
+    "svelte": {
+      "optional": true
+    },
+    "solid-js": {
+      "optional": true
+    },
+    "@angular/core": {
+      "optional": true
     }
   },
   "dependencies": {
-    "lucide-react": "^0.546.0"
+    "@ldesign/color-core": "workspace:*",
+    "@ldesign/color-vue": "workspace:*",
+    "@ldesign/color-react": "workspace:*",
+    "@ldesign/color-svelte": "workspace:*",
+    "@ldesign/color-solid": "workspace:*",
+    "@ldesign/color-angular": "workspace:*"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^6.0.0",

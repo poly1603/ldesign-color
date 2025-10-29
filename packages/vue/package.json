@@ -1,0 +1,58 @@
+{
+  "name": "@ldesign/color-vue",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Vue 3 components and composables for @ldesign/color-core",
+  "author": "ldesign",
+  "license": "MIT",
+  "keywords": [
+    "color",
+    "vue",
+    "vue3",
+    "theme",
+    "composables",
+    "components"
+  ],
+  "exports": {
+    ".": {
+      "types": "./es/index.d.ts",
+      "import": "./es/index.js",
+      "require": "./lib/index.cjs"
+    },
+    "./*": {
+      "types": "./es/*.d.ts",
+      "import": "./es/*.js",
+      "require": "./lib/*.cjs"
+    },
+    "./styles.css": "./es/styles/styles.css"
+  },
+  "main": "./lib/index.cjs",
+  "module": "./es/index.js",
+  "types": "./es/index.d.ts",
+  "files": [
+    "LICENSE",
+    "README.md",
+    "es",
+    "lib",
+    "package.json"
+  ],
+  "scripts": {
+    "build": "ldesign-builder build",
+    "dev": "tsc --watch",
+    "type-check": "tsc --noEmit",
+    "clean": "node -e \"const fs=require('fs'); ['es','lib','dist','.tsbuildinfo'].forEach(d=>{try{fs.rmSync(d,{recursive:true,force:true})}catch{}})\"",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "peerDependencies": {
+    "@ldesign/color-core": "workspace:*",
+    "vue": ">=3.0.0"
+  },
+  "devDependencies": {
+    "@ldesign/builder": "workspace:*",
+    "@types/node": "^22.0.0",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "typescript": "^5.7.3",
+    "vue": "^3.0.0"
+  }
+}
+

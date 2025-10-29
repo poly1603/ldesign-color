@@ -1,0 +1,57 @@
+{
+  "name": "@ldesign/color-core",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Framework-agnostic core color manipulation library with powerful utilities and design system integration",
+  "author": "ldesign",
+  "license": "MIT",
+  "keywords": [
+    "color",
+    "color-manipulation",
+    "color-conversion",
+    "rgb",
+    "hsl",
+    "hsv",
+    "contrast",
+    "wcag",
+    "palette",
+    "theme",
+    "typescript",
+    "framework-agnostic"
+  ],
+  "exports": {
+    ".": {
+      "types": "./es/index.d.ts",
+      "import": "./es/index.js",
+      "require": "./lib/index.cjs"
+    },
+    "./*": {
+      "types": "./es/*.d.ts",
+      "import": "./es/*.js",
+      "require": "./lib/*.cjs"
+    }
+  },
+  "main": "./lib/index.cjs",
+  "module": "./es/index.js",
+  "types": "./es/index.d.ts",
+  "files": [
+    "LICENSE",
+    "README.md",
+    "es",
+    "lib",
+    "package.json"
+  ],
+  "scripts": {
+    "build": "ldesign-builder build",
+    "dev": "tsc --watch",
+    "type-check": "tsc --noEmit",
+    "clean": "node -e \"const fs=require('fs'); ['es','lib','dist','.tsbuildinfo'].forEach(d=>{try{fs.rmSync(d,{recursive:true,force:true})}catch{}})\"",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "devDependencies": {
+    "@ldesign/builder": "workspace:*",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.3"
+  }
+}
+

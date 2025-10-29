@@ -1,181 +1,294 @@
-# 👋 从这里开始
+# 从这里开始 🚀
 
-欢迎！这是 **@ldesign/color v1.1.0** 的起点。
+欢迎使用 `@ldesign/color` - 多框架通用的主题色管理库！
 
----
+## 🎯 我想要...
 
-## 🎯 您想做什么？
+### 💡 快速了解项目
 
-### 我是新用户，想快速上手
+👉 阅读 [主 README](./README.md)
 
-👉 阅读 [QUICK_START_v1.1.md](./QUICK_START_v1.1.md) (5 分钟)
-
-### 我想看新功能
-
-👉 查看 [完成总结.md](./完成总结.md) (中文) 或 [CHANGELOG.md](./CHANGELOG.md)
-
-### 我想看可视化演示
-
-👉 构建后打开 [examples/advanced-features.html](./examples/advanced-features.html)
-
-### 我想深入了解 OKLCH
-
-👉 阅读 [docs/ADVANCED_COLOR_SPACES.md](./docs/ADVANCED_COLOR_SPACES.md)
-
-### 我想优化性能
-
-👉 查看 [docs/PERFORMANCE.md](./docs/PERFORMANCE.md)
-
-### 我想查看所有文档
-
-👉 浏览 [DOCUMENTATION_INDEX.md](./DOCUMENTATION_INDEX.md)
-
-### 我是团队成员，想了解实施细节
-
-👉 查看 [TEAM_BRIEFING.md](./TEAM_BRIEFING.md)
-
-### 我想参与 Phase 2
-
-👉 查看 [NEXT_STEPS.md](./NEXT_STEPS.md)
+**5 分钟了解**：
+- 项目是什么
+- 支持哪些框架
+- 核心功能有哪些
+- 如何安装使用
 
 ---
 
-## ⚡ 30 秒快速了解
+### 🎨 在我的项目中使用
 
-### 新功能
+#### React 项目
 
-```typescript
-import { Color, interpolate } from '@ldesign/color'
+```bash
+# 1. 安装
+pnpm add @ldesign/color-react @ldesign/color-core
 
-// 1. 高级色彩空间
-const oklch = color.toOKLCH()
-
-// 2. 平滑渐变 (告别浑浊中间色!)
-const mid = interpolate('#FF0080', '#00FF80', 0.5, { space: 'oklch' })
-
-// 3. 精确色彩测量
-const deltaE = color1.deltaE2000(color2)
+# 2. 使用
 ```
 
-### 核心优势
+```tsx
+import { ThemeProvider, ThemePicker, ThemeModeSwitcher } from '@ldesign/color-react'
 
-- ✨ 5 个新色彩空间
-- 🌈 更好的渐变质量
-- 📏 工业级色彩测量
-- ⚡ 2-3x 性能提升 (部分)
-- 📦 仅增加 4KB
-- 🔄 100% 向后兼容
+function App() {
+  return (
+    <ThemeProvider>
+      <ThemePicker />
+      <ThemeModeSwitcher />
+    </ThemeProvider>
+  )
+}
+```
+
+👉 详细文档：[React README](./packages/react/README.md)
+
+#### Vue 项目
+
+```bash
+# 1. 安装
+pnpm add @ldesign/color-vue @ldesign/color-core
+
+# 2. 使用
+```
+
+```vue
+<script setup>
+import { ThemePicker, ThemeModeSwitcher } from '@ldesign/color-vue'
+</script>
+
+<template>
+  <ThemePicker />
+  <ThemeModeSwitcher />
+</template>
+```
+
+👉 详细文档：[Vue README](./packages/vue/README.md)
+
+#### Svelte 项目
+
+```bash
+# 1. 安装
+pnpm add @ldesign/color-svelte @ldesign/color-core
+
+# 2. 使用
+```
+
+```svelte
+<script>
+import { ThemePicker, ThemeModeSwitcher } from '@ldesign/color-svelte'
+</script>
+
+<ThemePicker />
+<ThemeModeSwitcher />
+```
+
+👉 详细文档：[Svelte README](./packages/svelte/README.md)
+
+#### Solid.js 项目
+
+```bash
+# 1. 安装
+pnpm add @ldesign/color-solid @ldesign/color-core
+
+# 2. 使用
+```
+
+```tsx
+import { ThemePicker, ThemeModeSwitcher } from '@ldesign/color-solid'
+
+function App() {
+  return (
+    <>
+      <ThemePicker />
+      <ThemeModeSwitcher />
+    </>
+  )
+}
+```
+
+👉 详细文档：[Solid.js README](./packages/solid/README.md)
 
 ---
 
-## 📊 快速数据
+### 🎬 运行演示项目
+
+想看看实际效果？运行演示项目：
+
+```bash
+# 选择你喜欢的框架
+cd packages/react/examples/vite-demo    # 或 vue/svelte/solid/core
+
+# 安装依赖
+pnpm install
+
+# 启动演示（会自动打开浏览器）
+pnpm dev
+```
+
+**演示项目端口**：
+- Core (Vanilla TS): http://localhost:3000
+- React: http://localhost:3001
+- Vue: http://localhost:3002
+- Svelte: http://localhost:3003
+- Solid.js: http://localhost:3004
+
+👉 详细说明：[运行演示指南](./RUN_DEMOS.md)
+
+---
+
+### 📚 深入学习
+
+#### 理解 API 设计
+
+👉 [框架对比文档](./FRAMEWORK_COMPARISON.md)
+
+**内容包括**：
+- 4 个框架的语法对比
+- 响应式系统差异
+- 性能特点分析
+- 最佳实践建议
+
+#### 理解架构设计
+
+👉 [框架支持完成报告](./FRAMEWORK_SUPPORT_COMPLETE.md)
+
+**内容包括**：
+- 架构设计原则
+- 包职责分工
+- API 一致性说明
+- 扩展性分析
+
+#### 查看完整统计
+
+👉 [项目完整总结](./PROJECT_COMPLETE_SUMMARY.md)
+
+**内容包括**：
+- 完整的功能清单
+- 代码统计数据
+- 性能分析
+- 文档索引
+
+---
+
+### 🔧 参与开发
+
+#### 构建包
+
+```bash
+# 在项目根目录
+
+# 构建所有包
+pnpm build
+
+# 构建单个包
+pnpm build:react    # 或 vue/svelte/solid/core
+```
+
+**构建配置位置**: `packages/[package]/.ldesign/ldesign.config.ts`
+
+#### 修改演示项目
+
+```bash
+# 进入演示目录
+cd packages/[package]/examples/vite-demo
+
+# 启动开发服务器
+pnpm dev
+
+# 修改代码后会自动热更新
+```
+
+**演示配置位置**: `launcher.config.ts`
+
+👉 技术报告：[Launcher 迁移完成报告](./LAUNCHER_MIGRATION_COMPLETE.md)
+
+---
+
+## 🗺️ 目录导航
+
+### 包源码
 
 ```
-版本:        1.1.0
-状态:        ✅ 生产就绪
-新增功能:    15+
-新增文档:    20+
-Bundle:      12KB gzipped
-兼容性:      100%
-质量:        A+
+packages/
+├── core/              # 核心库
+├── react/             # React 适配
+├── vue/               # Vue 适配
+├── svelte/            # Svelte 适配
+└── solid/             # Solid.js 适配
+```
+
+### 演示项目
+
+```
+packages/*/examples/vite-demo/
+```
+
+### 文档
+
+```
+根目录下的 *.md 文件
 ```
 
 ---
 
-## 🗺️ 文档地图
+## ❓ 常见问题
 
+### 我应该使用哪个包？
+
+- 使用 **React**？ → `@ldesign/color-react`
+- 使用 **Vue 3**？ → `@ldesign/color-vue`
+- 使用 **Svelte**？ → `@ldesign/color-svelte`
+- 使用 **Solid.js**？ → `@ldesign/color-solid`
+- 不使用框架？ → `@ldesign/color-core`
+
+### 所有框架的 API 一样吗？
+
+是的！所有框架提供**完全相同**的 API，只是响应式访问方式略有不同：
+
+- React: `primaryColor`
+- Vue: `primaryColor.value`
+- Svelte: `$primaryColor`
+- Solid.js: `primaryColor()`
+
+### 如何自定义主题色？
+
+```javascript
+const { applyTheme } = useTheme()
+applyTheme('#1890ff')  // 应用任何颜色
 ```
-快速入门
-├─ START_HERE.md (本文件)
-├─ QUICK_START_v1.1.md
-└─ 完成总结.md
 
-深入学习
-├─ docs/ADVANCED_COLOR_SPACES.md
-├─ docs/PERFORMANCE.md
-└─ examples/advanced-features.html
+### 如何切换明暗模式？
 
-技术细节
-├─ FINAL_SUMMARY.md
-├─ PROJECT_OVERVIEW.md
-└─ IMPLEMENTATION_REPORT.md
+使用 `ThemeModeSwitcher` 组件，或者：
 
-协作文档
-├─ TEAM_BRIEFING.md
-├─ NEXT_STEPS.md
-└─ RELEASE_CHECKLIST.md
-
-完整索引
-└─ DOCUMENTATION_INDEX.md
+```javascript
+// 手动设置
+document.documentElement.setAttribute('theme-mode', 'dark')
 ```
+
+### 主题会自动保存吗？
+
+是的！默认保存到 localStorage，页面刷新后会自动恢复。
 
 ---
 
-## 🎨 立即体验
+## 🎉 开始使用
 
-### 1 分钟示例
+1. **选择框架** - React / Vue / Svelte / Solid.js
+2. **安装包** - `pnpm add @ldesign/color-[framework]`
+3. **查看文档** - 阅读对应框架的 README
+4. **运行演示** - 看看实际效果
+5. **集成到项目** - 复制示例代码
 
-```typescript
-import { Color, gradient } from '@ldesign/color'
-
-// 创建鲜艳的彩虹渐变
-const rainbow = gradient(
-  ['#FF0080', '#FF8000', '#FFFF00', '#00FF80', '#0080FF'],
-  20,
-  { space: 'oklch', easing: 'ease-in-out' }
-)
-
-// 输出颜色
-rainbow.forEach(c => console.log(c.toHex()))
-```
-
-**试试看吧！** 🌈
+**祝你使用愉快！** 🎨
 
 ---
 
-## ✨ 核心亮点
+## 📞 获取帮助
 
-### OKLCH - 更好的渐变
+- 📖 查看文档（13 个详细文档）
+- 🎬 运行演示项目
+- 💬 提交 Issue
+- 🤝 贡献代码
 
-**之前 (RGB)**: 红 → 棕 → 灰 → 青 😞
-**现在 (OKLCH)**: 红 → 橙 → 黄 → 绿 → 青 🎨
-
-### Delta E - 精确测量
-
-```
-0 = 完全相同
-<1 = 看不出
-1-2 = 勉强可见
->2 = 明显不同
-```
-
-### 性能 - 零妥协
-
-```
-所有操作 < 1ms
-内存占用: 24字节
-无性能回归
-```
-
----
-
-## 🚀 下一步
-
-1. 选择一个文档开始阅读
-2. 运行交互示例
-3. 尝试新的 API
-4. 享受更好的色彩体验！
-
----
-
-<div align="center">
-
-**准备好了吗？让我们开始吧！** 🎨
-
-[快速开始 →](./QUICK_START_v1.1.md)
-
----
-
-Built with ❤️ by LDesign Team
-
-</div>
+**项目地址**: `D:\WorkBench\ldesign\packages\color`

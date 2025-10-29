@@ -1,0 +1,23 @@
+{
+  "name": "@ldesign/color-vue-demo",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@ldesign/color-core": "workspace:*",
+    "@ldesign/color-vue": "workspace:*",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "typescript": "^5.7.3",
+    "vite": "^5.4.10",
+    "vue-tsc": "^2.1.10"
+  }
+}
+

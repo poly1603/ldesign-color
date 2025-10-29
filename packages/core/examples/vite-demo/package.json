@@ -1,0 +1,19 @@
+{
+  "name": "@ldesign/color-core-demo",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "launcher dev",
+    "build": "tsc && launcher build",
+    "preview": "launcher preview"
+  },
+  "dependencies": {
+    "@ldesign/color-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@ldesign/launcher": "workspace:*",
+    "typescript": "^5.7.3"
+  }
+}
+

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@ldesign/color-core Demo</title>
+</head>
+
+<body>
+  <div id="app">
+    <header>
+      <h1>@ldesign/color-core 演示</h1>
+      <p>框架无关的核心颜色操作库</p>
+    </header>
+
+    <main>
+      <section class="demo-section">
+        <h2>主题管理</h2>
+        <div class="controls">
+          <button id="apply-blue">应用蓝色主题</button>
+          <button id="apply-green">应用绿色主题</button>
+          <button id="apply-purple">应用紫色主题</button>
+          <button id="toggle-mode">切换明暗模式</button>
+        </div>
+        <div class="info-panel">
+          <div class="info-item">
+            <label>当前主题色:</label>
+            <span id="current-color" class="color-box"></span>
+          </div>
+          <div class="info-item">
+            <label>主题名称:</label>
+            <span id="theme-name"></span>
+          </div>
+          <div class="info-item">
+            <label>模式:</label>
+            <span id="theme-mode"></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-section">
+        <h2>颜色操作</h2>
+        <div class="color-operations">
+          <div class="operation-item">
+            <h3>原始颜色</h3>
+            <div id="original-color" class="color-display"></div>
+          </div>
+          <div class="operation-item">
+            <h3>变亮 20%</h3>
+            <div id="lighter-color" class="color-display"></div>
+          </div>
+          <div class="operation-item">
+            <h3>变暗 20%</h3>
+            <div id="darker-color" class="color-display"></div>
+          </div>
+          <div class="operation-item">
+            <h3>饱和度 +30%</h3>
+            <div id="saturated-color" class="color-display"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-section">
+        <h2>调色板生成</h2>
+        <div id="palette" class="palette-grid"></div>
+      </section>
+
+      <section class="demo-section">
+        <h2>无障碍检查</h2>
+        <div class="accessibility-check">
+          <div class="check-item">
+            <label>与白色对比度:</label>
+            <span id="contrast-white"></span>
+          </div>
+          <div class="check-item">
+            <label>WCAG AA 合规:</label>
+            <span id="wcag-aa"></span>
+          </div>
+          <div class="check-item">
+            <label>WCAG AAA 合规:</label>
+            <span id="wcag-aaa"></span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>
