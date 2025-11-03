@@ -221,14 +221,14 @@
     "package.json"
   ],
   "scripts": {
-    "build": "pnpm -r --filter='./packages/*' build",
+    "build": "ldesign-builder build -f esm,cjs,dts",
     "build:core": "pnpm --filter='@ldesign/color-core' build",
     "build:vue": "pnpm --filter='@ldesign/color-vue' build",
     "build:react": "pnpm --filter='@ldesign/color-react' build",
     "build:svelte": "pnpm --filter='@ldesign/color-svelte' build",
     "build:solid": "pnpm --filter='@ldesign/color-solid' build",
     "build:angular": "pnpm --filter='@ldesign/color-angular' build",
-    "dev": "pnpm -r --parallel --filter='./packages/*' dev",
+    "dev": "ldesign-builder build -f esm,cjs,dts --watch",
     "dev:core": "pnpm --filter='@ldesign/color-core' dev",
     "dev:vue": "pnpm --filter='@ldesign/color-vue' dev",
     "dev:react": "pnpm --filter='@ldesign/color-react' dev",
