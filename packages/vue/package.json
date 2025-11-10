@@ -40,8 +40,7 @@
     "build": "ldesign-builder build",
     "dev": "tsc --watch",
     "type-check": "tsc --noEmit",
-    "clean": "node -e \"const fs=require('fs'); ['es','lib','dist','.tsbuildinfo'].forEach(d=>{try{fs.rmSync(d,{recursive:true,force:true})}catch{}})\"",
-    "prepublishOnly": "npm run clean && npm run build"
+    "clean": "node -e \"const fs=require('fs'); ['es','lib','dist','.tsbuildinfo'].forEach(d=>{try{fs.rmSync(d,{recursive:true,force:true})}catch{}})\""
   },
   "peerDependencies": {
     "@ldesign/color-core": "workspace:*",
@@ -55,4 +54,3 @@
     "vue": "^3.0.0"
   }
 }
-
