@@ -137,16 +137,6 @@
       "import": "./es/plugin/*.js",
       "require": "./lib/plugin/*.cjs"
     },
-    "./react": {
-      "types": "./es/react/index.d.ts",
-      "import": "./es/react/index.js",
-      "require": "./lib/react/index.cjs"
-    },
-    "./react/*": {
-      "types": "./es/react/*.d.ts",
-      "import": "./es/react/*.js",
-      "require": "./lib/react/*.cjs"
-    },
     "./schemes": {
       "types": "./es/schemes/index.d.ts",
       "import": "./es/schemes/index.js",
@@ -176,36 +166,6 @@
       "types": "./es/vue/*.d.ts",
       "import": "./es/vue/*.js",
       "require": "./lib/vue/*.cjs"
-    },
-    "./svelte": {
-      "types": "./es/svelte/index.d.ts",
-      "import": "./es/svelte/index.js",
-      "require": "./lib/svelte/index.cjs"
-    },
-    "./svelte/*": {
-      "types": "./es/svelte/*.d.ts",
-      "import": "./es/svelte/*.js",
-      "require": "./lib/svelte/*.cjs"
-    },
-    "./solid": {
-      "types": "./es/solid/index.d.ts",
-      "import": "./es/solid/index.js",
-      "require": "./lib/solid/index.cjs"
-    },
-    "./solid/*": {
-      "types": "./es/solid/*.d.ts",
-      "import": "./es/solid/*.js",
-      "require": "./lib/solid/*.cjs"
-    },
-    "./angular": {
-      "types": "./es/angular/index.d.ts",
-      "import": "./es/angular/index.js",
-      "require": "./lib/angular/index.cjs"
-    },
-    "./angular/*": {
-      "types": "./es/angular/*.d.ts",
-      "import": "./es/angular/*.js",
-      "require": "./lib/angular/*.cjs"
     }
   },
   "main": "./lib/index.cjs",
@@ -224,17 +184,9 @@
     "build": "ldesign-builder build -f esm,cjs,dts",
     "build:core": "pnpm --filter='@ldesign/color-core' build",
     "build:vue": "pnpm --filter='@ldesign/color-vue' build",
-    "build:react": "pnpm --filter='@ldesign/color-react' build",
-    "build:svelte": "pnpm --filter='@ldesign/color-svelte' build",
-    "build:solid": "pnpm --filter='@ldesign/color-solid' build",
-    "build:angular": "pnpm --filter='@ldesign/color-angular' build",
     "dev": "ldesign-builder build -f esm,cjs,dts --watch",
     "dev:core": "pnpm --filter='@ldesign/color-core' dev",
     "dev:vue": "pnpm --filter='@ldesign/color-vue' dev",
-    "dev:react": "pnpm --filter='@ldesign/color-react' dev",
-    "dev:svelte": "pnpm --filter='@ldesign/color-svelte' dev",
-    "dev:solid": "pnpm --filter='@ldesign/color-solid' dev",
-    "dev:angular": "pnpm --filter='@ldesign/color-angular' dev",
     "type-check": "pnpm -r --filter='./packages/*' type-check",
     "clean": "pnpm -r --filter='./packages/*' clean",
     "lint": "eslint .",
@@ -245,37 +197,17 @@
     "test:ui": "vitest --ui"
   },
   "peerDependencies": {
-    "react": ">=16.8.0",
-    "vue": ">=3.0.0",
-    "svelte": ">=3.0.0",
-    "solid-js": ">=1.0.0",
-    "@angular/core": ">=17.0.0"
+    "vue": ">=3.0.0"
   },
   "style": "./dist/index.css",
   "peerDependenciesMeta": {
-    "react": {
-      "optional": true
-    },
     "vue": {
-      "optional": true
-    },
-    "svelte": {
-      "optional": true
-    },
-    "solid-js": {
-      "optional": true
-    },
-    "@angular/core": {
       "optional": true
     }
   },
   "dependencies": {
     "@ldesign/color-core": "workspace:*",
-    "@ldesign/color-vue": "workspace:*",
-    "@ldesign/color-react": "workspace:*",
-    "@ldesign/color-svelte": "workspace:*",
-    "@ldesign/color-solid": "workspace:*",
-    "@ldesign/color-angular": "workspace:*"
+    "@ldesign/color-vue": "workspace:*"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^6.0.0",
