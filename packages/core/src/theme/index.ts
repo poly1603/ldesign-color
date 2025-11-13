@@ -94,13 +94,13 @@ function calculateSemanticSaturation(primarySaturation: number, colorType: 'succ
  */
 function normalizeColorScale(scale: Record<string, string>): ColorScale {
   const result: Partial<ColorScale> = {}
-  
+
   COLOR_SHADES.forEach(shade => {
     if (scale[shade.toString()]) {
       result[shade] = scale[shade.toString()]
     }
   })
-  
+
   return result as ColorScale
 }
 
@@ -128,15 +128,15 @@ export function generateThemeColors(
   options: ColorGeneratorOptions = {}
 ): ThemeColors {
   const { preserveInput = true, semanticHues } = options
-  
+
   // 解析主色调
   const primary = new Color(primaryColor)
   const primaryHsl = primary.toHSL()
   const primaryHex = primary.toHex()
-  
+
   // 生成语义色彩的色相值
   const hues = generateSemanticHues(primaryHsl, semanticHues)
-  
+
   // 生成语义色彩的基础颜色
   const semanticBaseColors = {
     success: Color.fromHSL(
@@ -144,20 +144,20 @@ export function generateThemeColors(
       calculateSemanticSaturation(primaryHsl.s, 'success'),
       45 // 亮度固定在45%，适中的亮度
     ).toHex(),
-    
+
     warning: Color.fromHSL(
       hues.warning,
       calculateSemanticSaturation(primaryHsl.s, 'warning'),
       50 // 亮度固定在50%
     ).toHex(),
-    
+
     danger: Color.fromHSL(
       hues.danger,
       calculateSemanticSaturation(primaryHsl.s, 'danger'),
       50 // 亮度固定在50%
     ).toHex(),
   }
-  
+
   // 生成亮色模式色阶
   const lightRawScales = {
     primary: generateTailwindScale(primaryHex, preserveInput),
@@ -166,7 +166,7 @@ export function generateThemeColors(
     danger: generateTailwindScale(semanticBaseColors.danger, preserveInput),
     gray: generateTailwindGrayScale(),
   }
-  
+
   // 生成暗色模式色阶
   const darkRawScales = {
     primary: generateTailwindDarkScale(primaryHex),
@@ -175,7 +175,7 @@ export function generateThemeColors(
     danger: generateTailwindDarkScale(semanticBaseColors.danger),
     gray: generateTailwindDarkGrayScale(),
   }
-  
+
   // 规范化为标准10色阶
   return {
     light: {
@@ -214,11 +214,11 @@ function generateScaleVariables(
   prefix: string
 ): string[] {
   const vars: string[] = []
-  
+
   COLOR_SHADES.forEach(shade => {
     vars.push(`  --${prefix}-${colorName}-${shade}: ${scale[shade]};`)
   })
-  
+
   return vars
 }
 
@@ -291,10 +291,10 @@ export function generateCSSVariables(
   options: CSSVariablesOptions = {}
 ): string {
   const { prefix = 'color', includeAliases = true } = options
-  
+
   const lightVars: string[] = []
   const darkVars: string[] = []
-  
+
   // 生成亮色模式变量
   const lightColors = themeColors.light
   lightVars.push('  /* Primary */')
@@ -311,12 +311,12 @@ export function generateCSSVariables(
   lightVars.push('')
   lightVars.push('  /* Gray */')
   lightVars.push(...generateScaleVariables('gray', lightColors.gray, prefix))
-  
+
   if (includeAliases) {
     lightVars.push('')
     lightVars.push(...generateSemanticAliases(prefix))
   }
-  
+
   // 生成暗色模式变量
   const darkColors = themeColors.dark
   darkVars.push('  /* Primary */')
@@ -333,12 +333,12 @@ export function generateCSSVariables(
   darkVars.push('')
   darkVars.push('  /* Gray */')
   darkVars.push(...generateScaleVariables('gray', darkColors.gray, prefix))
-  
+
   if (includeAliases) {
     darkVars.push('')
     darkVars.push(...generateSemanticAliases(prefix))
   }
-  
+
   return `/* 亮色模式（默认） */
 :root {
 ${lightVars.join('\n')}
@@ -375,17 +375,17 @@ export function injectCSSVariables(
     console.warn('injectCSSVariables 只能在浏览器环境中使用')
     return
   }
-  
+
   const css = generateCSSVariables(themeColors, options)
-  
+
   // 检查是否已存在样式元素
   let styleElement = document.getElementById('ldesign-theme-colors')
-  
+
   if (!styleElement) {
     styleElement = document.createElement('style')
     styleElement.id = 'ldesign-theme-colors'
     document.head.appendChild(styleElement)
   }
-  
+
   styleElement.textContent = css
 }

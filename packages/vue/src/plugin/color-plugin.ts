@@ -51,11 +51,11 @@ export function createColorPlugin(options: ColorPluginOptions = {}): Plugin {
     install(app: App) {
       // 这里会在后续实现中注入全局功能
       // 暂时先提供基础结构
-      
+
       app.config.globalProperties.$colorTheme = {
         options,
       }
-      
+
       console.log('[@ldesign/color-vue] Plugin installed with options:', options)
     },
   }

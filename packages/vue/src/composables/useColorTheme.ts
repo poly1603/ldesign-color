@@ -64,7 +64,7 @@ export interface UseColorThemeReturn {
  */
 function getStorageValue(key: string, defaultValue: string): string {
   if (typeof localStorage === 'undefined') return defaultValue
-  
+
   try {
     const value = localStorage.getItem(key)
     return value ?? defaultValue
@@ -78,7 +78,7 @@ function getStorageValue(key: string, defaultValue: string): string {
  */
 function setStorageValue(key: string, value: string): void {
   if (typeof localStorage === 'undefined') return
-  
+
   try {
     localStorage.setItem(key, value)
   } catch (e) {
@@ -91,7 +91,7 @@ function setStorageValue(key: string, value: string): void {
  */
 function getSystemTheme(): 'light' | 'dark' {
   if (typeof window === 'undefined') return 'light'
-  
+
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
@@ -138,7 +138,7 @@ export function useColorTheme(options: UseColorThemeOptions = {}): UseColorTheme
     prefix,
     includeAliases,
   } = options
-  
+
   // 从 localStorage 恢复状态
   const storedColor = persist
     ? getStorageValue(`${storageKey}-primary`, initialPrimaryColor.toString())
@@ -146,12 +146,12 @@ export function useColorTheme(options: UseColorThemeOptions = {}): UseColorTheme
   const storedMode = persist
     ? getStorageValue(`${storageKey}-mode`, initialMode) as ThemeMode
     : initialMode
-  
+
   // 响应式状态
   const primaryColor = ref<string>(storedColor)
   const mode = ref<ThemeMode>(storedMode)
   const themeColors = ref<ThemeColors | null>(null)
-  
+
   // 计算实际生效的主题模式
   const effectiveMode = computed<'light' | 'dark'>(() => {
     if (mode.value === 'auto') {
@@ -159,17 +159,17 @@ export function useColorTheme(options: UseColorThemeOptions = {}): UseColorTheme
     }
     return mode.value
   })
-  
+
   // 计算 CSS 变量字符串
   const cssVariables = computed(() => {
     if (!themeColors.value) return ''
-    
+
     return generateCSSVariables(themeColors.value, {
       prefix,
       includeAliases,
     })
   })
-  
+
   // 生成主题色彩
   function regenerate() {
     try {
@@ -182,25 +182,25 @@ export function useColorTheme(options: UseColorThemeOptions = {}): UseColorTheme
       themeColors.value = null
     }
   }
-  
+
   // 设置主色调
   function setPrimaryColor(color: ColorInput) {
     primaryColor.value = color.toString()
-    
+
     if (persist) {
       setStorageValue(`${storageKey}-primary`, primaryColor.value)
     }
   }
-  
+
   // 设置主题模式
   function setMode(newMode: ThemeMode) {
     mode.value = newMode
-    
+
     if (persist) {
       setStorageValue(`${storageKey}-mode`, newMode)
     }
   }
-  
+
   // 切换主题模式
   function toggleMode() {
     if (mode.value === 'light') {
@@ -209,38 +209,38 @@ export function useColorTheme(options: UseColorThemeOptions = {}): UseColorTheme
       setMode('light')
     }
   }
-  
+
   // 监听主色调变化，自动重新生成
   watch(primaryColor, () => {
     regenerate()
   }, { immediate: true })
-  
+
   // 自动注入 CSS 变量
   if (autoInject) {
     watch([themeColors, effectiveMode], () => {
       if (!themeColors.value) return
-      
+
       if (typeof document === 'undefined') return
-      
+
       // 更新 data-theme 属性
       document.documentElement.setAttribute('data-theme', effectiveMode.value)
-      
+
       // 注入 CSS 变量
       let styleElement = document.getElementById('ldesign-theme-colors')
-      
+
       if (!styleElement) {
         styleElement = document.createElement('style')
         styleElement.id = 'ldesign-theme-colors'
         document.head.appendChild(styleElement)
       }
-      
+
       styleElement.textContent = cssVariables.value
     }, { immediate: true })
-    
+
     // 监听系统主题变化（仅在 auto 模式下）
     onMounted(() => {
       if (typeof window === 'undefined') return
-      
+
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
       const handler = () => {
         if (mode.value === 'auto') {
@@ -248,16 +248,16 @@ export function useColorTheme(options: UseColorThemeOptions = {}): UseColorTheme
           mode.value = 'auto'
         }
       }
-      
+
       mediaQuery.addEventListener('change', handler)
-      
+
       // 清理
       return () => {
         mediaQuery.removeEventListener('change', handler)
       }
     })
   }
-  
+
   return {
     primaryColor,
     mode,

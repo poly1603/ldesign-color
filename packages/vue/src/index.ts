@@ -1,4 +1,4 @@
-﻿﻿/**
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿/**
 * @ldesign/color-vue
 *
 * Vue 3 components and composables for color theme management
@@ -14,13 +14,6 @@ export type {
   UseColorThemeOptions,
   UseColorThemeReturn,
 } from './composables/useColorTheme'
-
-// 新增的调色板 Hook
-export { useColorPalette } from './composables/useColorPalette'
-export type {
-  UseColorPaletteOptions,
-  UseColorPaletteReturn,
-} from './composables/useColorPalette'
 
 // Vue Plugin - 新的简化 API
 export { createColorPlugin as createSimpleColorPlugin } from './plugin/color-plugin'
@@ -45,16 +38,9 @@ export type { UseThemeModeOptions, UseThemeModeReturn } from './composables/useT
 export { default as ThemeColorPicker } from './components/ThemeColorPicker.vue'
 export { default as ThemeModeSwitch } from './components/ThemeModeSwitcher.vue'
 export { default as ThemeModeSwitcher } from './components/ThemeModeSwitcher.vue'
-export { default as ColorPicker } from './components/ColorPicker.vue'
-export { default as PaletteDisplay } from './components/PaletteDisplay.vue'
-export { default as ThemeProvider } from './components/ThemeProvider.vue'
 
 // Export plugin
 export { createColorPlugin, LDesignColorPlugin } from './plugin/index'
 export type { ColorPluginOptions } from './plugin/index'
 export { default as ColorPlugin } from './plugin/index'
 export { default } from './plugin/index'
-
-// Export engine plugins
-export { createColorEnginePlugin } from './plugins'
-export type { ColorEnginePluginOptions } from './plugins'

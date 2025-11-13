@@ -10,7 +10,7 @@
 import type { ThemeOptions, ThemeState } from './themeManager'
 import type { PresetTheme } from './presets'
 import { ThemeManager } from './themeManager'
-import { mergePresets, presetThemes } from './presets'
+import { mergePresets, presetThemes, getPresetTheme } from './presets'
 import { ColorLocaleManager, type ExternalI18n } from '../locales'
 
 /**
@@ -64,6 +64,8 @@ export class BaseThemeAdapter {
   protected changeListeners: Set<ThemeChangeCallback> = new Set()
   protected unsubscribeManager?: () => void
   protected destroyed = false
+  /** 适配器初始化选项（用于无存储时的默认主题应用） */
+  protected options: ThemeAdapterOptions
 
   /** 多语言管理器 */
   protected localeManager: ColorLocaleManager
@@ -75,6 +77,8 @@ export class BaseThemeAdapter {
    */
   constructor(options: ThemeAdapterOptions = {}) {
     this.manager = new ThemeManager(options)
+    // 保存初始选项，便于在无持久化数据时应用默认主题
+    this.options = options
 
     // 初始化多语言管理器
     this.localeManager = new ColorLocaleManager('zh-CN', 'en-US')
@@ -107,7 +111,38 @@ export class BaseThemeAdapter {
    */
   protected initialize(): void {
     // 恢复或获取当前主题
-    const theme = this.manager.getCurrentTheme() || this.manager.restore()
+    let theme = this.manager.getCurrentTheme() || this.manager.restore()
+
+    // 如果首次加载未能恢复主题，则基于构造参数应用一次默认主题
+    if (!theme) {
+      const nameOrColor = this.options?.themeName || this.options?.primaryColor
+      let toApply: string | undefined
+      if (typeof nameOrColor === 'string') {
+        const isHex = /^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(nameOrColor)
+        if (isHex) {
+          toApply = nameOrColor
+        } else {
+          // 优先在合并后的预设中查找自定义名称
+          const custom = this.state.presets.find(p => p.name === nameOrColor)
+          if (custom?.color) toApply = custom.color
+          // 其次判断是否为内置预设名称
+          else if (getPresetTheme(nameOrColor)) toApply = nameOrColor
+        }
+      }
+
+      if (toApply) {
+        try {
+          theme = this.manager.applyTheme(toApply, this.options)
+        }
+        catch (error) {
+          // 忽略初始化失败，避免中断应用启动
+          if (typeof console !== 'undefined' && (console as any).warn) {
+            console.warn('[BaseThemeAdapter] 初始主题应用失败:', error)
+          }
+        }
+      }
+    }
+
     if (theme) {
       this.updateState(theme)
     }

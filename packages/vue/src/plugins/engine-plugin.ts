@@ -2,12 +2,12 @@
  * Vue 3 Color Theme Engine 插件
  *
  * 将 Vue Color Theme 功能集成到 LDesign Engine 中
- * 
+ *
  * @module plugins/engine-plugin
  */
 
 import type { Plugin } from '@ldesign/engine-core/types'
-import { BaseThemeAdapter, getPresetColor } from '@ldesign/color-core'
+import { BaseThemeAdapter, getPresetColor, setThemeMode } from '@ldesign/color-core'
 import type { ThemeAdapterOptions, PresetTheme } from '@ldesign/color-core'
 import type { PresetThemeName } from '@ldesign/color-core/types'
 import { createColorPlugin } from '../plugin/index'
@@ -337,7 +337,7 @@ interface EngineLike {
  *
  * @param options - 插件配置选项
  * @returns Engine 插件实例
- * 
+ *
  * @example
  * ```typescript
  * const colorPlugin = createColorEnginePlugin({
@@ -348,7 +348,7 @@ interface EngineLike {
  *     key: 'app-theme',
  *   }
  * })
- * 
+ *
  * engine.use(colorPlugin)
  * ```
  */
@@ -414,6 +414,39 @@ export function createColorEnginePlugin(
           primaryColor: resolvedPrimaryColor,
           customPresets,
         })
+
+        // 初始化：如果当前没有主题，基于配置应用一次初始主题，并设置初始模式
+        try {
+          // 推断初始颜色：优先使用解析后的预设颜色；其次查找自定义预设；最后接受 hex；兜底 '#1890ff'
+          let initialColor: string | undefined = typeof resolvedPrimaryColor === 'string' ? resolvedPrimaryColor : undefined
+          if (!initialColor && typeof primaryColor === 'string') {
+            const custom = Array.isArray(customPresets)
+              ? customPresets.find(p => p?.name === primaryColor)
+              : undefined
+            if (custom?.color) {
+              initialColor = custom.color
+            }
+            else if (/^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(primaryColor)) {
+              initialColor = primaryColor
+            }
+          }
+          if (!initialColor) initialColor = '#1890ff'
+
+          // 仅当还未有主题时应用，避免重复注入
+          if (!themeAdapter.getCurrentTheme?.()) {
+            await themeAdapter.applyTheme(initialColor)
+          }
+
+          // 根据 mode 初始值设置 DOM 上的数据属性，确保暗/亮样式选择器生效
+          const initialMode = (themeOptions as any)?.mode
+          if (initialMode === 'dark' || initialMode === 'light') {
+            setThemeMode(initialMode)
+          }
+        }
+        catch (e) {
+          if (debug) console.warn('[Color] Initial theme apply failed:', e)
+        }
+
 
         // ========== 跨插件通信：i18n 集成 ==========
 
