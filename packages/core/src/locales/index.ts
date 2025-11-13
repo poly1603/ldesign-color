@@ -455,3 +455,7 @@ export type LocaleKey = keyof typeof locales
 export function getLocale(locale: LocaleKey | string): ColorLocale {
   return locales[locale as LocaleKey] || enUS
 }
+
+// 导出 ColorLocaleManager
+export { ColorLocaleManager, createColorLocaleManager } from './manager'
+export type { ExternalI18n } from './manager'

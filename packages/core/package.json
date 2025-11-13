@@ -1,10 +1,7 @@
 {
   "name": "@ldesign/color-core",
-  "type": "module",
   "version": "1.0.0",
   "description": "Framework-agnostic core color manipulation library with powerful utilities and design system integration",
-  "author": "ldesign",
-  "license": "MIT",
   "keywords": [
     "color",
     "color-manipulation",
@@ -19,27 +16,203 @@
     "typescript",
     "framework-agnostic"
   ],
+  "author": "ldesign",
+  "license": "MIT",
+  "type": "module",
   "exports": {
     ".": {
       "types": "./es/index.d.ts",
       "import": "./es/index.js",
       "require": "./lib/index.cjs"
     },
-    "./*": {
-      "types": "./es/*.d.ts",
-      "import": "./es/*.js",
-      "require": "./lib/*.cjs"
+    "./accessibility": {
+      "types": "./es/accessibility/index.d.ts",
+      "import": "./es/accessibility/index.js",
+      "require": "./lib/accessibility/index.cjs"
+    },
+    "./accessibility/*": {
+      "types": "./es/accessibility/*.d.ts",
+      "import": "./es/accessibility/*.js",
+      "require": "./lib/accessibility/*.cjs"
+    },
+    "./ai/*": {
+      "types": "./es/ai/*.d.ts",
+      "import": "./es/ai/*.js",
+      "require": "./lib/ai/*.cjs"
+    },
+    "./analyzer": {
+      "types": "./es/analyzer/index.d.ts",
+      "import": "./es/analyzer/index.js",
+      "require": "./lib/analyzer/index.cjs"
+    },
+    "./analyzer/*": {
+      "types": "./es/analyzer/*.d.ts",
+      "import": "./es/analyzer/*.js",
+      "require": "./lib/analyzer/*.cjs"
+    },
+    "./animation": {
+      "types": "./es/animation/index.d.ts",
+      "import": "./es/animation/index.js",
+      "require": "./lib/animation/index.cjs"
+    },
+    "./animation/*": {
+      "types": "./es/animation/*.d.ts",
+      "import": "./es/animation/*.js",
+      "require": "./lib/animation/*.cjs"
+    },
+    "./batch": {
+      "types": "./es/batch/index.d.ts",
+      "import": "./es/batch/index.js",
+      "require": "./lib/batch/index.cjs"
+    },
+    "./batch/*": {
+      "types": "./es/batch/*.d.ts",
+      "import": "./es/batch/*.js",
+      "require": "./lib/batch/*.cjs"
+    },
+    "./brand": {
+      "types": "./es/brand/index.d.ts",
+      "import": "./es/brand/index.js",
+      "require": "./lib/brand/index.cjs"
+    },
+    "./brand/*": {
+      "types": "./es/brand/*.d.ts",
+      "import": "./es/brand/*.js",
+      "require": "./lib/brand/*.cjs"
+    },
+    "./constants": {
+      "types": "./es/constants/index.d.ts",
+      "import": "./es/constants/index.js",
+      "require": "./lib/constants/index.cjs"
+    },
+    "./constants/*": {
+      "types": "./es/constants/*.d.ts",
+      "import": "./es/constants/*.js",
+      "require": "./lib/constants/*.cjs"
+    },
+    "./core": {
+      "types": "./es/core/index.d.ts",
+      "import": "./es/core/index.js",
+      "require": "./lib/core/index.cjs"
+    },
+    "./core/*": {
+      "types": "./es/core/*.d.ts",
+      "import": "./es/core/*.js",
+      "require": "./lib/core/*.cjs"
+    },
+    "./design-systems": {
+      "types": "./es/design-systems/index.d.ts",
+      "import": "./es/design-systems/index.js",
+      "require": "./lib/design-systems/index.cjs"
+    },
+    "./design-systems/*": {
+      "types": "./es/design-systems/*.d.ts",
+      "import": "./es/design-systems/*.js",
+      "require": "./lib/design-systems/*.cjs"
+    },
+    "./gradient": {
+      "types": "./es/gradient/index.d.ts",
+      "import": "./es/gradient/index.js",
+      "require": "./lib/gradient/index.cjs"
+    },
+    "./gradient/*": {
+      "types": "./es/gradient/*.d.ts",
+      "import": "./es/gradient/*.js",
+      "require": "./lib/gradient/*.cjs"
+    },
+    "./harmony": {
+      "types": "./es/harmony/index.d.ts",
+      "import": "./es/harmony/index.js",
+      "require": "./lib/harmony/index.cjs"
+    },
+    "./harmony/*": {
+      "types": "./es/harmony/*.d.ts",
+      "import": "./es/harmony/*.js",
+      "require": "./lib/harmony/*.cjs"
+    },
+    "./locales": {
+      "types": "./es/locales/index.d.ts",
+      "import": "./es/locales/index.js",
+      "require": "./lib/locales/index.cjs"
+    },
+    "./locales/*": {
+      "types": "./es/locales/*.d.ts",
+      "import": "./es/locales/*.js",
+      "require": "./lib/locales/*.cjs"
+    },
+    "./palette/*": {
+      "types": "./es/palette/*.d.ts",
+      "import": "./es/palette/*.js",
+      "require": "./lib/palette/*.cjs"
+    },
+    "./performance": {
+      "types": "./es/performance/index.d.ts",
+      "import": "./es/performance/index.js",
+      "require": "./lib/performance/index.cjs"
+    },
+    "./performance/*": {
+      "types": "./es/performance/*.d.ts",
+      "import": "./es/performance/*.js",
+      "require": "./lib/performance/*.cjs"
+    },
+    "./plugin": {
+      "types": "./es/plugin/index.d.ts",
+      "import": "./es/plugin/index.js",
+      "require": "./lib/plugin/index.cjs"
+    },
+    "./plugin/*": {
+      "types": "./es/plugin/*.d.ts",
+      "import": "./es/plugin/*.js",
+      "require": "./lib/plugin/*.cjs"
+    },
+    "./schemes": {
+      "types": "./es/schemes/index.d.ts",
+      "import": "./es/schemes/index.js",
+      "require": "./lib/schemes/index.cjs"
+    },
+    "./schemes/*": {
+      "types": "./es/schemes/*.d.ts",
+      "import": "./es/schemes/*.js",
+      "require": "./lib/schemes/*.cjs"
+    },
+    "./theme": {
+      "types": "./es/theme/index.d.ts",
+      "import": "./es/theme/index.js",
+      "require": "./lib/theme/index.cjs"
+    },
+    "./theme/*": {
+      "types": "./es/theme/*.d.ts",
+      "import": "./es/theme/*.js",
+      "require": "./lib/theme/*.cjs"
+    },
+    "./themes/*": {
+      "types": "./es/themes/*.d.ts",
+      "import": "./es/themes/*.js",
+      "require": "./lib/themes/*.cjs"
+    },
+    "./types/*": {
+      "types": "./es/types/*.d.ts",
+      "import": "./es/types/*.js",
+      "require": "./lib/types/*.cjs"
+    },
+    "./utils/*": {
+      "types": "./es/utils/*.d.ts",
+      "import": "./es/utils/*.js",
+      "require": "./lib/utils/*.cjs"
     }
   },
   "main": "./lib/index.cjs",
   "module": "./es/index.js",
   "types": "./es/index.d.ts",
+  "unpkg": "./dist/index.min.js",
+  "jsdelivr": "./dist/index.min.js",
   "files": [
-    "LICENSE",
     "README.md",
+    "LICENSE",
+    "package.json",
     "es",
     "lib",
-    "package.json"
+    "dist"
   ],
   "scripts": {
     "build": "ldesign-builder build",

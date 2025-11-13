@@ -2,6 +2,8 @@
  * 预设主题配置
  */
 
+import type { PresetThemeName } from '../types'
+
 export interface PresetTheme {
   name: string
   label: string
@@ -11,6 +13,8 @@ export interface PresetTheme {
   /** 是否为用户自定义主题 */
   custom?: boolean
 }
+
+export type { PresetThemeName }
 
 export const presetThemes: PresetTheme[] = [
   // 品牌色
@@ -157,4 +161,82 @@ export function getPresetGroups() {
     neutral: neutralColors,
     dark: darkColors,
   }
+}
+
+/**
+ * 按 order 字段排序预设主题
+ *
+ * @param presets - 预设主题数组
+ * @returns 排序后的预设主题数组
+ *
+ * @example
+ * ```ts
+ * const sorted = sortPresets(presets)
+ * // 按 order 升序排列，没有 order 的排在后面
+ * ```
+ */
+export function sortPresets(presets: PresetTheme[]): PresetTheme[] {
+  return [...presets].sort((a, b) => {
+    // 如果都有 order，按 order 升序排列
+    if (a.order !== undefined && b.order !== undefined) {
+      return a.order - b.order
+    }
+    // 如果只有 a 有 order，a 排在前面
+    if (a.order !== undefined) {
+      return -1
+    }
+    // 如果只有 b 有 order，b 排在前面
+    if (b.order !== undefined) {
+      return 1
+    }
+    // 都没有 order，保持原始顺序
+    return 0
+  })
+}
+
+/**
+ * 合并内置预设和自定义预设
+ *
+ * 合并规则：
+ * 1. 如果自定义预设的 name 与内置预设重复，自定义预设覆盖内置预设
+ * 2. 最终预设列表 = 内置预设 + 自定义预设（去重后按 order 排序）
+ *
+ * @param customPresets - 自定义预设数组
+ * @returns 合并并排序后的预设数组
+ *
+ * @example
+ * ```ts
+ * const merged = mergePresets([
+ *   {
+ *     name: 'brand-primary',
+ *     label: '品牌主色',
+ *     color: '#FF6B6B',
+ *     description: '公司品牌主色调',
+ *     order: 1,
+ *     custom: true,
+ *   },
+ * ])
+ * // 返回：[自定义预设, ...内置预设]（按 order 排序）
+ * ```
+ */
+export function mergePresets(customPresets: PresetTheme[] = []): PresetTheme[] {
+  // 创建一个 Map 用于去重，key 为 name
+  const presetsMap = new Map<string, PresetTheme>()
+
+  // 1. 先添加内置预设
+  for (const preset of presetThemes) {
+    presetsMap.set(preset.name, preset)
+  }
+
+  // 2. 添加自定义预设（会覆盖同名的内置预设）
+  for (const preset of customPresets) {
+    presetsMap.set(preset.name, {
+      ...preset,
+      custom: preset.custom !== undefined ? preset.custom : true, // 默认标记为自定义
+    })
+  }
+
+  // 3. 转换为数组并排序
+  const mergedPresets = Array.from(presetsMap.values())
+  return sortPresets(mergedPresets)
 }

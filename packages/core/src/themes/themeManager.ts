@@ -7,12 +7,26 @@ import { generateThemePalettes, injectThemedCssVariables } from '../core'
 import { getPresetTheme, presetThemes } from './presets'
 
 export interface ThemeOptions {
+  /** 主题色 */
+  primaryColor?: string
+  /** 主题模式 */
+  mode?: 'light' | 'dark' | 'auto'
+  /** 主题名称 */
+  themeName?: string
   prefix?: string
   storageKey?: string
   autoApply?: boolean
   includeSemantics?: boolean
   includeGrays?: boolean
   nameMap?: Record<string, string>
+  /** 自定义预设主题数组 */
+  customPresets?: PresetTheme[]
+  /** 持久化配置 */
+  persistence?: {
+    enabled?: boolean
+    key?: string
+    storage?: 'localStorage' | 'sessionStorage' | 'cookie'
+  }
 }
 
 export interface ThemeState {
@@ -185,7 +199,7 @@ export class ThemeManager {
       }
     }
 
-    return () => {}
+    return () => { }
   }
 
   /**

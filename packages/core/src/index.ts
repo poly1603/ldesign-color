@@ -10,6 +10,24 @@
 // Default export
 import { Color } from './core'
 
+// ========== 主题色彩生成（核心功能） ==========
+// 基于主色调自动生成完整色彩体系的核心 API
+export {
+  generateThemeColors,
+  generateCSSVariables,
+  injectCSSVariables,
+  COLOR_SHADES,
+} from './theme'
+
+export type {
+  ColorShade,
+  ColorScale,
+  SemanticColors,
+  ThemeColors,
+  ColorGeneratorOptions,
+  CSSVariablesOptions,
+} from './theme'
+
 // Accessibility tools
 export {
   autoAdjustForWCAG,
@@ -155,6 +173,9 @@ export * from './themes/presets'
 
 export { defaultThemeManager, ThemeManager } from './themes/themeManager'
 export type { ThemeOptions, ThemeState } from './themes/themeManager'
+
+export { defaultThemeModeManager, ThemeModeManager, setThemeMode, getThemeMode, toggleThemeMode, getEffectiveTheme } from './themes/themeModeManager'
+export type { ThemeMode, EffectiveTheme, ThemeModeOptions, ThemeModeState } from './themes/themeModeManager'
 
 export { BaseThemeAdapter } from './themes/BaseThemeAdapter'
 export type {

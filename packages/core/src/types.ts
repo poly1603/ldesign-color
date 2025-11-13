@@ -122,37 +122,37 @@ export interface CMYK {
  */
 export type ColorInput
   = | string
-    | RGB
-    | HSL
-    | HSV
-    | HWB
-    | LAB
-    | LCH
-    | XYZ
-    | OKLAB
-    | OKLCH
-    | CMYK
-    | number[]
-    | { toHex: () => string, toRGB: () => RGB } // Support Color instances
+  | RGB
+  | HSL
+  | HSV
+  | HWB
+  | LAB
+  | LCH
+  | XYZ
+  | OKLAB
+  | OKLCH
+  | CMYK
+  | number[]
+  | { toHex: () => string, toRGB: () => RGB } // Support Color instances
 
 /**
  * Color format types
  */
 export type ColorFormat
   = | 'hex'
-    | 'rgb'
-    | 'rgba'
-    | 'hsl'
-    | 'hsla'
-    | 'hsv'
-    | 'hwb'
-    | 'lab'
-    | 'lch'
-    | 'xyz'
-    | 'oklab'
-    | 'oklch'
-    | 'cmyk'
-    | 'name'
+  | 'rgb'
+  | 'rgba'
+  | 'hsl'
+  | 'hsla'
+  | 'hsv'
+  | 'hwb'
+  | 'lab'
+  | 'lch'
+  | 'xyz'
+  | 'oklab'
+  | 'oklch'
+  | 'cmyk'
+  | 'name'
 
 // ============================================
 // Color Operations
@@ -163,52 +163,52 @@ export type ColorFormat
  */
 export type BlendMode
   = | 'normal'
-    | 'multiply'
-    | 'screen'
-    | 'overlay'
-    | 'darken'
-    | 'lighten'
-    | 'color-dodge'
-    | 'color-burn'
-    | 'hard-light'
-    | 'soft-light'
-    | 'difference'
-    | 'exclusion'
-    | 'linear-burn'
-    | 'linear-dodge'
-    | 'vivid-light'
-    | 'pin-light'
-    | 'hard-mix'
-    | 'hue'
-    | 'saturation'
-    | 'color'
-    | 'luminosity'
+  | 'multiply'
+  | 'screen'
+  | 'overlay'
+  | 'darken'
+  | 'lighten'
+  | 'color-dodge'
+  | 'color-burn'
+  | 'hard-light'
+  | 'soft-light'
+  | 'difference'
+  | 'exclusion'
+  | 'linear-burn'
+  | 'linear-dodge'
+  | 'vivid-light'
+  | 'pin-light'
+  | 'hard-mix'
+  | 'hue'
+  | 'saturation'
+  | 'color'
+  | 'luminosity'
 
 /**
  * Interpolation spaces for color mixing
  */
 export type InterpolationSpace
   = | 'rgb'
-    | 'hsl'
-    | 'hsv'
-    | 'hwb'
-    | 'lab'
-    | 'lch'
-    | 'oklab'
-    | 'oklch'
+  | 'hsl'
+  | 'hsv'
+  | 'hwb'
+  | 'lab'
+  | 'lch'
+  | 'oklab'
+  | 'oklch'
 
 /**
  * Color harmony types
  */
 export type HarmonyType
   = | 'complementary'
-    | 'analogous'
-    | 'triadic'
-    | 'tetradic'
-    | 'split-complementary'
-    | 'double-complementary'
-    | 'square'
-    | 'monochromatic'
+  | 'analogous'
+  | 'triadic'
+  | 'tetradic'
+  | 'split-complementary'
+  | 'double-complementary'
+  | 'square'
+  | 'monochromatic'
 
 // ============================================
 // Accessibility
@@ -229,13 +229,13 @@ export type TextSize = 'normal' | 'large'
  */
 export type ColorBlindnessType
   = | 'protanopia' // Red-blind
-    | 'protanomaly' // Red-weak
-    | 'deuteranopia' // Green-blind
-    | 'deuteranomaly' // Green-weak
-    | 'tritanopia' // Blue-blind
-    | 'tritanomaly' // Blue-weak
-    | 'achromatopsia' // Total color blindness
-    | 'achromatomaly' // Partial color blindness
+  | 'protanomaly' // Red-weak
+  | 'deuteranopia' // Green-blind
+  | 'deuteranomaly' // Green-weak
+  | 'tritanopia' // Blue-blind
+  | 'tritanomaly' // Blue-weak
+  | 'achromatopsia' // Total color blindness
+  | 'achromatomaly' // Partial color blindness
 
 // ============================================
 // Analysis
@@ -311,6 +311,28 @@ export interface ColorScheme {
   tags?: string[]
 }
 
+/**
+ * 预设主题色名称联合类型
+ *
+ * 包含所有内置预设主题色的名称，用于 TypeScript 类型提示
+ */
+export type PresetThemeName =
+  | 'blue'
+  | 'purple'
+  | 'cyan'
+  | 'green'
+  | 'magenta'
+  | 'red'
+  | 'orange'
+  | 'yellow'
+  | 'volcano'
+  | 'geekblue'
+  | 'lime'
+  | 'gold'
+  | 'gray'
+  | 'dark-blue'
+  | 'dark-green'
+
 // ============================================
 // Animation
 // ============================================
@@ -320,40 +342,40 @@ export interface ColorScheme {
  */
 export type EasingFunction
   = | 'linear'
-    | 'ease'
-    | 'ease-in'
-    | 'ease-out'
-    | 'ease-in-out'
-    | 'ease-in-quad'
-    | 'ease-out-quad'
-    | 'ease-in-out-quad'
-    | 'ease-in-cubic'
-    | 'ease-out-cubic'
-    | 'ease-in-out-cubic'
-    | 'ease-in-quart'
-    | 'ease-out-quart'
-    | 'ease-in-out-quart'
-    | 'ease-in-quint'
-    | 'ease-out-quint'
-    | 'ease-in-out-quint'
-    | 'ease-in-sine'
-    | 'ease-out-sine'
-    | 'ease-in-out-sine'
-    | 'ease-in-expo'
-    | 'ease-out-expo'
-    | 'ease-in-out-expo'
-    | 'ease-in-circ'
-    | 'ease-out-circ'
-    | 'ease-in-out-circ'
-    | 'ease-in-back'
-    | 'ease-out-back'
-    | 'ease-in-out-back'
-    | 'ease-in-elastic'
-    | 'ease-out-elastic'
-    | 'ease-in-out-elastic'
-    | 'ease-in-bounce'
-    | 'ease-out-bounce'
-    | 'ease-in-out-bounce'
+  | 'ease'
+  | 'ease-in'
+  | 'ease-out'
+  | 'ease-in-out'
+  | 'ease-in-quad'
+  | 'ease-out-quad'
+  | 'ease-in-out-quad'
+  | 'ease-in-cubic'
+  | 'ease-out-cubic'
+  | 'ease-in-out-cubic'
+  | 'ease-in-quart'
+  | 'ease-out-quart'
+  | 'ease-in-out-quart'
+  | 'ease-in-quint'
+  | 'ease-out-quint'
+  | 'ease-in-out-quint'
+  | 'ease-in-sine'
+  | 'ease-out-sine'
+  | 'ease-in-out-sine'
+  | 'ease-in-expo'
+  | 'ease-out-expo'
+  | 'ease-in-out-expo'
+  | 'ease-in-circ'
+  | 'ease-out-circ'
+  | 'ease-in-out-circ'
+  | 'ease-in-back'
+  | 'ease-out-back'
+  | 'ease-in-out-back'
+  | 'ease-in-elastic'
+  | 'ease-out-elastic'
+  | 'ease-in-out-elastic'
+  | 'ease-in-bounce'
+  | 'ease-out-bounce'
+  | 'ease-in-out-bounce'
 
 /**
  * Animation configuration
@@ -386,12 +408,12 @@ export interface Keyframe {
  */
 export type VisualizationType
   = | 'wheel'
-    | 'spectrum'
-    | 'gradient'
-    | 'cube'
-    | 'cylinder'
-    | 'cone'
-    | 'sphere'
+  | 'spectrum'
+  | 'gradient'
+  | 'cube'
+  | 'cylinder'
+  | 'cone'
+  | 'sphere'
 
 /**
  * Color wheel configuration
@@ -444,11 +466,11 @@ export interface SVGPath {
  */
 export type PluginType
   = | 'colorSpace'
-    | 'blendMode'
-    | 'analyzer'
-    | 'generator'
-    | 'validator'
-    | 'transformer'
+  | 'blendMode'
+  | 'analyzer'
+  | 'generator'
+  | 'validator'
+  | 'transformer'
 
 /**
  * Plugin configuration

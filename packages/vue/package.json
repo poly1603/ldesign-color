@@ -1,10 +1,7 @@
 {
   "name": "@ldesign/color-vue",
-  "type": "module",
   "version": "1.0.0",
   "description": "Vue 3 components and composables for @ldesign/color-core",
-  "author": "ldesign",
-  "license": "MIT",
   "keywords": [
     "color",
     "vue",
@@ -13,28 +10,69 @@
     "composables",
     "components"
   ],
+  "author": "ldesign",
+  "license": "MIT",
+  "type": "module",
   "exports": {
     ".": {
       "types": "./es/index.d.ts",
       "import": "./es/index.js",
       "require": "./lib/index.cjs"
     },
-    "./*": {
-      "types": "./es/*.d.ts",
-      "import": "./es/*.js",
-      "require": "./lib/*.cjs"
+    "./composables/*": {
+      "types": "./es/composables/*.d.ts",
+      "import": "./es/composables/*.js",
+      "require": "./lib/composables/*.cjs"
     },
-    "./styles.css": "./es/styles/styles.css"
+    "./plugin": {
+      "types": "./es/plugin/index.d.ts",
+      "import": "./es/plugin/index.js",
+      "require": "./lib/plugin/index.cjs"
+    },
+    "./plugin/*": {
+      "types": "./es/plugin/*.d.ts",
+      "import": "./es/plugin/*.js",
+      "require": "./lib/plugin/*.cjs"
+    },
+    "./plugins": {
+      "types": "./es/plugins/index.d.ts",
+      "import": "./es/plugins/index.js",
+      "require": "./lib/plugins/index.cjs"
+    },
+    "./plugins/*": {
+      "types": "./es/plugins/*.d.ts",
+      "import": "./es/plugins/*.js",
+      "require": "./lib/plugins/*.cjs"
+    },
+    "./es/components/ColorPicker.vue.css": "./es/components/ColorPicker.vue.css",
+    "./es/components/PaletteDisplay.vue.css": "./es/components/PaletteDisplay.vue.css",
+    "./es/components/ThemeColorPicker.vue.css": "./es/components/ThemeColorPicker.vue.css",
+    "./es/components/ThemeModeSwitcher.vue.css": "./es/components/ThemeModeSwitcher.vue.css",
+    "./es/components/ThemeProvider.vue.css": "./es/components/ThemeProvider.vue.css",
+    "./es/index.css": "./es/index.css",
+    "./es/plugin/index.css": "./es/plugin/index.css",
+    "./lib/components/ColorPicker.vue.css": "./lib/components/ColorPicker.vue.css",
+    "./lib/components/PaletteDisplay.vue.css": "./lib/components/PaletteDisplay.vue.css",
+    "./lib/components/ThemeColorPicker.vue.css": "./lib/components/ThemeColorPicker.vue.css",
+    "./lib/components/ThemeModeSwitcher.vue.css": "./lib/components/ThemeModeSwitcher.vue.css",
+    "./lib/components/ThemeProvider.vue.css": "./lib/components/ThemeProvider.vue.css",
+    "./lib/index.css": "./lib/index.css",
+    "./lib/plugin/index.css": "./lib/plugin/index.css",
+    "./dist/index.css": "./dist/index.css",
+    "./dist/index.min.css": "./dist/index.min.css"
   },
   "main": "./lib/index.cjs",
   "module": "./es/index.js",
   "types": "./es/index.d.ts",
+  "unpkg": "./dist/index.min.js",
+  "jsdelivr": "./dist/index.min.js",
   "files": [
-    "LICENSE",
     "README.md",
+    "LICENSE",
+    "package.json",
     "es",
     "lib",
-    "package.json"
+    "dist"
   ],
   "scripts": {
     "build": "ldesign-builder build",

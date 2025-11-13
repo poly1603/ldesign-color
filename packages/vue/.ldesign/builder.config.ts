@@ -13,6 +13,9 @@ export default defineConfig({
   clean: true,
   external: ['vue', '@ldesign/color-core'],
   sourcemap: true,
+  umd: {
+    enabled: false
+  },
   vite: {
     plugins: [vue()]
   }

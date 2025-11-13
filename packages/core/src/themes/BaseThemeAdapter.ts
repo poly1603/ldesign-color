@@ -10,7 +10,8 @@
 import type { ThemeOptions, ThemeState } from './themeManager'
 import type { PresetTheme } from './presets'
 import { ThemeManager } from './themeManager'
-import { presetThemes } from './presets'
+import { mergePresets, presetThemes } from './presets'
+import { ColorLocaleManager, type ExternalI18n } from '../locales'
 
 /**
  * 主题适配器状态
@@ -64,6 +65,9 @@ export class BaseThemeAdapter {
   protected unsubscribeManager?: () => void
   protected destroyed = false
 
+  /** 多语言管理器 */
+  protected localeManager: ColorLocaleManager
+
   /**
    * 创建主题适配器
    *
@@ -72,10 +76,18 @@ export class BaseThemeAdapter {
   constructor(options: ThemeAdapterOptions = {}) {
     this.manager = new ThemeManager(options)
 
+    // 初始化多语言管理器
+    this.localeManager = new ColorLocaleManager('zh-CN', 'en-US')
+
+    // 合并内置预设和自定义预设
+    const mergedPresets = options.customPresets
+      ? mergePresets(options.customPresets)
+      : presetThemes
+
     // 初始化状态
     this.state = {
       currentTheme: null,
-      presets: presetThemes,
+      presets: mergedPresets,
       isLoading: false,
       primaryColor: '',
       themeName: '',
@@ -275,6 +287,94 @@ export class BaseThemeAdapter {
    */
   getState(): Readonly<ThemeAdapterState> {
     return { ...this.state }
+  }
+
+  /**
+   * 获取预设主题列表
+   *
+   * 返回合并后的预设列表（包括内置预设和自定义预设）
+   *
+   * @returns 预设主题数组
+   *
+   * @example
+   * ```typescript
+   * const presets = adapter.getPresets()
+   * console.log(presets) // [{ name: 'blue', label: '拂晓蓝', color: '#1890ff', ... }, ...]
+   * ```
+   */
+  getPresets(): PresetTheme[] {
+    return this.state.presets
+  }
+
+  // ========== 多语言管理方法 ==========
+
+  /**
+   * 设置当前语言
+   *
+   * 用于响应外部 i18n 的语言切换
+   *
+   * @param locale - 语言代码（如 'zh-CN', 'en-US'）
+   * @example
+   * ```typescript
+   * // 当 i18n 语言切换时调用
+   * themeAdapter.setLocale('en-US')
+   * ```
+   */
+  setLocale(locale: string): void {
+    this.localeManager.setLocale(locale)
+  }
+
+  /**
+   * 设置外部 i18n 实例
+   *
+   * 允许 Color 包使用外部 i18n 的翻译，实现多语言统一管理
+   *
+   * @param i18n - 外部 i18n 实例（需要实现 t() 方法）
+   * @example
+   * ```typescript
+   * // 在 engine plugin 中注入 i18n
+   * const i18nInstance = container.resolve('i18n')
+   * themeAdapter.setExternalI18n(i18nInstance)
+   * ```
+   */
+  setExternalI18n(i18n: ExternalI18n | null): void {
+    this.localeManager.setExternalI18n(i18n)
+  }
+
+  /**
+   * 获取当前语言
+   *
+   * @returns 当前语言代码
+   */
+  getLocale(): string {
+    return this.localeManager.getLocale()
+  }
+
+  /**
+   * 获取翻译文本
+   *
+   * 优先使用外部 i18n，不存在时使用内置 locales
+   *
+   * @param key - 翻译键（如 'theme.blue'）
+   * @returns 翻译后的文本
+   * @example
+   * ```typescript
+   * const text = themeAdapter.t('theme.blue') // '蓝色' 或 'Blue'
+   * ```
+   */
+  t(key: string): string {
+    return this.localeManager.t(key)
+  }
+
+  /**
+   * 获取多语言管理器实例
+   *
+   * 用于高级场景，如自定义翻译逻辑
+   *
+   * @returns ColorLocaleManager 实例
+   */
+  getLocaleManager(): ColorLocaleManager {
+    return this.localeManager
   }
 
   /**
