@@ -1,0 +1,224 @@
+/**
+ * PaletteDisplay 组件样式
+ */
+.ld-palette-display {
+  padding: 24px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ld-palette-display__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.ld-palette-display__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.ld-palette-display__controls {
+  display: flex;
+  gap: 8px;
+}
+
+.ld-palette-display__mode-btn,
+.ld-palette-display__export-btn {
+  padding: 6px 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+
+.ld-palette-display__mode-btn:hover,
+.ld-palette-display__export-btn:hover {
+  border-color: #1890ff;
+  color: #1890ff;
+}
+
+.ld-palette-display__primary {
+  margin-bottom: 24px;
+}
+
+.ld-palette-display__label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+.ld-palette-display__input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.ld-palette-display__color-input {
+  width: 48px;
+  height: 32px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.ld-palette-display__text-input {
+  flex: 1;
+  max-width: 200px;
+  padding: 4px 8px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.ld-palette-display__palettes {
+  display: grid;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.ld-palette-display__palette-title {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+}
+
+.ld-palette-display__shades {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 8px;
+}
+
+.ld-palette-display__shade {
+  position: relative;
+  height: 60px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  font-size: 11px;
+}
+
+.ld-palette-display__shade:hover {
+  transform: scale(1.05);
+}
+
+.ld-palette-display__shade-label {
+  font-weight: 600;
+}
+
+.ld-palette-display__shade-value {
+  opacity: 0.8;
+  font-family: monospace;
+}
+
+.ld-palette-display__copied {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.ld-palette-display__harmony {
+  padding-top: 24px;
+  border-top: 1px solid #f0f0f0;
+  margin-bottom: 24px;
+}
+
+.ld-palette-display__section-title {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.ld-palette-display__harmony-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.ld-palette-display__harmony-label {
+  width: 80px;
+  font-size: 14px;
+  color: #666;
+}
+
+.ld-palette-display__harmony-colors {
+  display: flex;
+  gap: 8px;
+}
+
+.ld-palette-display__harmony-color {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border: 1px solid #d9d9d9;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.ld-palette-display__harmony-color:hover {
+  transform: scale(1.1);
+}
+
+.ld-palette-display__css {
+  padding-top: 24px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.ld-palette-display__css-code {
+  background: #f5f5f5;
+  padding: 12px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 12px;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+}
+
+.ld-palette-display__copy-css-btn {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #1890ff;
+  background: #1890ff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.ld-palette-display__copy-css-btn:hover {
+  background: #40a9ff;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}

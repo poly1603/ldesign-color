@@ -1,0 +1,36 @@
+/**
+ * ThemeModeSwitcher 组件样式
+ */
+.ld-theme-mode-switcher {
+  display: inline-block;
+}
+
+.mode-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--color-border, #d9d9d9);
+  border-radius: 6px;
+  background: var(--color-bg-container, #ffffff);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  color: var(--color-text-primary, #333);
+}
+
+.mode-button:hover {
+  border-color: var(--color-primary-hover, #40a9ff);
+  background: var(--color-bg-component-hover, #f5f5f5);
+}
+
+.mode-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.mode-text {
+  font-size: 14px;
+  line-height: 1;
+}
+

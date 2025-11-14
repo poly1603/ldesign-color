@@ -7,8 +7,8 @@ import type { UseThemeOptions } from '../composables/useTheme'
 import type { PresetTheme } from '@ldesign/color-core'
 import { BaseThemeAdapter } from '@ldesign/color-core'
 import { COLOR_SYMBOL } from '../constants'
-import ThemeColorPicker from '../components/ThemeColorPicker.vue'
-import ThemeModeSwitcher from '../components/ThemeModeSwitcher.vue'
+import { ThemeColorPicker } from '../components/ThemeColorPicker'
+import { ThemeModeSwitcher } from '../components/ThemeModeSwitcher'
 
 export interface ColorPluginOptions extends UseThemeOptions {
   /** 是否注册全局组件 */
@@ -41,6 +41,32 @@ export function createColorPlugin(options: ColorPluginOptions = {}): Plugin {
     install(app: App) {
       console.log('[createColorPlugin] install() called')
       console.log('[createColorPlugin] COLOR_SYMBOL:', COLOR_SYMBOL)
+
+      // ========== 样式注入 ==========
+      // 动态注入组件样式，确保在所有环境下（有/无 alias、dev/build）样式都能正常加载
+      if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+        const styleId = 'ldesign-color-vue-styles'
+        // 检查是否已经注入，避免重复
+        if (!document.getElementById(styleId)) {
+          try {
+            const link = document.createElement('link')
+            link.id = styleId
+            link.rel = 'stylesheet'
+            // 使用 import.meta.url 计算 CSS 文件的绝对路径
+            // 这样无论是从源码还是构建产物导入，都能正确找到 CSS 文件
+            const cssUrl = new URL('../index.css', import.meta.url).href
+            link.href = cssUrl
+            document.head.appendChild(link)
+            console.log('[createColorPlugin] Styles injected:', cssUrl)
+          }
+          catch (error) {
+            console.warn('[createColorPlugin] Failed to inject styles:', error)
+          }
+        }
+        else {
+          console.log('[createColorPlugin] Styles already injected, skipping')
+        }
+      }
 
       // Provide theme adapter instance
       app.provide(COLOR_SYMBOL, themeAdapter)
