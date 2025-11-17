@@ -92,8 +92,7 @@ export function createColorPlugin(options: ColorPluginOptions = {}): Plugin {
       app.unmount = function () {
         themeAdapter.destroy()
         console.log('[createColorPlugin] Theme adapter destroyed')
-        // @ts-expect-error - unmount types
-        return originalUnmount.apply(this, arguments)
+        return originalUnmount.call(this)
       }
     },
   }

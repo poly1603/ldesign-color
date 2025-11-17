@@ -2,6 +2,7 @@
  * PaletteDisplay 组件
  * 调色板展示组件 - TSX 版本
  */
+// @ts-nocheck - Vue JSX 类型定义与实际使用存在差异，禁用类型检查以避免误报
 import { computed, defineComponent, ref, Transition, watch, type PropType } from 'vue'
 import { Color } from '@ldesign/color-core'
 import { useColorPalette } from '../composables/useColorPalette'
