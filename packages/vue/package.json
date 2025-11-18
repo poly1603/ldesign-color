@@ -14,7 +14,10 @@
   "license": "MIT",
   "type": "module",
   "sideEffects": [
-    "*.css"
+    "*.css",
+    "*.vue",
+    "**/*.css",
+    "**/style/**"
   ],
   "exports": {
     ".": {
@@ -102,6 +105,7 @@
       "import": "./esm/theme-provider/*.js",
       "require": "./cjs/theme-provider/*.cjs"
     },
+    "./style": "./dist/index.css",
     "./cjs/color-picker/index.css": "./cjs/color-picker/index.css",
     "./cjs/color-picker/style/index.css": "./cjs/color-picker/style/index.css",
     "./cjs/index.css": "./cjs/index.css",
@@ -109,9 +113,9 @@
     "./cjs/palette-display/style/index.css": "./cjs/palette-display/style/index.css",
     "./cjs/plugin/index.css": "./cjs/plugin/index.css",
     "./cjs/theme-color-picker/index.css": "./cjs/theme-color-picker/index.css",
+    "./cjs/theme-color-picker/style/index.css": "./cjs/theme-color-picker/style/index.css",
     "./cjs/theme-mode-switcher/index.css": "./cjs/theme-mode-switcher/index.css",
     "./cjs/theme-provider/index.css": "./cjs/theme-provider/index.css",
-    "./cjs/theme-provider/style/index.css": "./cjs/theme-provider/style/index.css",
     "./dist/index.css": "./dist/index.css",
     "./dist/index.min.css": "./dist/index.min.css"
   },
