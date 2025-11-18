@@ -34,13 +34,10 @@ export type { UseColorOptions, UseColorReturn } from './composables/useColor'
 export { createThemeModeProvider, useThemeMode } from './composables/useThemeMode'
 export type { UseThemeModeOptions, UseThemeModeReturn } from './composables/useThemeMode'
 
-// Export components - 使用新的目录结构
-export { default as ColorPicker } from './color-picker'
-export { default as PaletteDisplay } from './palette-display'
-export { default as ThemeColorPicker } from './theme-color-picker'
-export { default as ThemeModeSwitch } from './theme-mode-switcher'
-export { default as ThemeModeSwitcher } from './theme-mode-switcher'
-export { default as ThemeProvider } from './theme-provider'
+// Export components
+export { default as ThemeColorPicker } from './components/ThemeColorPicker.vue'
+export { default as ThemeModeSwitch } from './components/ThemeModeSwitcher.vue'
+export { default as ThemeModeSwitcher } from './components/ThemeModeSwitcher.vue'
 
 // Export plugin
 export { createColorPlugin, LDesignColorPlugin } from './plugin/index'
