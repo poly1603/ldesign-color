@@ -109,9 +109,9 @@
     "./cjs/palette-display/style/index.css": "./cjs/palette-display/style/index.css",
     "./cjs/plugin/index.css": "./cjs/plugin/index.css",
     "./cjs/theme-color-picker/index.css": "./cjs/theme-color-picker/index.css",
-    "./cjs/theme-color-picker/style/index.css": "./cjs/theme-color-picker/style/index.css",
     "./cjs/theme-mode-switcher/index.css": "./cjs/theme-mode-switcher/index.css",
     "./cjs/theme-provider/index.css": "./cjs/theme-provider/index.css",
+    "./cjs/theme-provider/style/index.css": "./cjs/theme-provider/style/index.css",
     "./dist/index.css": "./dist/index.css",
     "./dist/index.min.css": "./dist/index.min.css"
   },

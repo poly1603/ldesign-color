@@ -6,10 +6,11 @@
  * @module plugins/engine-plugin
  */
 
-import type { Plugin } from '@ldesign/engine-core/types'
+import type { Plugin, ColorPluginAPI } from '@ldesign/engine-core/types'
 import { BaseThemeAdapter, getPresetColor, setThemeMode } from '@ldesign/color-core'
 import type { ThemeAdapterOptions, PresetTheme } from '@ldesign/color-core'
 import type { PresetThemeName } from '@ldesign/color-core/types'
+import { COLOR_EVENTS } from '@ldesign/engine-core/constants/events'
 import { createColorPlugin } from '../plugin/index'
 import { COLOR_SYMBOL } from '../constants'
 
@@ -510,7 +511,7 @@ export function createColorEnginePlugin(
           engine.logger?.info?.('Theme changed:', theme)
           engine.state?.set?.('color:primaryColor', theme?.primaryColor || '')
           engine.state?.set?.('color:themeName', theme?.themeName || '')
-          engine.events?.emit?.('color:themeChanged', theme)
+          engine.events?.emit?.(COLOR_EVENTS.THEME_CHANGED, { theme })
         })
 
         // 将 themeAdapter 暴露到 engine
@@ -532,6 +533,42 @@ export function createColorEnginePlugin(
         } catch (error) {
           if (debug) {
             console.log('[Color] Failed to register color service to container:', error)
+          }
+        }
+
+        // 注册 Color API 到 API 注册表
+        if ((engine as any).api) {
+          const colorAPI: ColorPluginAPI = {
+            name: 'color',
+            version: version || '1.0.0',
+            applyTheme: (primaryColor: string) => themeAdapter.applyTheme(primaryColor),
+            getCurrentTheme: () => themeAdapter.getCurrentTheme(),
+            setMode: (mode: 'light' | 'dark') => setThemeMode(mode),
+            getMode: () => {
+              if (typeof document !== 'undefined') {
+                return document.documentElement.dataset.theme as 'light' | 'dark' || 'light'
+              }
+              return 'light'
+            },
+            toggleMode: () => {
+              const currentMode = (engine as any).api?.get('color')?.getMode() || 'light'
+              const newMode = currentMode === 'light' ? 'dark' : 'light'
+              setThemeMode(newMode)
+            },
+            getPrimaryColor: () => currentTheme?.primaryColor || '',
+            setPrimaryColor: (color: string) => themeAdapter.applyTheme(color),
+            getPresets: () => themeAdapter.getAvailablePresets?.() || [],
+            applyPreset: (name: string) => {
+              const preset = themeAdapter.getAvailablePresets?.()?.find(p => p.name === name)
+              if (preset) {
+                return themeAdapter.applyTheme(preset.color)
+              }
+              return Promise.reject(new Error(`Preset "${name}" not found`))
+            },
+          };
+          (engine as any).api.register(colorAPI)
+          if (debug) {
+            console.log('[Color] Color API registered to API registry')
           }
         }
 
@@ -603,6 +640,11 @@ export function createColorEnginePlugin(
       // 销毁主题适配器
       if (engine.color) {
         engine.color.destroy()
+      }
+
+      // 注销 Color API
+      if ((engine as any).api) {
+        (engine as any).api.unregister('color')
       }
 
       engine.logger?.info?.('Vue color theme plugin uninstalled')

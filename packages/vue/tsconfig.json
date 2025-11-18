@@ -5,10 +5,9 @@
     "outDir": "./es",
     "declaration": true,
     "declarationMap": true,
-    "composite": true,
-    "incremental": true,
     "jsx": "preserve",
-    "jsxImportSource": "vue"
+    "jsxImportSource": "vue",
+    "noEmit": false
   },
   "include": [
     "src/**/*"
