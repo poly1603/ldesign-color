@@ -35,9 +35,9 @@ export { createThemeModeProvider, useThemeMode } from './composables/useThemeMod
 export type { UseThemeModeOptions, UseThemeModeReturn } from './composables/useThemeMode'
 
 // Export components
-export { default as ThemeColorPicker } from './components/ThemeColorPicker.vue'
-export { default as ThemeModeSwitch } from './components/ThemeModeSwitcher.vue'
-export { default as ThemeModeSwitcher } from './components/ThemeModeSwitcher.vue'
+export { default as ThemeColorPicker } from './components/ThemeColorPicker'
+export { default as ThemeModeSwitch } from './components/ThemeModeSwitcher'
+export { default as ThemeModeSwitcher } from './components/ThemeModeSwitcher'
 
 // Export plugin
 export { createColorPlugin, LDesignColorPlugin } from './plugin/index'

@@ -25,6 +25,7 @@
       "import": "./esm/index.js",
       "require": "./cjs/index.cjs"
     },
+    "./style": "./cjs/index.css",
     "./color-picker": {
       "types": "./esm/color-picker/index.d.ts",
       "import": "./esm/color-picker/index.js",
@@ -105,16 +106,11 @@
       "import": "./esm/theme-provider/*.js",
       "require": "./cjs/theme-provider/*.cjs"
     },
-    "./style": "./dist/index.css",
     "./cjs/color-picker/index.css": "./cjs/color-picker/index.css",
-    "./cjs/color-picker/style/index.css": "./cjs/color-picker/style/index.css",
+    "./cjs/components/ThemeColorPicker.css": "./cjs/components/ThemeColorPicker.css",
+    "./cjs/components/ThemeModeSwitcher.css": "./cjs/components/ThemeModeSwitcher.css",
     "./cjs/index.css": "./cjs/index.css",
     "./cjs/palette-display/index.css": "./cjs/palette-display/index.css",
-    "./cjs/palette-display/style/index.css": "./cjs/palette-display/style/index.css",
-    "./cjs/plugin/index.css": "./cjs/plugin/index.css",
-    "./cjs/theme-color-picker/index.css": "./cjs/theme-color-picker/index.css",
-    "./cjs/theme-color-picker/style/index.css": "./cjs/theme-color-picker/style/index.css",
-    "./cjs/theme-mode-switcher/index.css": "./cjs/theme-mode-switcher/index.css",
     "./cjs/theme-provider/index.css": "./cjs/theme-provider/index.css",
     "./dist/index.css": "./dist/index.css",
     "./dist/index.min.css": "./dist/index.min.css"
