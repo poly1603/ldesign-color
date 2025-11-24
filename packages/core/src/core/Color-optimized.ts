@@ -315,6 +315,77 @@ export class Color {
     this.cache.clear()
     this.colorPool.clear()
   }
+
+  /**
+   * 获取对象池统计信息
+   *
+   * 返回颜色对象池的详细统计信息,包括池大小、命中率、利用率等。
+   * 仅在开发模式下返回完整信息,生产模式下返回简化信息以减少开销。
+   *
+   * @returns 对象池统计信息
+   * @example
+   * ```ts
+   * const stats = Color.getPoolStats()
+   * console.log(`池大小: ${stats.poolSize}/${stats.maxSize}`)
+   * console.log(`命中率: ${(stats.hitRate * 100).toFixed(2)}%`)
+   * console.log(`利用率: ${stats.utilization.toFixed(2)}%`)
+   * ```
+   */
+  static getPoolStats() {
+    return this.colorPool.getStats()
+  }
+
+  /**
+   * 检查对象池健康状态
+   *
+   * 在开发模式下检查对象池的健康状态,如果发现潜在问题会输出警告。
+   * 检查项包括:
+   * - 池利用率过高(>90%)
+   * - 命中率过低(<50%)
+   * - 已分配对象数量异常
+   *
+   * 生产模式下此方法不执行任何操作,避免性能开销。
+   *
+   * @example
+   * ```ts
+   * // 在开发环境中定期检查
+   * if (import.meta.env.DEV) {
+   *   setInterval(() => {
+   *     Color.checkPoolHealth()
+   *   }, 60000) // 每分钟检查一次
+   * }
+   * ```
+   */
+  static checkPoolHealth(): void {
+    // 仅在开发模式下执行检查
+    if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
+      const stats = this.getPoolStats()
+
+      // 检查池利用率
+      if (stats.utilization > 90) {
+        console.warn(
+          `[Color] 对象池利用率过高: ${stats.utilization.toFixed(2)}% (${stats.poolSize}/${stats.maxSize})`,
+          '\n建议: 考虑增加 maxSize 或检查是否有对象未正确释放',
+        )
+      }
+
+      // 检查命中率
+      if (stats.hits + stats.misses > 100 && stats.hitRate < 0.5) {
+        console.warn(
+          `[Color] 对象池命中率较低: ${(stats.hitRate * 100).toFixed(2)}%`,
+          '\n建议: 考虑增加池大小以提高复用率',
+        )
+      }
+
+      // 检查已分配对象数量
+      if (stats.allocated > stats.maxSize * 2) {
+        console.warn(
+          `[Color] 已分配对象数量异常: ${stats.allocated} (池大小: ${stats.maxSize})`,
+          '\n建议: 检查是否有对象未调用 release() 方法',
+        )
+      }
+    }
+  }
 }
 
 // Export common color constants

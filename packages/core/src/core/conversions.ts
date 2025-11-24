@@ -120,6 +120,23 @@ export function returnHSLToPool(hsl: HSL): void {
   }
 }
 
+/** HSV object pool for reuse */
+const hsvPool: HSV[] = []
+const HSV_POOL_MAX = 20
+
+/** Get HSV object from pool or create new */
+function getHSVFromPool(): HSV {
+  return hsvPool.pop() || { h: 0, s: 0, v: 0 }
+}
+
+/** Return HSV object to pool */
+export function returnHSVToPool(hsv: HSV): void {
+  if (hsvPool.length < HSV_POOL_MAX) {
+    delete hsv.a // Clear alpha
+    hsvPool.push(hsv)
+  }
+}
+
 /**
  * Convert RGB to HSL
  *
@@ -279,21 +296,41 @@ export function hslToRgb(hsl: HSL): RGB {
 
 /**
  * Convert RGB to HSV
+ *
+ * Converts RGB color to HSV (Hue, Saturation, Value) color space.
+ * Uses object pooling and precomputed constants for performance.
+ *
+ * @param rgb - RGB color object (r, g, b: 0-255)
+ * @returns HSV color object (h: 0-360, s: 0-100, v: 0-100)
+ * @performance O(1) - Optimized with object pooling and precomputed constants
+ * @example
+ * ```ts
+ * const hsv = rgbToHsv({ r: 59, g: 130, b: 246 });
+ * console.log(hsv); // { h: 220, s: 76, v: 96 }
+ * ```
  */
 export function rgbToHsv(rgb: RGB): HSV {
-  const r = rgb.r / 255
-  const g = rgb.g / 255
-  const b = rgb.b / 255
+  // Normalize RGB to [0,1] range using precomputed constant
+  const r = rgb.r * INV_255
+  const g = rgb.g * INV_255
+  const b = rgb.b * INV_255
 
   const max = Math.max(r, g, b)
   const min = Math.min(r, g, b)
   const delta = max - min
 
-  let h = 0
-  const s = max === 0 ? 0 : delta / max
-  const v = max
+  const hsv = getHSVFromPool()
 
-  if (delta !== 0) {
+  // Calculate saturation and value
+  hsv.s = max === 0 ? 0 : round((delta / max) * 100)
+  hsv.v = round(max * 100)
+
+  // Calculate hue
+  if (delta === 0) {
+    hsv.h = 0
+  }
+  else {
+    let h = 0
     switch (max) {
       case r:
         h = ((g - b) / delta + (g < b ? 6 : 0)) / 6
@@ -305,48 +342,70 @@ export function rgbToHsv(rgb: RGB): HSV {
         h = ((r - g) / delta + 4) / 6
         break
     }
+    hsv.h = round(h * 360)
   }
 
-  return {
-    h: round(h * 360),
-    s: round(s * 100),
-    v: round(v * 100),
-    ...(rgb.a !== undefined && { a: rgb.a }),
-  }
+  if (rgb.a !== undefined)
+    hsv.a = rgb.a
+
+  return hsv
 }
 
 /**
  * Convert HSV to RGB
+ *
+ * Converts HSV (Hue, Saturation, Value) to RGB color space.
+ * Uses object pooling and precomputed constants for performance.
+ *
+ * @param hsv - HSV color object (h: 0-360, s: 0-100, v: 0-100)
+ * @returns RGB color object (r, g, b: 0-255)
+ * @performance O(1) - Optimized with object pooling and precomputed constants
+ * @example
+ * ```ts
+ * const rgb = hsvToRgb({ h: 220, s: 76, v: 96 });
+ * console.log(rgb); // { r: 59, g: 130, b: 246 }
+ * ```
  */
 export function hsvToRgb(hsv: HSV): RGB {
-  const h = hsv.h / 360
-  const s = hsv.s / 100
-  const v = hsv.v / 100
+  // Normalize inputs using precomputed constants
+  const h = hsv.h * INV_360
+  const s = hsv.s * INV_100
+  const v = hsv.v * INV_100
 
-  const i = Math.floor(h * 6)
-  const f = h * 6 - i
-  const p = v * (1 - s)
-  const q = v * (1 - f * s)
-  const t = v * (1 - (1 - f) * s)
+  const rgb = getRGBFromPool()
 
-  let r: number, g: number, b: number
+  // Gray color (no saturation)
+  if (s === 0) {
+    rgb.r = rgb.g = rgb.b = round(v * 255)
+  }
+  else {
+    const i = Math.floor(h * 6)
+    const f = h * 6 - i
+    const p = v * (1 - s)
+    const q = v * (1 - f * s)
+    const t = v * (1 - (1 - f) * s)
 
-  switch (i % 6) {
-    case 0: r = v; g = t; b = p; break
-    case 1: r = q; g = v; b = p; break
-    case 2: r = p; g = v; b = t; break
-    case 3: r = p; g = q; b = v; break
-    case 4: r = t; g = p; b = v; break
-    case 5: r = v; g = p; b = q; break
-    default: r = 0; g = 0; b = 0
+    let r: number, g: number, b: number
+
+    switch (i % 6) {
+      case 0: r = v; g = t; b = p; break
+      case 1: r = q; g = v; b = p; break
+      case 2: r = p; g = v; b = t; break
+      case 3: r = p; g = q; b = v; break
+      case 4: r = t; g = p; b = v; break
+      case 5: r = v; g = p; b = q; break
+      default: r = 0; g = 0; b = 0
+    }
+
+    rgb.r = round(r * 255)
+    rgb.g = round(g * 255)
+    rgb.b = round(b * 255)
   }
 
-  return {
-    r: round(r * 255),
-    g: round(g * 255),
-    b: round(b * 255),
-    ...(hsv.a !== undefined && { a: hsv.a }),
-  }
+  if (hsv.a !== undefined)
+    rgb.a = hsv.a
+
+  return rgb
 }
 
 /**

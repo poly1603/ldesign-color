@@ -25,7 +25,6 @@
       "import": "./esm/index.js",
       "require": "./cjs/index.cjs"
     },
-    "./style": "./cjs/index.css",
     "./color-picker": {
       "types": "./esm/color-picker/index.d.ts",
       "import": "./esm/color-picker/index.js",

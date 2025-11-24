@@ -140,6 +140,11 @@
       "import": "./es/locales/*.js",
       "require": "./lib/locales/*.cjs"
     },
+    "./optimizations/*": {
+      "types": "./es/optimizations/*.d.ts",
+      "import": "./es/optimizations/*.js",
+      "require": "./lib/optimizations/*.cjs"
+    },
     "./palette/*": {
       "types": "./es/palette/*.d.ts",
       "import": "./es/palette/*.js",
