@@ -185,6 +185,20 @@ export type {
 } from './themes/BaseThemeAdapter'
 
 export * from './types'
+
+// Color Space Conversion
+export {
+  optimizedRGBToHSL,
+  batchRGBToHSL,
+  batchHSLToRGB,
+  batchRGBToHSV,
+  batchHSVToRGB,
+  initColorSpace,
+  getLUTStats,
+  clearLUT,
+  rebuildLUT,
+} from './utils/color-space'
+
 // Export utilities
 export {
   ColorCache,
@@ -198,6 +212,13 @@ export type {
   ColorCacheStats,
   EvictionStrategy,
 } from './utils/cache'
+
+// Color operation cache
+export {
+  ColorOperationCache,
+  colorCache,
+  cached,
+} from './utils/operation-cache'
 // Advanced Utilities
 export * from './utils/colorUtils'
 

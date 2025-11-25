@@ -8,6 +8,7 @@ import type { BlendMode, ColorFormat, ColorInput, HarmonyType, HSL, HSV, LAB, LC
 import { ColorCache } from '../utils/cache'
 import { clamp, round } from '../utils/math'
 import { acquireHSL, acquireRGB, ObjectPool, poolManager, releaseHSL, releaseRGB } from '../utils/objectPool'
+import { ColorOperationCache } from '../utils/operation-cache'
 import { parseColorInput } from '../utils/validators'
 // Tree-shakeable import - only included if advanced color spaces are used
 import { deltaE2000, deltaEOKLAB, rgbToLAB, rgbToLCH, rgbToOKLAB, rgbToOKLCH, rgbToXYZ } from './advancedColorSpaces'
@@ -28,7 +29,10 @@ export class Color {
   // Remove HSL/HSV cache to save memory (40 bytes each)
 
   // Shared cache - reduced size
-  private static cache = new ColorCache(50)
+  private static cache = new ColorCache({ maxSize: 50 })
+
+  // Color operation cache for expensive calculations
+  private static operationCache = ColorOperationCache.getInstance()
 
   // Color object pool using centralized pool manager
   private static colorPool = new ObjectPool<Color>(
@@ -404,12 +408,14 @@ export class Color {
   // ============================================
 
   /**
-   * Lighten the color
+   * Lighten the color (with cache optimization)
    */
   lighten(amount: number): Color {
-    const hsl = this.toHSL()
-    hsl.l = clamp(hsl.l + amount, 0, 100)
-    return Color.fromHSL(hsl.h, hsl.s, hsl.l, this._alpha)
+    return Color.operationCache.cached(this, 'lighten', amount) || (() => {
+      const hsl = this.toHSL()
+      hsl.l = clamp(hsl.l + amount, 0, 100)
+      return Color.fromHSL(hsl.h, hsl.s, hsl.l, this._alpha)
+    })()
   }
 
   /**
@@ -420,12 +426,14 @@ export class Color {
   }
 
   /**
-   * Saturate the color
+   * Saturate the color (with cache optimization)
    */
   saturate(amount: number): Color {
-    const hsl = this.toHSL()
-    hsl.s = clamp(hsl.s + amount, 0, 100)
-    return Color.fromHSL(hsl.h, hsl.s, hsl.l, this._alpha)
+    return Color.operationCache.cached(this, 'saturate', amount) || (() => {
+      const hsl = this.toHSL()
+      hsl.s = clamp(hsl.s + amount, 0, 100)
+      return Color.fromHSL(hsl.h, hsl.s, hsl.l, this._alpha)
+    })()
   }
 
   /**
@@ -436,14 +444,16 @@ export class Color {
   }
 
   /**
-   * Rotate the hue
+   * Rotate the hue (with cache optimization)
    */
   rotate(degrees: number): Color {
-    const hsl = this.toHSL()
-    hsl.h = (hsl.h + degrees) % 360
-    if (hsl.h < 0)
-      hsl.h += 360
-    return Color.fromHSL(hsl.h, hsl.s, hsl.l, this._alpha)
+    return Color.operationCache.cached(this, 'rotate', degrees) || (() => {
+      const hsl = this.toHSL()
+      hsl.h = (hsl.h + degrees) % 360
+      if (hsl.h < 0)
+        hsl.h += 360
+      return Color.fromHSL(hsl.h, hsl.s, hsl.l, this._alpha)
+    })()
   }
 
   /**
@@ -489,6 +499,7 @@ export class Color {
    */
   static cleanup(): void {
     this.cache.clear()
+    this.operationCache.clear()
     this.colorPool.clear()
     // Clear RGB/HSL pools from objectPool module
     rgbPool.clear()
@@ -513,6 +524,44 @@ export class Color {
    */
   static getPoolStats() {
     return this.colorPool.getStats()
+  }
+
+  /**
+   * 获取操作缓存统计信息
+   *
+   * 返回颜色操作缓存的详细统计信息，包括命中率、缓存大小等。
+   *
+   * @returns 操作缓存统计信息
+   * @example
+   * ```ts
+   * const stats = Color.getOperationCacheStats()
+   * console.log(`缓存大小: ${stats.size}/${stats.capacity}`)
+   * console.log(`命中率: ${(stats.hitRate * 100).toFixed(2)}%`)
+   * ```
+   */
+  static getOperationCacheStats() {
+    return this.operationCache.getStats()
+  }
+
+  /**
+   * 预热操作缓存
+   *
+   * 预先计算常用颜色操作，提升首次访问性能。
+   * 适合在应用初始化时调用。
+   *
+   * @param colors - 要预热的颜色数组
+   * @example
+   * ```ts
+   * const primaryColors = [
+   *   new Color('#3B82F6'),
+   *   new Color('#10B981'),
+   *   new Color('#F59E0B')
+   * ]
+   * Color.preheatCache(primaryColors)
+   * ```
+   */
+  static preheatCache(colors: Color[]): void {
+    this.operationCache.preheat(colors)
   }
 
   /**
