@@ -4,7 +4,7 @@
  * Vue 3 响应式色彩主题管理
  */
 
-import { ref, computed, watch, onMounted, type Ref } from 'vue'
+import { ref, computed, watch, onMounted, shallowRef, type Ref } from 'vue'
 import {
   generateThemeColors,
   generateCSSVariables,
@@ -13,6 +13,7 @@ import {
   type CSSVariablesOptions,
   type ColorInput,
 } from '@ldesign/color-core'
+import { batchRAF } from '../utils/throttle-debounce'
 
 /**
  * 主题模式
@@ -147,10 +148,10 @@ export function useColorTheme(options: UseColorThemeOptions = {}): UseColorTheme
     ? getStorageValue(`${storageKey}-mode`, initialMode) as ThemeMode
     : initialMode
 
-  // 响应式状态
+  // 响应式状态 - 使用 shallowRef 优化 ThemeColors 性能
   const primaryColor = ref<string>(storedColor)
   const mode = ref<ThemeMode>(storedMode)
-  const themeColors = ref<ThemeColors | null>(null)
+  const themeColors = shallowRef<ThemeColors | null>(null)
 
   // 计算实际生效的主题模式
   const effectiveMode = computed<'light' | 'dark'>(() => {
@@ -215,11 +216,10 @@ export function useColorTheme(options: UseColorThemeOptions = {}): UseColorTheme
     regenerate()
   }, { immediate: true })
 
-  // 自动注入 CSS 变量
+  // 自动注入 CSS 变量 - 使用 batchRAF 优化 DOM 操作
   if (autoInject) {
-    watch([themeColors, effectiveMode], () => {
+    const batchedInject = batchRAF(() => {
       if (!themeColors.value) return
-
       if (typeof document === 'undefined') return
 
       // 更新 data-theme 属性
@@ -235,6 +235,10 @@ export function useColorTheme(options: UseColorThemeOptions = {}): UseColorTheme
       }
 
       styleElement.textContent = cssVariables.value
+    })
+
+    watch([themeColors, effectiveMode], () => {
+      batchedInject()
     }, { immediate: true })
 
     // 监听系统主题变化（仅在 auto 模式下）

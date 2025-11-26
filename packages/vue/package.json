@@ -1,6 +1,6 @@
 {
   "name": "@ldesign/color-vue",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Vue 3 components and composables for @ldesign/color-core",
   "keywords": [
     "color",
@@ -45,6 +45,16 @@
       "import": "./esm/composables/*.js",
       "require": "./cjs/composables/*.cjs"
     },
+    "./devtools": {
+      "types": "./esm/devtools/index.d.ts",
+      "import": "./esm/devtools/index.js",
+      "require": "./cjs/devtools/index.cjs"
+    },
+    "./devtools/*": {
+      "types": "./esm/devtools/*.d.ts",
+      "import": "./esm/devtools/*.js",
+      "require": "./cjs/devtools/*.cjs"
+    },
     "./palette-display": {
       "types": "./esm/palette-display/index.d.ts",
       "import": "./esm/palette-display/index.js",
@@ -75,6 +85,16 @@
       "import": "./esm/plugins/*.js",
       "require": "./cjs/plugins/*.cjs"
     },
+    "./ssr": {
+      "types": "./esm/ssr/index.d.ts",
+      "import": "./esm/ssr/index.js",
+      "require": "./cjs/ssr/index.cjs"
+    },
+    "./ssr/*": {
+      "types": "./esm/ssr/*.d.ts",
+      "import": "./esm/ssr/*.js",
+      "require": "./cjs/ssr/*.cjs"
+    },
     "./theme-color-picker": {
       "types": "./esm/theme-color-picker/index.d.ts",
       "import": "./esm/theme-color-picker/index.js",
@@ -104,6 +124,11 @@
       "types": "./esm/theme-provider/*.d.ts",
       "import": "./esm/theme-provider/*.js",
       "require": "./cjs/theme-provider/*.cjs"
+    },
+    "./utils/*": {
+      "types": "./esm/utils/*.d.ts",
+      "import": "./esm/utils/*.js",
+      "require": "./cjs/utils/*.cjs"
     },
     "./cjs/color-picker/index.css": "./cjs/color-picker/index.css",
     "./cjs/components/ThemeColorPicker.css": "./cjs/components/ThemeColorPicker.css",

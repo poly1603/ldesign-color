@@ -34,6 +34,89 @@ export type { UseColorOptions, UseColorReturn } from './composables/useColor'
 export { createThemeModeProvider, useThemeMode } from './composables/useThemeMode'
 export type { UseThemeModeOptions, UseThemeModeReturn } from './composables/useThemeMode'
 
+// Performance monitoring
+export { useColorPerformance } from './composables/useColorPerformance'
+export type {
+  UseColorPerformanceOptions,
+  UseColorPerformanceReturn,
+  PerformanceMetrics,
+  PerformanceWarning,
+  PerformanceReport,
+} from './composables/useColorPerformance'
+
+// Throttle & Debounce utilities
+export {
+  debounce,
+  throttle,
+  useDebouncedRef,
+  useThrottledRef,
+  debouncedWatch,
+  throttledWatch,
+  batchRAF,
+  useDebouncedRefSync,
+  useThrottledRefSync,
+} from './utils/throttle-debounce'
+
+// Computed cache utilities
+export {
+  cachedComputed,
+  debouncedComputed,
+  throttledComputed,
+  memoizedComputed,
+  lazyComputed,
+  CacheManager,
+  globalCacheManager,
+} from './utils/computed-cache'
+export type {
+  CachedComputedOptions,
+  CacheStats,
+} from './utils/computed-cache'
+
+// DevTools integration
+export {
+  createColorDevTools,
+  addTimelineEvent,
+  updateDevToolsState,
+  logThemeApplied,
+  logModeChanged,
+  logPerformanceWarning,
+  logError,
+  logThemeColorsGenerated,
+  logPerformanceMetrics,
+  logCacheStats,
+  getEventHistory,
+  clearEventHistory,
+  getCurrentDevToolsState,
+  subscribeDevToolsState,
+} from './devtools/index'
+export type {
+  ColorDevToolsState,
+  ColorTimelineEvent,
+  DebugPanelProps,
+} from './devtools/index'
+
+// SSR support
+export {
+  isServer,
+  isClient,
+  serializeThemeState,
+  deserializeThemeState,
+  generateInlineStyleScript,
+  generateStateScript,
+  getServerState,
+  SSRContextManager,
+  createSSRPlugin,
+  handleHydrationMismatch,
+  getSystemThemeSSR,
+  getSSRSafeValue,
+  setSSRSafeValue,
+  waitForHydration,
+} from './ssr/index'
+export type {
+  SSRContext,
+  SSROptions,
+} from './ssr/index'
+
 // Export components
 export { default as ThemeColorPicker } from './components/ThemeColorPicker'
 export { default as ThemeModeSwitch } from './components/ThemeModeSwitcher'

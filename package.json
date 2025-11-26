@@ -1,11 +1,7 @@
 {
   "name": "@ldesign/color",
-  "type": "module",
-  "version": "1.1.0-alpha.2",
+  "version": "2.0.0",
   "description": "A powerful, performant, and easy-to-use color manipulation library with design systems integration (monorepo wrapper)",
-  "author": "ldesign",
-  "license": "MIT",
-  "private": true,
   "keywords": [
     "color",
     "color-manipulation",
@@ -20,6 +16,9 @@
     "typescript",
     "framework-agnostic"
   ],
+  "author": "ldesign",
+  "license": "MIT",
+  "type": "module",
   "sideEffects": [
     "*.css",
     "*.vue.css",
@@ -31,154 +30,20 @@
       "types": "./es/index.d.ts",
       "import": "./es/index.js",
       "require": "./lib/index.cjs"
-    },
-    "./accessibility": {
-      "types": "./es/accessibility/index.d.ts",
-      "import": "./es/accessibility/index.js",
-      "require": "./lib/accessibility/index.cjs"
-    },
-    "./accessibility/*": {
-      "types": "./es/accessibility/*.d.ts",
-      "import": "./es/accessibility/*.js",
-      "require": "./lib/accessibility/*.cjs"
-    },
-    "./ai/*": {
-      "types": "./es/ai/*.d.ts",
-      "import": "./es/ai/*.js",
-      "require": "./lib/ai/*.cjs"
-    },
-    "./analyzer": {
-      "types": "./es/analyzer/index.d.ts",
-      "import": "./es/analyzer/index.js",
-      "require": "./lib/analyzer/index.cjs"
-    },
-    "./analyzer/*": {
-      "types": "./es/analyzer/*.d.ts",
-      "import": "./es/analyzer/*.js",
-      "require": "./lib/analyzer/*.cjs"
-    },
-    "./animation": {
-      "types": "./es/animation/index.d.ts",
-      "import": "./es/animation/index.js",
-      "require": "./lib/animation/index.cjs"
-    },
-    "./animation/*": {
-      "types": "./es/animation/*.d.ts",
-      "import": "./es/animation/*.js",
-      "require": "./lib/animation/*.cjs"
-    },
-    "./brand": {
-      "types": "./es/brand/index.d.ts",
-      "import": "./es/brand/index.js",
-      "require": "./lib/brand/index.cjs"
-    },
-    "./brand/*": {
-      "types": "./es/brand/*.d.ts",
-      "import": "./es/brand/*.js",
-      "require": "./lib/brand/*.cjs"
-    },
-    "./constants/*": {
-      "types": "./es/constants/*.d.ts",
-      "import": "./es/constants/*.js",
-      "require": "./lib/constants/*.cjs"
-    },
-    "./core": {
-      "types": "./es/core/index.d.ts",
-      "import": "./es/core/index.js",
-      "require": "./lib/core/index.cjs"
-    },
-    "./core/*": {
-      "types": "./es/core/*.d.ts",
-      "import": "./es/core/*.js",
-      "require": "./lib/core/*.cjs"
-    },
-    "./gradient": {
-      "types": "./es/gradient/index.d.ts",
-      "import": "./es/gradient/index.js",
-      "require": "./lib/gradient/index.cjs"
-    },
-    "./gradient/*": {
-      "types": "./es/gradient/*.d.ts",
-      "import": "./es/gradient/*.js",
-      "require": "./lib/gradient/*.cjs"
-    },
-    "./locales": {
-      "types": "./es/locales/index.d.ts",
-      "import": "./es/locales/index.js",
-      "require": "./lib/locales/index.cjs"
-    },
-    "./locales/*": {
-      "types": "./es/locales/*.d.ts",
-      "import": "./es/locales/*.js",
-      "require": "./lib/locales/*.cjs"
-    },
-    "./palette/*": {
-      "types": "./es/palette/*.d.ts",
-      "import": "./es/palette/*.js",
-      "require": "./lib/palette/*.cjs"
-    },
-    "./performance": {
-      "types": "./es/performance/index.d.ts",
-      "import": "./es/performance/index.js",
-      "require": "./lib/performance/index.cjs"
-    },
-    "./performance/*": {
-      "types": "./es/performance/*.d.ts",
-      "import": "./es/performance/*.js",
-      "require": "./lib/performance/*.cjs"
-    },
-    "./plugin": {
-      "types": "./es/plugin/index.d.ts",
-      "import": "./es/plugin/index.js",
-      "require": "./lib/plugin/index.cjs"
-    },
-    "./plugin/*": {
-      "types": "./es/plugin/*.d.ts",
-      "import": "./es/plugin/*.js",
-      "require": "./lib/plugin/*.cjs"
-    },
-    "./schemes": {
-      "types": "./es/schemes/index.d.ts",
-      "import": "./es/schemes/index.js",
-      "require": "./lib/schemes/index.cjs"
-    },
-    "./schemes/*": {
-      "types": "./es/schemes/*.d.ts",
-      "import": "./es/schemes/*.js",
-      "require": "./lib/schemes/*.cjs"
-    },
-    "./themes/*": {
-      "types": "./es/themes/*.d.ts",
-      "import": "./es/themes/*.js",
-      "require": "./lib/themes/*.cjs"
-    },
-    "./utils/*": {
-      "types": "./es/utils/*.d.ts",
-      "import": "./es/utils/*.js",
-      "require": "./lib/utils/*.cjs"
-    },
-    "./vue": {
-      "types": "./es/vue/index.d.ts",
-      "import": "./es/vue/index.js",
-      "require": "./lib/vue/index.cjs"
-    },
-    "./vue/*": {
-      "types": "./es/vue/*.d.ts",
-      "import": "./es/vue/*.js",
-      "require": "./lib/vue/*.cjs"
     }
   },
   "main": "./lib/index.cjs",
   "module": "./es/index.js",
+  "types": "./es/index.d.ts",
   "unpkg": "./dist/index.min.js",
   "jsdelivr": "./dist/index.min.js",
-  "types": "./es/index.d.ts",
   "files": [
-    "LICENSE",
     "README.md",
+    "LICENSE",
+    "package.json",
     "es",
     "lib",
-    "package.json"
+    "dist"
   ],
   "scripts": {
     "build": "ldesign-builder build -f esm,cjs,dts",
@@ -196,18 +61,12 @@
     "test:coverage": "vitest --coverage",
     "test:ui": "vitest --ui"
   },
-  "peerDependencies": {
-    "vue": ">=3.0.0"
-  },
-  "style": "./dist/index.css",
-  "peerDependenciesMeta": {
-    "vue": {
-      "optional": true
-    }
-  },
   "dependencies": {
     "@ldesign/color-core": "workspace:*",
     "@ldesign/color-vue": "workspace:*"
+  },
+  "peerDependencies": {
+    "vue": ">=3.0.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^6.0.0",
@@ -219,5 +78,12 @@
     "rimraf": "^5.0.0",
     "tsx": "^4.20.6",
     "typescript": "^5.7.3"
+  },
+  "private": true,
+  "style": "./dist/index.css",
+  "peerDependenciesMeta": {
+    "vue": {
+      "optional": true
+    }
   }
 }

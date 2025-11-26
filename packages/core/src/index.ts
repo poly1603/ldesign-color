@@ -65,6 +65,18 @@ export {
   mix as interpolateMix,
 } from './animation/interpolation'
 
+// Export advanced interpolation
+export {
+  BezierColorInterpolator,
+  CatmullRomInterpolator,
+  BSplineInterpolator,
+  MonotoneInterpolator,
+  bezierGradient,
+  catmullRomGradient,
+  bSplineGradient,
+  monotoneGradient,
+} from './animation/advanced-interpolation'
+
 // Batch Processing
 export * from './batch'
 // Brand manager
@@ -81,7 +93,26 @@ export * from './constants'
 // Export core functionality
 export * from './core'
 
-// Export advanced color spaces
+// Export color science functions (advanced color difference calculations)
+export {
+  deltaE76,
+  deltaE94,
+  deltaECMC,
+  colorSimilarity,
+  findNearestColor,
+  findNearestColors,
+  areColorsDistinguishable,
+  colorDistanceMatrix,
+  analyzePaletteDiversity,
+} from './core/color-science'
+
+export type {
+  DeltaEOptions,
+  ColorSimilarity,
+  PaletteDiversityAnalysis,
+} from './core/color-science'
+
+// Export color spaces (deltaE2000 and deltaEOKLAB already exported from colorSpaces)
 export {
   deltaE2000,
   deltaEOKLAB,
@@ -101,7 +132,7 @@ export {
   rgbToXYZ,
   xyzToLAB,
   xyzToRGB,
-} from './core/advancedColorSpaces'
+} from './core/colorSpaces'
 // Export palette generators
 export * from './core/tailwindPalette'
 
@@ -278,6 +309,27 @@ export {
   validateHWB,
   validateRGB,
 } from './utils/validators'
+
+// Enhanced validators (detailed validation with better error messages)
+export {
+  validateRGBSafe,
+  validateHSLSafe,
+  validateAmount,
+  validateAlpha,
+  validateRotation,
+  validateArrayLength,
+  validatePositiveInteger,
+  validateInterpolationSpace,
+  validateColorFormat,
+  validateBlendMode,
+  isRGB,
+  isHSL,
+  isHSV,
+  isHWB,
+  validateColorInput,
+  validatePercentage,
+  validateRange,
+} from './utils/enhanced-validators'
 
 // Version
 export const VERSION = '1.0.0'

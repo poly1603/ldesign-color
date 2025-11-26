@@ -751,3 +751,265 @@ export function createCacheKey(...values: any[]): string {
     return String(v)
   }).join('-')
 }
+
+/**
+ * 自适应缓存配置
+ */
+export interface AdaptiveCacheConfig extends ColorCacheConfig {
+  /** 最小缓存大小 */
+  minSize?: number
+  /** 调整检查间隔（毫秒） */
+  adjustInterval?: number
+  /** 命中率低阈值 */
+  hitRateLowThreshold?: number
+  /** 命中率高阈值 */
+  hitRateHighThreshold?: number
+  /** 每次调整的步长 */
+  adjustStep?: number
+}
+
+/**
+ * 内部使用的完整配置类型
+ */
+interface InternalAdaptiveConfig {
+  minSize: number
+  maxSize: number
+  adjustInterval: number
+  hitRateLowThreshold: number
+  hitRateHighThreshold: number
+  adjustStep: number
+  defaultTTL: number
+  strategy: EvictionStrategy
+  cleanupInterval: number
+  warnOnLargeCacheSize: number
+  maxMemory?: number
+}
+
+/**
+ * 自适应缓存类
+ *
+ * 根据缓存命中率自动调整缓存大小,优化内存使用和性能。
+ *
+ * - 命中率低 < 40%: 减小缓存(节省内存)
+ * - 命中率高 > 80%: 增大缓存(提升性能)
+ * - 命中率中等: 保持不变
+ *
+ * @template T - 缓存值类型
+ *
+ * @example
+ * ```typescript
+ * const cache = new AdaptiveColorCache<string>({
+ *   minSize: 50,
+ *   maxSize: 200,
+ *   hitRateLowThreshold: 0.4,
+ *   hitRateHighThreshold: 0.8,
+ *   adjustInterval: 30000 // 30秒检查一次
+ * })
+ *
+ * // 缓存会自动根据使用情况调整大小
+ * cache.set('key1', 'value1')
+ * const stats = cache.getAdaptiveStats()
+ * console.log(`当前大小: ${stats.currentMaxSize}`)
+ * ```
+ */
+export class AdaptiveColorCache<T = any> extends ColorCache<T> {
+  private adjustConfig: InternalAdaptiveConfig
+  private adjustTimer?: ReturnType<typeof setInterval>
+  private lastAdjustment = Date.now()
+  private adjustmentHistory: Array<{
+    timestamp: number
+    oldSize: number
+    newSize: number
+    hitRate: number
+  }> = []
+
+  /**
+   * 创建自适应缓存实例
+   *
+   * @param config - 自适应缓存配置
+   */
+  constructor(config: AdaptiveCacheConfig = {}) {
+    super(config)
+    
+    this.adjustConfig = {
+      minSize: config.minSize ?? 30,
+      maxSize: config.maxSize ?? 200,
+      adjustInterval: config.adjustInterval ?? 30000, // 30秒
+      hitRateLowThreshold: config.hitRateLowThreshold ?? 0.4,
+      hitRateHighThreshold: config.hitRateHighThreshold ?? 0.8,
+      adjustStep: config.adjustStep ?? 20,
+      defaultTTL: config.defaultTTL ?? 0,
+      strategy: config.strategy ?? 'lru',
+      cleanupInterval: config.cleanupInterval ?? 60000,
+      warnOnLargeCacheSize: config.warnOnLargeCacheSize ?? 500,
+      maxMemory: config.maxMemory,
+    }
+
+    // 验证配置
+    if (this.adjustConfig.minSize > this.adjustConfig.maxSize) {
+      throw new Error('minSize 不能大于 maxSize')
+    }
+
+    // 启动自适应调整
+    if (this.adjustConfig.adjustInterval > 0) {
+      this.startAdaptiveAdjustment()
+    }
+  }
+
+  /**
+   * 获取自适应统计信息
+   *
+   * @returns 包含调整历史的统计信息
+   */
+  getAdaptiveStats() {
+    const baseStats = this.getStats()
+    return {
+      ...baseStats,
+      currentMaxSize: this.adjustConfig.maxSize,
+      minSize: this.adjustConfig.minSize,
+      adjustmentCount: this.adjustmentHistory.length,
+      lastAdjustment: this.lastAdjustment,
+      recentAdjustments: this.adjustmentHistory.slice(-5),
+    }
+  }
+
+  /**
+   * 手动触发缓存大小调整
+   *
+   * @returns 调整后的大小,如果未调整则返回 null
+   */
+  adjustSize(): number | null {
+    const stats = this.getStats()
+    const { hitRate } = stats
+    const currentMaxSize = this.adjustConfig.maxSize
+    let newMaxSize = currentMaxSize
+
+    // 命中率太低,减小缓存
+    if (hitRate < this.adjustConfig.hitRateLowThreshold && stats.hits + stats.misses > 50) {
+      newMaxSize = Math.max(
+        this.adjustConfig.minSize,
+        currentMaxSize - this.adjustConfig.adjustStep,
+      )
+    }
+    // 命中率很高且接近满载,增大缓存
+    else if (
+      hitRate > this.adjustConfig.hitRateHighThreshold
+      && stats.utilization > 80
+      && stats.hits + stats.misses > 50
+    ) {
+      newMaxSize = Math.min(
+        this.adjustConfig.maxSize,
+        currentMaxSize + this.adjustConfig.adjustStep,
+      )
+    }
+
+    // 如果大小有变化,应用调整
+    if (newMaxSize !== currentMaxSize) {
+      this.adjustmentHistory.push({
+        timestamp: Date.now(),
+        oldSize: currentMaxSize,
+        newSize: newMaxSize,
+        hitRate,
+      })
+
+      // 保留最近20条记录
+      if (this.adjustmentHistory.length > 20) {
+        this.adjustmentHistory.shift()
+      }
+
+      this.adjustConfig.maxSize = newMaxSize
+      this.lastAdjustment = Date.now()
+
+      // 如果缩小了缓存,清理多余项
+      if (newMaxSize < currentMaxSize) {
+        this.trimToSize(newMaxSize)
+      }
+
+      return newMaxSize
+    }
+
+    return null
+  }
+
+  /**
+   * 销毁缓存实例
+   */
+  override destroy(): void {
+    this.stopAdaptiveAdjustment()
+    super.destroy()
+  }
+
+  /**
+   * 裁剪缓存到指定大小
+   *
+   * @private
+   */
+  private trimToSize(targetSize: number): void {
+    while (this.size > targetSize) {
+      // 使用父类的驱逐逻辑
+      this['evict']()
+    }
+  }
+
+  /**
+   * 启动自适应调整
+   *
+   * @private
+   */
+  private startAdaptiveAdjustment(): void {
+    this.adjustTimer = setInterval(() => {
+      this.adjustSize()
+    }, this.adjustConfig.adjustInterval)
+
+    // 防止定时器阻止进程退出
+    if (this.adjustTimer.unref) {
+      this.adjustTimer.unref()
+    }
+  }
+
+  /**
+   * 停止自适应调整
+   *
+   * @private
+   */
+  private stopAdaptiveAdjustment(): void {
+    if (this.adjustTimer) {
+      clearInterval(this.adjustTimer)
+      this.adjustTimer = undefined
+    }
+  }
+}
+
+/**
+ * 全局自适应缓存实例
+ *
+ * 推荐用于生产环境,自动优化缓存大小。
+ *
+ * @example
+ * ```typescript
+ * // 使用全局自适应缓存
+ * globalAdaptiveCache.set('theme-color', '#667eea')
+ * const color = globalAdaptiveCache.get('theme-color')
+ *
+ * // 查看自适应统计
+ * const stats = globalAdaptiveCache.getAdaptiveStats()
+ * console.log(`当前缓存大小: ${stats.currentMaxSize}`)
+ * ```
+ */
+export const globalAdaptiveCache = new AdaptiveColorCache({
+  minSize: 30,
+  maxSize: 150,
+  hitRateLowThreshold: 0.4,
+  hitRateHighThreshold: 0.8,
+  adjustInterval: 30000,
+  adjustStep: 15,
+  defaultTTL: 0,
+  cleanupInterval: 120000,
+})
+
+// 页面卸载时清理
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeunload', () => {
+    globalAdaptiveCache.destroy()
+  }, { once: true })
+}

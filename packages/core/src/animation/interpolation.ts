@@ -5,7 +5,7 @@
  */
 
 import type { ColorInput, EasingFunction, InterpolationSpace } from '../types'
-import { oklabToRGB, oklchToOKLAB, rgbToOKLAB, rgbToOKLCH } from '../core/advancedColorSpaces'
+import { labToRGB, oklabToRGB, oklchToOKLAB, rgbToLAB, rgbToOKLAB, rgbToOKLCH } from '../core/colorSpaces'
 import { Color } from '../core/Color'
 import { lerp } from '../utils/math'
 

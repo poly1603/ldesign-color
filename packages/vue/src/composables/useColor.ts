@@ -4,7 +4,7 @@
 
 import type { ComputedRef, Ref } from 'vue'
 import type { ThemeState, ThemeOptions, BaseThemeAdapter } from '@ldesign/color-core'
-import { computed, inject, onUnmounted, ref, getCurrentInstance } from 'vue'
+import { computed, inject, onUnmounted, ref, shallowRef, getCurrentInstance } from 'vue'
 import { COLOR_SYMBOL } from '../constants'
 
 export interface UseColorOptions {
@@ -100,8 +100,9 @@ export function useColor(options: UseColorOptions = {}): UseColorReturn {
   // 使用全局或局部适配器
   const adapter = globalAdapter
 
-  // 响应式状态
-  const currentTheme = ref<ThemeState | null>(adapter.getState().currentTheme)
+  // 响应式状态 - 使用 shallowRef 优化性能
+  // ThemeState 是一个对象,我们只关心引用变化,不需要深度响应
+  const currentTheme = shallowRef<ThemeState | null>(adapter.getState().currentTheme)
   const isLoading = ref(false)
 
   // 计算属性

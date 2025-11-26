@@ -8,10 +8,13 @@
 
 import type { ColorInput } from '../types'
 import { generateAntDesignColorSystem, generateAntDesignPalette } from './antDesign'
+import { generateBootstrapPalette, generateBootstrapTheme } from './bootstrap'
 import { generateCarbonScale, generateCarbonTheme } from './carbon'
 import { generateChakraUIColors, generateChakraUIScale } from './chakraUI'
 import { generateFluentUIRamp, generateFluentUITheme } from './fluent'
 import { generateMaterialDesign3Scheme, generateMaterialDesignPalette } from './materialDesign'
+import { generatePolarisScale, generatePolarisTheme } from './polaris'
+import { generatePrimerScale, generatePrimerTheme } from './primer'
 import { generateTailwindScale, generateTailwindSemanticColors } from './tailwind'
 
 /**
@@ -19,11 +22,14 @@ import { generateTailwindScale, generateTailwindSemanticColors } from './tailwin
  */
 export type DesignSystem
   = | 'ant-design'
+    | 'bootstrap'
+    | 'carbon'
     | 'chakra-ui'
+    | 'fluent'
     | 'material-design'
     | 'material-design-3'
-    | 'carbon'
-    | 'fluent'
+    | 'primer'
+    | 'polaris'
     | 'tailwind'
 
 /**
@@ -57,8 +63,17 @@ export function generateDesignSystemPalette(
     case 'ant-design':
       return generateAntDesignPalette(baseColor, options)
 
+    case 'bootstrap':
+      return generateBootstrapPalette(baseColor)
+
+    case 'carbon':
+      return generateCarbonScale(baseColor)
+
     case 'chakra-ui':
       return generateChakraUIScale(baseColor)
+
+    case 'fluent':
+      return generateFluentUIRamp(baseColor)
 
     case 'material-design':
       return generateMaterialDesignPalette(baseColor, options)
@@ -66,11 +81,11 @@ export function generateDesignSystemPalette(
     case 'material-design-3':
       return generateMaterialDesign3Scheme(baseColor, options)
 
-    case 'carbon':
-      return generateCarbonScale(baseColor)
+    case 'primer':
+      return generatePrimerScale(baseColor)
 
-    case 'fluent':
-      return generateFluentUIRamp(baseColor)
+    case 'polaris':
+      return generatePolarisScale(baseColor)
 
     case 'tailwind':
       return generateTailwindScale(baseColor)
@@ -105,14 +120,23 @@ export function generateCompleteColorSystem(
     case 'ant-design':
       return generateAntDesignColorSystem(primaryColor)
 
-    case 'chakra-ui':
-      return generateChakraUIColors(primaryColor)
+    case 'bootstrap':
+      return generateBootstrapTheme(primaryColor)
 
     case 'carbon':
       return generateCarbonTheme(primaryColor)
 
+    case 'chakra-ui':
+      return generateChakraUIColors(primaryColor)
+
     case 'fluent':
       return generateFluentUITheme(primaryColor)
+
+    case 'primer':
+      return generatePrimerTheme(primaryColor)
+
+    case 'polaris':
+      return generatePolarisTheme(primaryColor)
 
     case 'tailwind':
       return generateTailwindSemanticColors(primaryColor)
@@ -172,11 +196,14 @@ export function toDesignSystemCSS(
 function getDefaultPrefix(system: DesignSystem): string {
   switch (system) {
     case 'ant-design': return 'ant'
+    case 'bootstrap': return 'bs'
+    case 'carbon': return 'carbon'
     case 'chakra-ui': return 'chakra'
+    case 'fluent': return 'fluent'
     case 'material-design': return 'md'
     case 'material-design-3': return 'md3'
-    case 'carbon': return 'carbon'
-    case 'fluent': return 'fluent'
+    case 'primer': return 'primer'
+    case 'polaris': return 'p'
     case 'tailwind': return 'tw'
     default: return 'ds'
   }
@@ -199,18 +226,24 @@ function getDefaultPrefix(system: DesignSystem): string {
  */
 export function compareDesignSystems(baseColor: ColorInput): {
   antDesign: any
-  chakraUI: any
-  materialDesign: any
+  bootstrap: any
   carbon: any
+  chakraUI: any
   fluent: any
+  materialDesign: any
+  primer: any
+  polaris: any
   tailwind: any
 } {
   return {
     antDesign: generateDesignSystemPalette(baseColor, 'ant-design'),
-    chakraUI: generateDesignSystemPalette(baseColor, 'chakra-ui'),
-    materialDesign: generateDesignSystemPalette(baseColor, 'material-design'),
+    bootstrap: generateDesignSystemPalette(baseColor, 'bootstrap'),
     carbon: generateDesignSystemPalette(baseColor, 'carbon'),
+    chakraUI: generateDesignSystemPalette(baseColor, 'chakra-ui'),
     fluent: generateDesignSystemPalette(baseColor, 'fluent'),
+    materialDesign: generateDesignSystemPalette(baseColor, 'material-design'),
+    primer: generateDesignSystemPalette(baseColor, 'primer'),
+    polaris: generateDesignSystemPalette(baseColor, 'polaris'),
     tailwind: generateDesignSystemPalette(baseColor, 'tailwind'),
   }
 }

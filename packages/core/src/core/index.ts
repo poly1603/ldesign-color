@@ -45,7 +45,7 @@ export {
   rgbToXYZ,
   xyzToLAB,
   xyzToRGB,
-} from './advancedColorSpaces'
+} from './colorSpaces'
 
 // Analysis functions
 export {

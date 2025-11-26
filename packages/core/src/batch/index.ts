@@ -26,6 +26,22 @@ export interface BatchOptions {
   chunkSize?: number
   /** Progress callback */
   onProgress?: (processed: number, total: number) => void
+  /** Use SharedArrayBuffer for zero-copy data transfer (requires COOP/COEP headers) */
+  useSharedMemory?: boolean
+}
+
+/**
+ * Batch processing statistics
+ */
+export interface BatchStats {
+  /** Total items processed */
+  processed: number
+  /** Number of errors */
+  errors: number
+  /** Processing time in milliseconds */
+  duration: number
+  /** Items per second */
+  throughput: number
 }
 
 /**
@@ -53,13 +69,22 @@ export async function batchConvert(
   format: ColorFormat,
   options: BatchOptions = {},
 ): Promise<string[]> {
+  const startTime = performance.now()
   const {
     chunkSize = 100,
     onProgress,
+    useSharedMemory = false,
   } = options
+
+  // 如果支持SharedArrayBuffer且启用,使用优化路径
+  if (useSharedMemory && typeof SharedArrayBuffer !== 'undefined') {
+    const results = await batchConvertShared(inputs, format, { chunkSize, onProgress })
+    return results
+  }
 
   const results: string[] = []
   const totalChunks = Math.ceil(inputs.length / chunkSize)
+  let errorCount = 0
 
   for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
     const start = chunkIndex * chunkSize
@@ -68,10 +93,16 @@ export async function batchConvert(
 
     // Process chunk
     const chunkResults = chunk.map((input) => {
-      const color = new Color(input)
-      const result = color.toString(format)
-      color.dispose() // Return to pool
-      return result
+      try {
+        const color = new Color(input)
+        const result = color.toString(format)
+        color.dispose() // Return to pool
+        return result
+      }
+      catch {
+        errorCount++
+        return '#000000' // Fallback color
+      }
     })
 
     results.push(...chunkResults)
@@ -85,6 +116,87 @@ export async function batchConvert(
     await new Promise(resolve => setTimeout(resolve, 0))
   }
 
+  const duration = performance.now() - startTime
+  
+  // Log performance stats in development
+  if (process.env.NODE_ENV !== 'production' && errorCount > 0) {
+    console.warn(`Batch conversion completed with ${errorCount} errors in ${duration.toFixed(2)}ms`)
+  }
+
+  return results
+}
+
+/**
+ * Batch convert using SharedArrayBuffer (zero-copy)
+ *
+ * 使用共享内存进行批量转换,避免数据复制开销
+ * 要求网页设置COOP和COEP响应头
+ *
+ * @private
+ */
+async function batchConvertShared(
+  inputs: ColorInput[],
+  format: ColorFormat,
+  options: { chunkSize: number, onProgress?: (processed: number, total: number) => void },
+): Promise<string[]> {
+  const { chunkSize, onProgress } = options
+  const results: string[] = []
+  
+  // 预分配SharedArrayBuffer用于RGB数据传输
+  // 每个颜色4字节: [R, G, B, A]
+  const bufferSize = Math.min(chunkSize, inputs.length) * 4
+  const sharedBuffer = new SharedArrayBuffer(bufferSize)
+  const sharedArray = new Uint8Array(sharedBuffer)
+  
+  const totalChunks = Math.ceil(inputs.length / chunkSize)
+  
+  for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+    const start = chunkIndex * chunkSize
+    const end = Math.min(start + chunkSize, inputs.length)
+    const chunk = inputs.slice(start, end)
+    
+    // 转换为RGB并写入共享内存
+    chunk.forEach((input, idx) => {
+      try {
+        const color = new Color(input)
+        const [r, g, b, a] = color.toRGBDirect()
+        const offset = idx * 4
+        sharedArray[offset] = r
+        sharedArray[offset + 1] = g
+        sharedArray[offset + 2] = b
+        sharedArray[offset + 3] = Math.round(a * 255)
+        color.dispose()
+      }
+      catch {
+        // 失败时使用黑色
+        const offset = idx * 4
+        sharedArray[offset] = 0
+        sharedArray[offset + 1] = 0
+        sharedArray[offset + 2] = 0
+        sharedArray[offset + 3] = 255
+      }
+    })
+    
+    // 从共享内存读取并格式化
+    for (let i = 0; i < chunk.length; i++) {
+      const offset = i * 4
+      const r = sharedArray[offset]
+      const g = sharedArray[offset + 1]
+      const b = sharedArray[offset + 2]
+      const a = sharedArray[offset + 3] / 255
+      
+      const color = Color.fromRGB(r, g, b, a)
+      results.push(color.toString(format))
+      color.dispose()
+    }
+    
+    if (onProgress) {
+      onProgress(end, inputs.length)
+    }
+    
+    await new Promise(resolve => setTimeout(resolve, 0))
+  }
+  
   return results
 }
 
@@ -209,6 +321,7 @@ function applyOperation(color: Color, operation: BatchOperation): Color {
 export class ColorStreamProcessor {
   private processedCount = 0
   private errorCount = 0
+  private startTime = 0
 
   /**
    * Process color stream with transformation function
@@ -240,6 +353,11 @@ export class ColorStreamProcessor {
   ): AsyncIterable<T> {
     const { chunkSize = 100, onError } = options
     let chunk: T[] = []
+    
+    // 记录开始时间
+    if (this.processedCount === 0) {
+      this.startTime = performance.now()
+    }
 
     // Handle both sync and async iterables
     const iterator = Symbol.asyncIterator in inputs
@@ -281,10 +399,15 @@ export class ColorStreamProcessor {
   /**
    * Get processing statistics
    */
-  getStats(): { processed: number, errors: number } {
+  getStats(): BatchStats {
+    const duration = performance.now() - this.startTime
+    const throughput = duration > 0 ? (this.processedCount / duration) * 1000 : 0
+    
     return {
       processed: this.processedCount,
       errors: this.errorCount,
+      duration,
+      throughput,
     }
   }
 
@@ -294,6 +417,7 @@ export class ColorStreamProcessor {
   reset(): void {
     this.processedCount = 0
     this.errorCount = 0
+    this.startTime = performance.now()
   }
 }
 

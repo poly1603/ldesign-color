@@ -6,10 +6,9 @@
  * @module composables/useTheme
  */
 
-import type { ThemeAdapterOptions } from '@ldesign/color-core/themes/BaseThemeAdapter'
-import type { ThemeOptions, ThemeState } from '@ldesign/color-core/themes/themeManager'
-import { computed, onMounted, onUnmounted, ref, readonly } from 'vue'
-import { BaseThemeAdapter } from '@ldesign/color-core/themes/BaseThemeAdapter'
+import type { ThemeAdapterOptions, ThemeOptions, ThemeState, BaseThemeAdapter as BaseThemeAdapterType } from '@ldesign/color-core'
+import { computed, onMounted, onUnmounted, ref, shallowRef, readonly } from 'vue'
+import { BaseThemeAdapter } from '@ldesign/color-core'
 
 /**
  * Vue 主题 Composable 选项
@@ -44,8 +43,8 @@ export function useTheme(options: UseThemeOptions = {}) {
   // 创建适配器实例
   const adapter = new BaseThemeAdapter(options)
 
-  // 响应式状态
-  const currentTheme = ref<ThemeState | null>(adapter.getState().currentTheme)
+  // 响应式状态 - 使用 shallowRef 优化性能
+  const currentTheme = shallowRef<ThemeState | null>(adapter.getState().currentTheme)
   const isLoading = ref(false)
 
   // 计算属性

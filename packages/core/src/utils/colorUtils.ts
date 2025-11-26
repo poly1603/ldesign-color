@@ -10,7 +10,7 @@
  * @module utils/colorUtils
  */
 
-import { rgbToOKLAB } from '../core/advancedColorSpaces'
+import { oklabToRGB, rgbToOKLAB } from '../core/colorSpaces'
 import { Color } from '../core/Color'
 
 // ============================================

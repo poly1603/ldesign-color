@@ -5,8 +5,8 @@
  */
 
 import { afterEach } from 'vitest'
-import { Color } from '../src/core/Color'
-import { poolManager } from '../src/utils/objectPool'
+import { Color } from '../packages/core/src/core/Color'
+import { poolManager } from '../packages/core/src/utils/objectPool'
 
 // Global cleanup after each test
 afterEach(() => {

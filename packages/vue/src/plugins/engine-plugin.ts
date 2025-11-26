@@ -557,9 +557,9 @@ export function createColorEnginePlugin(
             },
             getPrimaryColor: () => currentTheme?.primaryColor || '',
             setPrimaryColor: (color: string) => themeAdapter.applyTheme(color),
-            getPresets: () => themeAdapter.getAvailablePresets?.() || [],
+            getPresets: () => themeAdapter.getPresets() || [],
             applyPreset: (name: string) => {
-              const preset = themeAdapter.getAvailablePresets?.()?.find(p => p.name === name)
+              const preset = themeAdapter.getPresets()?.find(p => p.name === name)
               if (preset) {
                 return themeAdapter.applyTheme(preset.color)
               }

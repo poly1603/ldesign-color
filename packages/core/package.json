@@ -1,6 +1,6 @@
 {
   "name": "@ldesign/color-core",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Framework-agnostic core color manipulation library with powerful utilities and design system integration",
   "keywords": [
     "color",

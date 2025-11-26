@@ -477,7 +477,7 @@ export const animatedGradient = GradientGenerator.animated
 // Advanced Gradient Features
 // ============================================
 
-// Re-export advanced gradient utilities
+// Re-export gradient effects utilities
 export {
   addGradientStops,
   adjustGradientContrast,
@@ -491,11 +491,11 @@ export {
   reverseGradientCSS,
   sampleGradient,
   smoothGradient as smoothGradientAdvanced,
-} from './advanced'
+} from './effects'
 
 export type {
   AdvancedGradientStop,
   ConicGradientCSSOptions,
   LinearGradientCSSOptions,
   RadialGradientCSSOptions,
-} from './advanced'
+} from './effects'
