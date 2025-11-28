@@ -13,122 +13,139 @@
   "author": "ldesign",
   "license": "MIT",
   "type": "module",
-  "sideEffects": [
-    "*.css",
-    "*.vue",
-    "**/*.css",
-    "**/style/**"
-  ],
+  "sideEffects": false,
   "exports": {
     ".": {
       "types": "./esm/index.d.ts",
       "import": "./esm/index.js",
-      "require": "./cjs/index.cjs"
+      "require": "./cjs/index.cjs",
+      "default": "./esm/index.js"
     },
     "./color-picker": {
       "types": "./esm/color-picker/index.d.ts",
       "import": "./esm/color-picker/index.js",
-      "require": "./cjs/color-picker/index.cjs"
+      "require": "./cjs/color-picker/index.cjs",
+      "default": "./esm/color-picker/index.js"
     },
     "./color-picker/*": {
       "types": "./esm/color-picker/*.d.ts",
       "import": "./esm/color-picker/*.js",
-      "require": "./cjs/color-picker/*.cjs"
+      "require": "./cjs/color-picker/*.cjs",
+      "default": "./esm/color-picker/*.js"
     },
     "./components/*": {
       "types": "./esm/components/*.d.ts",
       "import": "./esm/components/*.js",
-      "require": "./cjs/components/*.cjs"
+      "require": "./cjs/components/*.cjs",
+      "default": "./esm/components/*.js"
     },
     "./composables/*": {
       "types": "./esm/composables/*.d.ts",
       "import": "./esm/composables/*.js",
-      "require": "./cjs/composables/*.cjs"
+      "require": "./cjs/composables/*.cjs",
+      "default": "./esm/composables/*.js"
     },
     "./devtools": {
       "types": "./esm/devtools/index.d.ts",
       "import": "./esm/devtools/index.js",
-      "require": "./cjs/devtools/index.cjs"
+      "require": "./cjs/devtools/index.cjs",
+      "default": "./esm/devtools/index.js"
     },
     "./devtools/*": {
       "types": "./esm/devtools/*.d.ts",
       "import": "./esm/devtools/*.js",
-      "require": "./cjs/devtools/*.cjs"
+      "require": "./cjs/devtools/*.cjs",
+      "default": "./esm/devtools/*.js"
     },
     "./palette-display": {
       "types": "./esm/palette-display/index.d.ts",
       "import": "./esm/palette-display/index.js",
-      "require": "./cjs/palette-display/index.cjs"
+      "require": "./cjs/palette-display/index.cjs",
+      "default": "./esm/palette-display/index.js"
     },
     "./palette-display/*": {
       "types": "./esm/palette-display/*.d.ts",
       "import": "./esm/palette-display/*.js",
-      "require": "./cjs/palette-display/*.cjs"
+      "require": "./cjs/palette-display/*.cjs",
+      "default": "./esm/palette-display/*.js"
     },
     "./plugin": {
       "types": "./esm/plugin/index.d.ts",
       "import": "./esm/plugin/index.js",
-      "require": "./cjs/plugin/index.cjs"
+      "require": "./cjs/plugin/index.cjs",
+      "default": "./esm/plugin/index.js"
     },
     "./plugin/*": {
       "types": "./esm/plugin/*.d.ts",
       "import": "./esm/plugin/*.js",
-      "require": "./cjs/plugin/*.cjs"
+      "require": "./cjs/plugin/*.cjs",
+      "default": "./esm/plugin/*.js"
     },
     "./plugins": {
       "types": "./esm/plugins/index.d.ts",
       "import": "./esm/plugins/index.js",
-      "require": "./cjs/plugins/index.cjs"
+      "require": "./cjs/plugins/index.cjs",
+      "default": "./esm/plugins/index.js"
     },
     "./plugins/*": {
       "types": "./esm/plugins/*.d.ts",
       "import": "./esm/plugins/*.js",
-      "require": "./cjs/plugins/*.cjs"
+      "require": "./cjs/plugins/*.cjs",
+      "default": "./esm/plugins/*.js"
     },
     "./ssr": {
       "types": "./esm/ssr/index.d.ts",
       "import": "./esm/ssr/index.js",
-      "require": "./cjs/ssr/index.cjs"
+      "require": "./cjs/ssr/index.cjs",
+      "default": "./esm/ssr/index.js"
     },
     "./ssr/*": {
       "types": "./esm/ssr/*.d.ts",
       "import": "./esm/ssr/*.js",
-      "require": "./cjs/ssr/*.cjs"
+      "require": "./cjs/ssr/*.cjs",
+      "default": "./esm/ssr/*.js"
     },
     "./theme-color-picker": {
       "types": "./esm/theme-color-picker/index.d.ts",
       "import": "./esm/theme-color-picker/index.js",
-      "require": "./cjs/theme-color-picker/index.cjs"
+      "require": "./cjs/theme-color-picker/index.cjs",
+      "default": "./esm/theme-color-picker/index.js"
     },
     "./theme-color-picker/*": {
       "types": "./esm/theme-color-picker/*.d.ts",
       "import": "./esm/theme-color-picker/*.js",
-      "require": "./cjs/theme-color-picker/*.cjs"
+      "require": "./cjs/theme-color-picker/*.cjs",
+      "default": "./esm/theme-color-picker/*.js"
     },
     "./theme-mode-switcher": {
       "types": "./esm/theme-mode-switcher/index.d.ts",
       "import": "./esm/theme-mode-switcher/index.js",
-      "require": "./cjs/theme-mode-switcher/index.cjs"
+      "require": "./cjs/theme-mode-switcher/index.cjs",
+      "default": "./esm/theme-mode-switcher/index.js"
     },
     "./theme-mode-switcher/*": {
       "types": "./esm/theme-mode-switcher/*.d.ts",
       "import": "./esm/theme-mode-switcher/*.js",
-      "require": "./cjs/theme-mode-switcher/*.cjs"
+      "require": "./cjs/theme-mode-switcher/*.cjs",
+      "default": "./esm/theme-mode-switcher/*.js"
     },
     "./theme-provider": {
       "types": "./esm/theme-provider/index.d.ts",
       "import": "./esm/theme-provider/index.js",
-      "require": "./cjs/theme-provider/index.cjs"
+      "require": "./cjs/theme-provider/index.cjs",
+      "default": "./esm/theme-provider/index.js"
     },
     "./theme-provider/*": {
       "types": "./esm/theme-provider/*.d.ts",
       "import": "./esm/theme-provider/*.js",
-      "require": "./cjs/theme-provider/*.cjs"
+      "require": "./cjs/theme-provider/*.cjs",
+      "default": "./esm/theme-provider/*.js"
     },
     "./utils/*": {
       "types": "./esm/utils/*.d.ts",
       "import": "./esm/utils/*.js",
-      "require": "./cjs/utils/*.cjs"
+      "require": "./cjs/utils/*.cjs",
+      "default": "./esm/utils/*.js"
     },
     "./cjs/color-picker/index.css": "./cjs/color-picker/index.css",
     "./cjs/components/ThemeColorPicker.css": "./cjs/components/ThemeColorPicker.css",
@@ -137,7 +154,8 @@
     "./cjs/palette-display/index.css": "./cjs/palette-display/index.css",
     "./cjs/theme-provider/index.css": "./cjs/theme-provider/index.css",
     "./dist/index.css": "./dist/index.css",
-    "./dist/index.min.css": "./dist/index.min.css"
+    "./dist/index.min.css": "./dist/index.min.css",
+    "./package.json": "./package.json"
   },
   "main": "./cjs/index.cjs",
   "module": "./esm/index.js",
@@ -147,7 +165,7 @@
   "files": [
     "README.md",
     "LICENSE",
-    "package.json",
+    "CHANGELOG.md",
     "esm",
     "cjs",
     "dist"
@@ -168,5 +186,7 @@
     "@vitejs/plugin-vue": "^4.0.0",
     "typescript": "^5.7.3",
     "vue": "^3.0.0"
-  }
+  },
+  "typings": "./esm/index.d.ts",
+  "browser": "./dist/index.js"
 }

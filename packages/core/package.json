@@ -19,202 +19,241 @@
   "author": "ldesign",
   "license": "MIT",
   "type": "module",
+  "sideEffects": false,
   "exports": {
     ".": {
       "types": "./es/index.d.ts",
       "import": "./es/index.js",
-      "require": "./lib/index.cjs"
+      "require": "./lib/index.cjs",
+      "default": "./es/index.js"
     },
     "./accessibility": {
       "types": "./es/accessibility/index.d.ts",
       "import": "./es/accessibility/index.js",
-      "require": "./lib/accessibility/index.cjs"
+      "require": "./lib/accessibility/index.cjs",
+      "default": "./es/accessibility/index.js"
     },
     "./accessibility/*": {
       "types": "./es/accessibility/*.d.ts",
       "import": "./es/accessibility/*.js",
-      "require": "./lib/accessibility/*.cjs"
+      "require": "./lib/accessibility/*.cjs",
+      "default": "./es/accessibility/*.js"
     },
     "./ai/*": {
       "types": "./es/ai/*.d.ts",
       "import": "./es/ai/*.js",
-      "require": "./lib/ai/*.cjs"
+      "require": "./lib/ai/*.cjs",
+      "default": "./es/ai/*.js"
     },
     "./analyzer": {
       "types": "./es/analyzer/index.d.ts",
       "import": "./es/analyzer/index.js",
-      "require": "./lib/analyzer/index.cjs"
+      "require": "./lib/analyzer/index.cjs",
+      "default": "./es/analyzer/index.js"
     },
     "./analyzer/*": {
       "types": "./es/analyzer/*.d.ts",
       "import": "./es/analyzer/*.js",
-      "require": "./lib/analyzer/*.cjs"
+      "require": "./lib/analyzer/*.cjs",
+      "default": "./es/analyzer/*.js"
     },
     "./animation": {
       "types": "./es/animation/index.d.ts",
       "import": "./es/animation/index.js",
-      "require": "./lib/animation/index.cjs"
+      "require": "./lib/animation/index.cjs",
+      "default": "./es/animation/index.js"
     },
     "./animation/*": {
       "types": "./es/animation/*.d.ts",
       "import": "./es/animation/*.js",
-      "require": "./lib/animation/*.cjs"
+      "require": "./lib/animation/*.cjs",
+      "default": "./es/animation/*.js"
     },
     "./batch": {
       "types": "./es/batch/index.d.ts",
       "import": "./es/batch/index.js",
-      "require": "./lib/batch/index.cjs"
+      "require": "./lib/batch/index.cjs",
+      "default": "./es/batch/index.js"
     },
     "./batch/*": {
       "types": "./es/batch/*.d.ts",
       "import": "./es/batch/*.js",
-      "require": "./lib/batch/*.cjs"
+      "require": "./lib/batch/*.cjs",
+      "default": "./es/batch/*.js"
     },
     "./brand": {
       "types": "./es/brand/index.d.ts",
       "import": "./es/brand/index.js",
-      "require": "./lib/brand/index.cjs"
+      "require": "./lib/brand/index.cjs",
+      "default": "./es/brand/index.js"
     },
     "./brand/*": {
       "types": "./es/brand/*.d.ts",
       "import": "./es/brand/*.js",
-      "require": "./lib/brand/*.cjs"
+      "require": "./lib/brand/*.cjs",
+      "default": "./es/brand/*.js"
     },
     "./constants": {
       "types": "./es/constants/index.d.ts",
       "import": "./es/constants/index.js",
-      "require": "./lib/constants/index.cjs"
+      "require": "./lib/constants/index.cjs",
+      "default": "./es/constants/index.js"
     },
     "./constants/*": {
       "types": "./es/constants/*.d.ts",
       "import": "./es/constants/*.js",
-      "require": "./lib/constants/*.cjs"
+      "require": "./lib/constants/*.cjs",
+      "default": "./es/constants/*.js"
     },
     "./core": {
       "types": "./es/core/index.d.ts",
       "import": "./es/core/index.js",
-      "require": "./lib/core/index.cjs"
+      "require": "./lib/core/index.cjs",
+      "default": "./es/core/index.js"
     },
     "./core/*": {
       "types": "./es/core/*.d.ts",
       "import": "./es/core/*.js",
-      "require": "./lib/core/*.cjs"
+      "require": "./lib/core/*.cjs",
+      "default": "./es/core/*.js"
     },
     "./design-systems": {
       "types": "./es/design-systems/index.d.ts",
       "import": "./es/design-systems/index.js",
-      "require": "./lib/design-systems/index.cjs"
+      "require": "./lib/design-systems/index.cjs",
+      "default": "./es/design-systems/index.js"
     },
     "./design-systems/*": {
       "types": "./es/design-systems/*.d.ts",
       "import": "./es/design-systems/*.js",
-      "require": "./lib/design-systems/*.cjs"
+      "require": "./lib/design-systems/*.cjs",
+      "default": "./es/design-systems/*.js"
     },
     "./gradient": {
       "types": "./es/gradient/index.d.ts",
       "import": "./es/gradient/index.js",
-      "require": "./lib/gradient/index.cjs"
+      "require": "./lib/gradient/index.cjs",
+      "default": "./es/gradient/index.js"
     },
     "./gradient/*": {
       "types": "./es/gradient/*.d.ts",
       "import": "./es/gradient/*.js",
-      "require": "./lib/gradient/*.cjs"
+      "require": "./lib/gradient/*.cjs",
+      "default": "./es/gradient/*.js"
     },
     "./harmony": {
       "types": "./es/harmony/index.d.ts",
       "import": "./es/harmony/index.js",
-      "require": "./lib/harmony/index.cjs"
+      "require": "./lib/harmony/index.cjs",
+      "default": "./es/harmony/index.js"
     },
     "./harmony/*": {
       "types": "./es/harmony/*.d.ts",
       "import": "./es/harmony/*.js",
-      "require": "./lib/harmony/*.cjs"
+      "require": "./lib/harmony/*.cjs",
+      "default": "./es/harmony/*.js"
     },
     "./locales": {
       "types": "./es/locales/index.d.ts",
       "import": "./es/locales/index.js",
-      "require": "./lib/locales/index.cjs"
+      "require": "./lib/locales/index.cjs",
+      "default": "./es/locales/index.js"
     },
     "./locales/*": {
       "types": "./es/locales/*.d.ts",
       "import": "./es/locales/*.js",
-      "require": "./lib/locales/*.cjs"
+      "require": "./lib/locales/*.cjs",
+      "default": "./es/locales/*.js"
     },
     "./optimizations/*": {
       "types": "./es/optimizations/*.d.ts",
       "import": "./es/optimizations/*.js",
-      "require": "./lib/optimizations/*.cjs"
+      "require": "./lib/optimizations/*.cjs",
+      "default": "./es/optimizations/*.js"
     },
     "./palette/*": {
       "types": "./es/palette/*.d.ts",
       "import": "./es/palette/*.js",
-      "require": "./lib/palette/*.cjs"
+      "require": "./lib/palette/*.cjs",
+      "default": "./es/palette/*.js"
     },
     "./performance": {
       "types": "./es/performance/index.d.ts",
       "import": "./es/performance/index.js",
-      "require": "./lib/performance/index.cjs"
+      "require": "./lib/performance/index.cjs",
+      "default": "./es/performance/index.js"
     },
     "./performance/*": {
       "types": "./es/performance/*.d.ts",
       "import": "./es/performance/*.js",
-      "require": "./lib/performance/*.cjs"
+      "require": "./lib/performance/*.cjs",
+      "default": "./es/performance/*.js"
     },
     "./plugin": {
       "types": "./es/plugin/index.d.ts",
       "import": "./es/plugin/index.js",
-      "require": "./lib/plugin/index.cjs"
+      "require": "./lib/plugin/index.cjs",
+      "default": "./es/plugin/index.js"
     },
     "./plugin/*": {
       "types": "./es/plugin/*.d.ts",
       "import": "./es/plugin/*.js",
-      "require": "./lib/plugin/*.cjs"
+      "require": "./lib/plugin/*.cjs",
+      "default": "./es/plugin/*.js"
     },
     "./schemes": {
       "types": "./es/schemes/index.d.ts",
       "import": "./es/schemes/index.js",
-      "require": "./lib/schemes/index.cjs"
+      "require": "./lib/schemes/index.cjs",
+      "default": "./es/schemes/index.js"
     },
     "./schemes/*": {
       "types": "./es/schemes/*.d.ts",
       "import": "./es/schemes/*.js",
-      "require": "./lib/schemes/*.cjs"
+      "require": "./lib/schemes/*.cjs",
+      "default": "./es/schemes/*.js"
     },
     "./theme": {
       "types": "./es/theme/index.d.ts",
       "import": "./es/theme/index.js",
-      "require": "./lib/theme/index.cjs"
+      "require": "./lib/theme/index.cjs",
+      "default": "./es/theme/index.js"
     },
     "./theme/*": {
       "types": "./es/theme/*.d.ts",
       "import": "./es/theme/*.js",
-      "require": "./lib/theme/*.cjs"
+      "require": "./lib/theme/*.cjs",
+      "default": "./es/theme/*.js"
     },
     "./themes/*": {
       "types": "./es/themes/*.d.ts",
       "import": "./es/themes/*.js",
-      "require": "./lib/themes/*.cjs"
+      "require": "./lib/themes/*.cjs",
+      "default": "./es/themes/*.js"
     },
     "./types/*": {
       "types": "./es/types/*.d.ts",
       "import": "./es/types/*.js",
-      "require": "./lib/types/*.cjs"
+      "require": "./lib/types/*.cjs",
+      "default": "./es/types/*.js"
     },
     "./utils/*": {
       "types": "./es/utils/*.d.ts",
       "import": "./es/utils/*.js",
-      "require": "./lib/utils/*.cjs"
-    }
+      "require": "./lib/utils/*.cjs",
+      "default": "./es/utils/*.js"
+    },
+    "./package.json": "./package.json"
   },
   "main": "./lib/index.cjs",
   "module": "./es/index.js",
   "types": "./es/index.d.ts",
-  "unpkg": "./dist/index.min.js",
-  "jsdelivr": "./dist/index.min.js",
+  "unpkg": "./dist/index.js",
+  "jsdelivr": "./dist/index.js",
   "files": [
     "README.md",
     "LICENSE",
-    "package.json",
+    "CHANGELOG.md",
     "es",
     "lib",
     "dist"
@@ -229,5 +268,7 @@
     "@ldesign/builder": "workspace:*",
     "@types/node": "^22.0.0",
     "typescript": "^5.7.3"
-  }
+  },
+  "typings": "./es/index.d.ts",
+  "browser": "./dist/index.js"
 }
