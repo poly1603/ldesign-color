@@ -4,7 +4,8 @@
  */
 // @ts-nocheck - Vue JSX 类型定义与实际使用存在差异，禁用类型检查以避免误报
 import type { PropType } from 'vue'
-import { computed, defineComponent, getCurrentInstance, inject, watch, ref } from 'vue'
+import { computed, defineComponent, getCurrentInstance, inject, watch, ref, onMounted, onUnmounted, Transition } from 'vue'
+import { Sun, Moon, Monitor } from 'lucide-vue-next'
 import { useThemeMode } from '../composables/useThemeMode'
 import './ThemeModeSwitcher.css'
 
@@ -36,7 +37,10 @@ export const ThemeModeSwitcher = defineComponent({
 
   setup(props) {
     // 使用主题模式管理
-    const { mode, toggleMode } = useThemeMode()
+    const { mode, setMode } = useThemeMode()
+
+    // 下拉菜单状态
+    const isOpen = ref(false)
 
     // 尝试获取 i18n 实例（用于响应式翻译）
     let i18nInstance: any = null
@@ -75,36 +79,63 @@ export const ThemeModeSwitcher = defineComponent({
       console.warn('[ThemeModeSwitcher] Failed to get i18n instance:', e)
     }
 
-    // 模式图标映射
-    const modeIcon = computed(() => {
+    /**
+     * 所有可用的主题模式
+     */
+    const modes = ['light', 'dark', 'auto'] as const
+
+    /**
+     * 获取模式图标组件
+     */
+    const getModeIcon = (modeValue: string) => {
+      const iconProps = { size: 20, strokeWidth: 2 }
+      switch (modeValue) {
+        case 'light':
+          return <Sun {...iconProps} />
+        case 'dark':
+          return <Moon {...iconProps} />
+        case 'auto':
+          return <Monitor {...iconProps} />
+        default:
+          return <Sun {...iconProps} />
+      }
+    }
+
+    /**
+     * 当前模式图标组件
+     */
+    const currentModeIcon = computed(() => {
+      const iconProps = { size: 18, strokeWidth: 2 }
       switch (mode.value) {
         case 'light':
-          return '☀️'
+          return <Sun {...iconProps} />
         case 'dark':
-          return '🌙'
+          return <Moon {...iconProps} />
         case 'auto':
-          return '💻'
+          return <Monitor {...iconProps} />
         default:
-          return '☀️'
+          return <Sun {...iconProps} />
       }
     })
 
-    // 模式文本映射（响应式翻译）
-    const modeText = computed(() => {
+    /**
+     * 获取模式文本
+     */
+    const getModeText = (modeValue: string) => {
       // 强制依赖 localeRef 以触发重新计算
       const currentLocale = localeRef.value
 
       if (props.translate) {
-        return props.translate(`theme.mode.${mode.value}`)
+        return props.translate(`theme.mode.${modeValue}`)
       }
 
       // 如果有 i18n 实例，使用它的 t 方法
       if (i18nInstance?.t) {
-        return i18nInstance.t(`theme.mode.${mode.value}`)
+        return i18nInstance.t(`theme.mode.${modeValue}`)
       }
 
       // Fallback 到英文
-      switch (mode.value) {
+      switch (modeValue) {
         case 'light':
           return 'Light'
         case 'dark':
@@ -114,7 +145,10 @@ export const ThemeModeSwitcher = defineComponent({
         default:
           return 'Light'
       }
-    })
+    }
+
+    // 当前模式文本
+    const modeText = computed(() => getModeText(mode.value))
 
     // 模式提示文本（响应式翻译）
     const modeTitle = computed(() => {
@@ -122,34 +156,87 @@ export const ThemeModeSwitcher = defineComponent({
       const currentLocale = localeRef.value
 
       if (props.translate) {
-        const modeStr = props.translate(`theme.mode.${mode.value}`)
-        return `${props.translate('theme.currentMode')}: ${modeStr}`
+        return props.translate('theme.selectMode')
       }
 
       // 如果有 i18n 实例，使用它的 t 方法
       if (i18nInstance?.t) {
-        const modeStr = i18nInstance.t(`theme.mode.${mode.value}`)
-        return `${i18nInstance.t('theme.currentMode')}: ${modeStr}`
+        return i18nInstance.t('theme.selectMode')
       }
 
-      return `Current mode: ${modeText.value}`
+      return 'Select theme mode'
     })
 
-    // 切换模式
-    const handleToggle = () => {
-      toggleMode()
+    /**
+     * 切换下拉菜单
+     */
+    const toggleDropdown = (e: MouseEvent) => {
+      e.stopPropagation() // 阻止事件冒泡
+      isOpen.value = !isOpen.value
     }
+
+    /**
+     * 选择模式
+     */
+    const selectMode = (modeValue: string) => {
+      setMode(modeValue as 'light' | 'dark' | 'auto')
+      isOpen.value = false
+    }
+
+    /**
+     * 点击外部关闭下拉菜单
+     */
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      if (!target.closest('.ld-theme-mode-switcher')) {
+        isOpen.value = false
+      }
+    }
+
+    // 生命周期(延迟添加事件监听,避免与按钮点击冲突)
+    onMounted(() => {
+      setTimeout(() => {
+        document.addEventListener('click', handleClickOutside)
+      }, 0)
+    })
+
+    onUnmounted(() => {
+      document.removeEventListener('click', handleClickOutside)
+    })
 
     return () => (
       <div class="ld-theme-mode-switcher">
         <button
           class="mode-button"
           title={modeTitle.value}
-          onClick={handleToggle}
+          onClick={toggleDropdown}
         >
-          <span class="mode-icon">{modeIcon.value}</span>
-          <span class="mode-text">{modeText.value}</span>
+          {currentModeIcon.value}
         </button>
+
+        <Transition name="dropdown">
+          {isOpen.value && (
+            <div class="mode-dropdown" onClick={(e: MouseEvent) => e.stopPropagation()}>
+              <div class="dropdown-header">
+                <span class="dropdown-title">主题模式</span>
+              </div>
+              <div class="dropdown-content">
+                <div class="mode-grid">
+                  {modes.map(modeValue => (
+                    <div
+                      key={modeValue}
+                      class={['mode-card', { active: mode.value === modeValue }]}
+                      onClick={() => selectMode(modeValue)}
+                    >
+                      <span class="card-icon">{getModeIcon(modeValue)}</span>
+                      <span class="card-name">{getModeText(modeValue)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </Transition>
       </div>
     )
   }

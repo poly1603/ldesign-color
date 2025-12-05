@@ -1,9 +1,11 @@
 /**
  * ThemeColorPicker 组件
  * 主题颜色选择器组件 - TSX 版本
+ * 采用卡片网格布局，与其他选择器保持一致
  */
 // @ts-nocheck - Vue JSX 类型定义与实际使用存在差异，禁用类型检查以避免误报
-import { computed, defineComponent, onMounted, onUnmounted, ref, Teleport, type PropType } from 'vue'
+import { defineComponent, onMounted, onUnmounted, ref, type PropType, Transition } from 'vue'
+import { Palette } from 'lucide-vue-next'
 import { ThemeManager } from '@ldesign/color-core'
 import './ThemeColorPicker.css'
 
@@ -14,19 +16,19 @@ export interface ThemeColorPickerProps {
 
 /** 预设颜色配置 */
 const PRESET_COLORS = [
-  { name: 'blue', color: '#1890ff' },
-  { name: 'purple', color: '#722ed1' },
-  { name: 'cyan', color: '#13c2c2' },
-  { name: 'green', color: '#52c41a' },
-  { name: 'magenta', color: '#eb2f96' },
-  { name: 'red', color: '#f5222d' },
-  { name: 'orange', color: '#fa8c16' },
-  { name: 'gold', color: '#faad14' },
+  { name: 'blue', color: '#1890ff', label: '蓝色', description: '经典蓝，专业稳重' },
+  { name: 'purple', color: '#722ed1', label: '紫色', description: '神秘优雅，富有创意' },
+  { name: 'cyan', color: '#13c2c2', label: '青色', description: '清新自然，充满活力' },
+  { name: 'green', color: '#52c41a', label: '绿色', description: '生机勃勃，健康环保' },
+  { name: 'magenta', color: '#eb2f96', label: '品红', description: '热情浪漫，时尚前卫' },
+  { name: 'red', color: '#f5222d', label: '红色', description: '热烈奔放，充满激情' },
+  { name: 'orange', color: '#fa8c16', label: '橙色', description: '温暖活泼，积极向上' },
+  { name: 'gold', color: '#faad14', label: '金色', description: '高贵典雅，富有质感' },
 ]
 
 /**
  * 主题颜色选择器组件
- * 
+ *
  * @example
  * ```tsx
  * <ThemeColorPicker translate={t} />
@@ -46,70 +48,41 @@ export const ThemeColorPicker = defineComponent({
     // 状态
     const isOpen = ref(false)
     const currentColor = ref('#1890ff')
-    const triggerRef = ref<HTMLElement>()
-    const dropdownRef = ref<HTMLElement>()
 
     // 主题管理器
     const themeManager = new ThemeManager()
 
-    // 下拉框位置
-    const dropdownStyle = computed(() => {
-      if (!triggerRef.value) return {}
-
-      const rect = triggerRef.value.getBoundingClientRect()
-      const dropdownWidth = 320
-      const gap = 8
-
-      return {
-        position: 'fixed',
-        top: `${rect.bottom + gap}px`,
-        left: `${rect.left}px`,
-        minWidth: `${dropdownWidth}px`,
-        zIndex: 1000,
-      }
-    })
-
-    // 切换下拉框
-    const toggleDropdown = () => {
+    /**
+     * 切换下拉菜单
+     */
+    const toggleDropdown = (e: MouseEvent) => {
+      e.stopPropagation() // 阻止事件冒泡
       isOpen.value = !isOpen.value
     }
 
-    // 选择颜色
+    /**
+     * 选择颜色
+     */
     const selectColor = (color: string) => {
       currentColor.value = color
       themeManager.applyTheme(color)
-      isOpen.value = false
     }
 
-    // 处理颜色输入
-    const handleColorInput = (e: Event) => {
-      const target = e.target as HTMLInputElement
-      selectColor(target.value)
-    }
-
-    // 处理 HEX 输入
-    const handleHexInput = (e: Event) => {
-      const target = e.target as HTMLInputElement
-      const value = target.value.trim()
-
-      if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
-        selectColor(value)
-      }
-    }
-
-    // 点击外部关闭
+    /**
+     * 点击外部关闭下拉菜单
+     */
     const handleClickOutside = (e: MouseEvent) => {
-      if (!triggerRef.value || !dropdownRef.value) return
-
-      const target = e.target as Node
-      if (!triggerRef.value.contains(target) && !dropdownRef.value.contains(target)) {
+      const target = e.target as HTMLElement
+      if (!target.closest('.ld-theme-color-picker')) {
         isOpen.value = false
       }
     }
 
-    // 生命周期
+    // 生命周期(延迟添加事件监听,避免与按钮点击冲突)
     onMounted(() => {
-      document.addEventListener('click', handleClickOutside)
+      setTimeout(() => {
+        document.addEventListener('click', handleClickOutside)
+      }, 0)
 
       // 恢复保存的主题
       const theme = themeManager.getCurrentTheme()
@@ -126,64 +99,40 @@ export const ThemeColorPicker = defineComponent({
     return () => (
       <div class="ld-theme-color-picker">
         <button
-          ref={triggerRef}
-          class="picker-trigger"
-          title={props.translate?.('theme.selectThemeColor') || 'Select theme color'}
+          class="color-button"
+          title={props.translate?.('theme.selectThemeColor') || '选择主题色'}
           onClick={toggleDropdown}
+          style={{ color: currentColor.value }}
         >
-          <span class="color-preview" style={{ backgroundColor: currentColor.value }} />
-          <span class="icon">🎨</span>
+          <Palette size={18} strokeWidth={2} />
         </button>
 
-        <Teleport to="body">
+        <Transition name="dropdown">
           {isOpen.value && (
-            <div
-              ref={dropdownRef}
-              class="picker-dropdown"
-              style={dropdownStyle.value}
-            >
-              <div class="picker-content">
-                {/* 预设颜色 */}
-                <div class="preset-colors">
-                  <div class="section-title">
-                    {props.translate?.('theme.presetColors') || 'Preset Colors'}
-                  </div>
-                  <div class="color-grid">
-                    {PRESET_COLORS.map(preset => (
-                      <button
-                        key={preset.name}
-                        class={['color-item', { active: currentColor.value === preset.color }]}
-                        title={props.translate?.(`theme.presets.${preset.name}`) || preset.name}
-                        style={{ backgroundColor: preset.color }}
-                        onClick={() => selectColor(preset.color)}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                {/* 自定义颜色 */}
-                <div class="custom-color">
-                  <div class="section-title">
-                    {props.translate?.('theme.customColor') || 'Custom Color'}
-                  </div>
-                  <div class="color-input-group">
-                    <input
-                      type="color"
-                      value={currentColor.value}
-                      onInput={handleColorInput}
-                    />
-                    <input
-                      type="text"
-                      value={currentColor.value}
-                      placeholder="#1890ff"
-                      onInput={handleHexInput}
-                    />
-                  </div>
+            <div class="color-dropdown" onClick={(e: MouseEvent) => e.stopPropagation()}>
+              <div class="dropdown-header">
+                <span class="dropdown-title">主题色</span>
+              </div>
+              <div class="dropdown-content">
+                <div class="color-grid">
+                  {PRESET_COLORS.map(preset => (
+                    <div
+                      key={preset.name}
+                      class={['color-card', { active: currentColor.value === preset.color }]}
+                      onClick={() => selectColor(preset.color)}
+                    >
+                      <span class="card-color" style={{ backgroundColor: preset.color }} />
+                      <div class="card-info">
+                        <span class="card-name">{props.translate?.(`theme.presets.${preset.name}`) || preset.label}</span>
+                        <span class="card-description">{preset.description}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
           )}
-        </Teleport>
+        </Transition>
       </div>
     )
   }
