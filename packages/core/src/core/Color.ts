@@ -4,7 +4,8 @@
  * The main Color class for basic color operations
  */
 
-import type { BlendMode, ColorFormat, ColorInput, HarmonyType, HSL, HSV, LAB, LCH, OKLAB, OKLCH, RGB, TextSize, WCAGLevel, XYZ } from '../types'
+import type { BlendMode, ColorFormat, ColorInput, HSL, HSV, LAB, LCH, OKLAB, OKLCH, RGB, TextSize, WCAGLevel, XYZ } from '../types'
+import type { HarmonyType } from '../harmony'
 import { ColorCache } from '../utils/cache'
 import { clamp, round } from '../utils/math'
 import { acquireHSL, acquireRGB, hslPool, hsvPool, ObjectPool, poolManager, releaseHSL, releaseRGB, rgbPool } from '../utils/objectPool'
@@ -287,11 +288,11 @@ export class Color {
     const rgb = this.toRGB()
     const hsl = rgbToHsl(rgb)
     Color.returnRGB(rgb)
-    
+
     // Cache the result (without alpha)
     this._cachedHSL = { h: hsl.h, s: hsl.s, l: hsl.l }
     this._hslDirty = false
-    
+
     if (this._alpha < 1) {
       hsl.a = this._alpha
     }

@@ -42,19 +42,19 @@ export type CSSColorString = HexColor | RGBString | HSLString | string
  */
 export type DesignSystemName
   = | 'ant-design'
-    | 'chakra-ui'
-    | 'material-design'
-    | 'material-design-3'
-    | 'carbon'
-    | 'fluent'
-    | 'tailwind'
+  | 'chakra-ui'
+  | 'material-design'
+  | 'material-design-3'
+  | 'carbon'
+  | 'fluent'
+  | 'tailwind'
 
 /**
  * Shade number for design systems
  */
 export type ShadeNumber
   = | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 // Ant Design
-    | 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950 // Tailwind/Chakra
+  | 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950 // Tailwind/Chakra
 
 // ============================================
 // Utility Types
@@ -520,14 +520,14 @@ export type Override<T, U> = Omit<T, keyof U> & U
  */
 export type RequireNested<T, K extends string> = T & {
   [P in K]: P extends `${infer First}.${infer Rest}`
-    ? First extends keyof T
-      ? Required<T>[First] extends object
-        ? RequireNested<Required<T>[First], Rest>
-        : Required<T>[First]
-      : never
-    : P extends keyof T
-      ? Required<T>[P]
-      : never;
+  ? First extends keyof T
+  ? Required<T>[First] extends object
+  ? RequireNested<Required<T>[First], Rest>
+  : Required<T>[First]
+  : never
+  : P extends keyof T
+  ? Required<T>[P]
+  : never;
 }
 
 /**
@@ -542,8 +542,8 @@ export type Flatten<T> = T extends object
  */
 export type DeepNonNullable<T> = {
   [P in keyof T]-?: NonNullable<T[P]> extends object
-    ? DeepNonNullable<NonNullable<T[P]>>
-    : NonNullable<T[P]>;
+  ? DeepNonNullable<NonNullable<T[P]>>
+  : NonNullable<T[P]>;
 }
 
 /**
@@ -613,8 +613,8 @@ export type NonEmptyArray<T> = [T, ...T[]]
  */
 export type Tuple<T, N extends number> = N extends N
   ? number extends N
-    ? T[]
-    : _TupleOf<T, N, []>
+  ? T[]
+  : _TupleOf<T, N, []>
   : never
 
 type _TupleOf<T, N extends number, R extends unknown[]> = R['length'] extends N
@@ -626,17 +626,17 @@ type _TupleOf<T, N extends number, R extends unknown[]> = R['length'] extends N
  */
 export type FixedArray<T, N extends number>
   = N extends 0 ? []
-    : N extends 1 ? [T]
-      : N extends 2 ? [T, T]
-        : N extends 3 ? [T, T, T]
-          : N extends 4 ? [T, T, T, T]
-            : N extends 5 ? [T, T, T, T, T]
-              : N extends 6 ? [T, T, T, T, T, T]
-                : N extends 7 ? [T, T, T, T, T, T, T]
-                  : N extends 8 ? [T, T, T, T, T, T, T, T]
-                    : N extends 9 ? [T, T, T, T, T, T, T, T, T]
-                      : N extends 10 ? [T, T, T, T, T, T, T, T, T, T]
-                        : T[]
+  : N extends 1 ? [T]
+  : N extends 2 ? [T, T]
+  : N extends 3 ? [T, T, T]
+  : N extends 4 ? [T, T, T, T]
+  : N extends 5 ? [T, T, T, T, T]
+  : N extends 6 ? [T, T, T, T, T, T]
+  : N extends 7 ? [T, T, T, T, T, T, T]
+  : N extends 8 ? [T, T, T, T, T, T, T, T]
+  : N extends 9 ? [T, T, T, T, T, T, T, T, T]
+  : N extends 10 ? [T, T, T, T, T, T, T, T, T, T]
+  : T[]
 
 // ============================================
 // Object Types
@@ -720,8 +720,8 @@ export type Promisify<T> = T extends (...args: infer Args) => infer R
  */
 export type PromisifyMethods<T> = {
   [K in keyof T]: T[K] extends (...args: any[]) => any
-    ? Promisify<T[K]>
-    : T[K];
+  ? Promisify<T[K]>
+  : T[K];
 }
 
 // ============================================
@@ -744,7 +744,7 @@ export type {
   EasingFunction,
   ExportOptions,
   GradientConfig,
-  HarmonyType,
+  // HarmonyType, // exported from ../harmony
   HSL,
   HSV,
   HWB,
@@ -763,3 +763,6 @@ export type {
   WCAGLevel,
   XYZ,
 } from '../types'
+
+// Re-export HarmonyType from harmony module
+export type { HarmonyType } from '../harmony'

@@ -6,7 +6,7 @@
 import { setMemoryLimit } from '../utils/memoryManager'
 import { poolManager } from '../utils/objectPool'
 import { globalColorCache } from '../utils/cache'
-import { getPerformanceMetrics, ColorPerformanceMonitor } from './monitor'
+import { getPerformanceMetrics, ColorPerformanceMonitor, type PerformanceMetrics } from './monitor'
 
 export interface OptimizationProfile {
   name: string

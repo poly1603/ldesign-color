@@ -133,10 +133,9 @@ export {
   xyzToLAB,
   xyzToRGB,
 } from './core/colorSpaces'
-// Export palette generators
-export * from './core/tailwindPalette'
+// Note: TAILWIND_SHADES is already exported from ./core
 
-// Design Systems
+// Design Systems (includes generateTailwindPalette, generateTailwindScale, generateTailwindSemanticColors)
 export * from './design-systems'
 // Gradient generator
 export {

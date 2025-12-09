@@ -1,5 +1,5 @@
 /**
- * @ldesign/color-vue 构建配置
+ * @ldesign/color-core 构建配置
  */
 import { defineConfig } from '@ldesign/builder'
 
@@ -9,9 +9,9 @@ export default defineConfig({
     { format: 'esm', dir: 'es', preserveModules: true, preserveModulesRoot: 'src' },
     { format: 'esm', dir: 'esm', preserveModules: true, preserveModulesRoot: 'src' },
     { format: 'cjs', dir: 'lib', preserveModules: true, preserveModulesRoot: 'src' },
-    { format: 'umd', dir: 'dist', name: 'LDesignColorVue' },
+    { format: 'umd', dir: 'dist', name: 'LDesignColorCore' },
   ],
-  external: ['vue', '@ldesign/color-core'],
+  external: [],
   dts: true,
   clean: true,
 })

@@ -197,18 +197,7 @@ export type InterpolationSpace
   | 'oklab'
   | 'oklch'
 
-/**
- * Color harmony types
- */
-export type HarmonyType
-  = | 'complementary'
-  | 'analogous'
-  | 'triadic'
-  | 'tetradic'
-  | 'split-complementary'
-  | 'double-complementary'
-  | 'square'
-  | 'monochromatic'
+// HarmonyType is exported from ./harmony module (has more complete type definition)
 
 // ============================================
 // Accessibility

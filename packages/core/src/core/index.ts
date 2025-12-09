@@ -114,7 +114,7 @@ export {
   type ShadeConfig,
 } from './naturalPalette'
 
-// Palette and theme functions
+// Palette and theme functions (excluding generateTailwindPalette - use design-systems version)
 export {
   applyTheme,
   generateCSSVariables,
@@ -123,12 +123,12 @@ export {
   generateNumberedPalette,
   generateScale,
   generateSemanticColors,
-  generateTailwindPalette,
+  // generateTailwindPalette, // exported from design-systems
   generateThemePalette,
   insertCSSVariables,
 } from './palette'
 
-// Tailwind-style palette generation
+// Tailwind-style palette generation (excluding functions also in design-systems to avoid conflicts)
 export {
   applyThemeCssVars,
   type CssVarOptions,
@@ -136,8 +136,8 @@ export {
   generatePaletteCssVars,
   generateTailwindGrayScale,
   generateTailwindPalettes,
-  generateTailwindScale,
-  generateTailwindSemanticColors,
+  // generateTailwindScale, // exported from design-systems
+  // generateTailwindSemanticColors, // exported from design-systems
   generateTailwindTheme,
   generateThemeCssVars,
   insertCssVars,

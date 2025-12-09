@@ -147,12 +147,12 @@
       "require": "./cjs/utils/*.cjs",
       "default": "./esm/utils/*.js"
     },
-    "./cjs/color-picker/index.css": "./cjs/color-picker/index.css",
-    "./cjs/components/ThemeColorPicker.css": "./cjs/components/ThemeColorPicker.css",
-    "./cjs/components/ThemeModeSwitcher.css": "./cjs/components/ThemeModeSwitcher.css",
-    "./cjs/index.css": "./cjs/index.css",
-    "./cjs/palette-display/index.css": "./cjs/palette-display/index.css",
-    "./cjs/theme-provider/index.css": "./cjs/theme-provider/index.css",
+    "./esm/color-picker/index.css": "./esm/color-picker/index.css",
+    "./esm/index.css": "./esm/index.css",
+    "./esm/palette-display/index.css": "./esm/palette-display/index.css",
+    "./esm/theme-color-picker/index.css": "./esm/theme-color-picker/index.css",
+    "./esm/theme-mode-switcher/index.css": "./esm/theme-mode-switcher/index.css",
+    "./esm/theme-provider/index.css": "./esm/theme-provider/index.css",
     "./dist/index.css": "./dist/index.css",
     "./dist/index.min.css": "./dist/index.min.css",
     "./package.json": "./package.json"
@@ -167,7 +167,6 @@
     "LICENSE",
     "CHANGELOG.md",
     "esm",
-    "cjs",
     "dist"
   ],
   "scripts": {

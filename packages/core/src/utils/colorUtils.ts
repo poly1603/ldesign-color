@@ -313,7 +313,7 @@ export function clusterColors(
 
   // Initialize centers using k-means++ for better convergence
   const centers = initializeCentersKMeansPlusPlus(colors, k, metric)
-  const assignments = Array.from({ length: colors.length }).fill(0)
+  const assignments: number[] = Array.from({ length: colors.length }, () => 0)
 
   // Iterate until convergence or max iterations
   for (let iter = 0; iter < maxIterations; iter++) {

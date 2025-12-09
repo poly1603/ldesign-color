@@ -23,10 +23,13 @@ export interface PerformanceMetrics {
   // 对象池指标
   pools: {
     [poolName: string]: {
-      size: number
+      poolSize: number
       maxSize: number
       hitRate: number
       utilization: number
+      allocated: number
+      hits: number
+      misses: number
     }
   }
   // 时间戳

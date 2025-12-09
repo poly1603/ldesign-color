@@ -4,7 +4,8 @@
  */
 
 import type { ColorInput } from '../types'
-import { generateSemanticColors, generateTailwindPalette } from '../core'
+import { generateSemanticColors } from '../core'
+import { generateTailwindPalette } from '../core/palette'
 import { Color } from '../core/Color'
 
 /**
