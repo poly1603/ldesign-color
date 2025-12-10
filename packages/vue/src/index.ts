@@ -117,10 +117,25 @@ export type {
   SSROptions,
 } from './ssr/index'
 
-// Export components
-export { default as ThemeColorPicker } from './components/ThemeColorPicker'
-export { default as ThemeModeSwitch } from './components/ThemeModeSwitcher'
-export { default as ThemeModeSwitcher } from './components/ThemeModeSwitcher'
+// ========== 组件导出 ==========
+// 主题颜色选择器（多种形式）
+export {
+  ThemeColorPicker,
+  ThemeColorPickerInline,
+  ThemeColorPickerPopover,
+  ThemeColorPickerSimple,
+} from './components/ThemeColorPicker/index'
+export type { ThemeColorPickerProps, PresetColor } from './components/ThemeColorPicker/types'
+
+// 主题模式切换器（多种形式）
+export {
+  ThemeModeSwitcher,
+  ThemeModeSwitcherToggle,
+  ThemeModeSwitcherSegmented,
+  ThemeModeSwitcherRadio,
+} from './components/ThemeModeSwitcher/index'
+export type { ThemeModeSwitcherProps } from './components/ThemeModeSwitcher/types'
+export { ThemeModeSwitcher as ThemeModeSwitch } from './components/ThemeModeSwitcher/index'
 
 // Export plugin
 export { createColorPlugin, LDesignColorPlugin } from './plugin/index'

@@ -241,12 +241,16 @@ export class ThemeManager {
   }
 
   /**
-   * 保存主题到本地存�?
+   * 保存主题到本地存储 (合并而不是覆盖，保留 mode 等字段)
    */
   private save(theme: ThemeState): void {
     if (typeof window !== 'undefined' && window.localStorage) {
       try {
-        localStorage.setItem(this.storageKey, JSON.stringify(theme))
+        // 读取现有数据并合并，保留 mode、color 等其他字段
+        const existingData = localStorage.getItem(this.storageKey)
+        const existing = existingData ? JSON.parse(existingData) : {}
+        const merged = { ...existing, ...theme }
+        localStorage.setItem(this.storageKey, JSON.stringify(merged))
       }
       catch (error) {
         console.error('Failed to save theme:', error)

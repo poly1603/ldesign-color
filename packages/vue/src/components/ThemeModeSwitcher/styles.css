@@ -1,0 +1,293 @@
+/**
+ * ThemeModeSwitcher 组件样式
+ * 使用 ldesign- 前缀
+ */
+
+.ldesign-mode-switcher {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.ldesign-mode-switcher__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  min-width: 32px;
+  min-height: 32px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f9fafb;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 150ms ease-out;
+}
+
+.ldesign-mode-switcher__trigger:hover {
+  border-color: #60a5fa;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.ldesign-mode-switcher__trigger--small {
+  min-width: 28px;
+  min-height: 28px;
+  padding: 4px;
+}
+
+.ldesign-mode-switcher__trigger--large {
+  min-width: 36px;
+  min-height: 36px;
+  padding: 12px;
+}
+
+.ldesign-mode-switcher__label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.ldesign-mode-switcher__dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  min-width: 160px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  overflow: visible;
+  padding: 6px 0;
+}
+
+/* 箭头 */
+.ldesign-mode-switcher__arrow {
+  position: absolute;
+  top: -6px;
+  right: 12px;
+  width: 12px;
+  height: 12px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-right: none;
+  border-bottom: none;
+  transform: rotate(45deg);
+  z-index: 1;
+}
+
+.ldesign-mode-switcher__option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  color: #374151;
+  cursor: pointer;
+  transition: background 150ms;
+}
+
+.ldesign-mode-switcher__option:hover {
+  background: #f3f4f6;
+}
+
+.ldesign-mode-switcher__option--active {
+  background: var(--color-primary-50, #eff6ff);
+  color: var(--color-primary-600, #1d4ed8);
+}
+
+.ldesign-mode-switcher__option-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.ldesign-mode-switcher__option-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.ldesign-mode-switcher--segmented {
+  display: inline-flex;
+  padding: 3px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.ldesign-mode-switcher__segment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 150ms ease-out;
+}
+
+.ldesign-mode-switcher__segment:hover {
+  color: #374151;
+}
+
+.ldesign-mode-switcher__segment--active {
+  background: #ffffff;
+  color: #2563eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.ldesign-mode-switcher--radio {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ldesign-mode-switcher__radio {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fafafa;
+  cursor: pointer;
+  transition: all 150ms ease-out;
+}
+
+.ldesign-mode-switcher__radio:hover {
+  border-color: #d1d5db;
+  background: #ffffff;
+}
+
+.ldesign-mode-switcher__radio--active {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.ldesign-mode-switcher__radio-dot {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #d1d5db;
+  border-radius: 50%;
+  background: #ffffff;
+  transition: all 150ms;
+  flex-shrink: 0;
+}
+
+.ldesign-mode-switcher__radio--active .ldesign-mode-switcher__radio-dot {
+  border-color: #3b82f6;
+  background: #3b82f6;
+  box-shadow: inset 0 0 0 3px #ffffff;
+}
+
+.ldesign-mode-switcher__radio-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.ldesign-mode-switcher__radio--active .ldesign-mode-switcher__radio-label {
+  color: #1d4ed8;
+}
+
+/* 下拉动画 */
+.ldesign-dropdown-enter-active {
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ldesign-dropdown-leave-active {
+  transition: all 0.15s cubic-bezier(0.4, 0, 1, 1);
+}
+
+.ldesign-dropdown-enter-from,
+.ldesign-dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.96);
+}
+
+.ldesign-mode-switcher--disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* 暗色主题 */
+[data-theme-mode="dark"] .ldesign-mode-switcher__trigger,
+[data-theme="dark"] .ldesign-mode-switcher__trigger,
+.dark .ldesign-mode-switcher__trigger {
+  background: #1f2937;
+  border-color: #374151;
+  color: #d1d5db;
+}
+
+[data-theme-mode="dark"] .ldesign-mode-switcher__dropdown,
+[data-theme="dark"] .ldesign-mode-switcher__dropdown,
+.dark .ldesign-mode-switcher__dropdown {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+[data-theme-mode="dark"] .ldesign-mode-switcher__arrow,
+[data-theme="dark"] .ldesign-mode-switcher__arrow,
+.dark .ldesign-mode-switcher__arrow {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+[data-theme-mode="dark"] .ldesign-mode-switcher__option,
+[data-theme="dark"] .ldesign-mode-switcher__option,
+.dark .ldesign-mode-switcher__option {
+  color: #d1d5db;
+}
+
+[data-theme-mode="dark"] .ldesign-mode-switcher__option:hover,
+[data-theme="dark"] .ldesign-mode-switcher__option:hover,
+.dark .ldesign-mode-switcher__option:hover {
+  background: #374151;
+}
+
+[data-theme-mode="dark"] .ldesign-mode-switcher__option--active,
+[data-theme="dark"] .ldesign-mode-switcher__option--active,
+.dark .ldesign-mode-switcher__option--active {
+  background: var(--color-primary-900, rgba(59, 130, 246, 0.2));
+  color: var(--color-primary-400, #60a5fa);
+}
+
+[data-theme-mode="dark"] .ldesign-mode-switcher--segmented,
+[data-theme="dark"] .ldesign-mode-switcher--segmented,
+.dark .ldesign-mode-switcher--segmented {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+[data-theme-mode="dark"] .ldesign-mode-switcher__segment,
+[data-theme="dark"] .ldesign-mode-switcher__segment,
+.dark .ldesign-mode-switcher__segment {
+  color: #9ca3af;
+}
+
+[data-theme-mode="dark"] .ldesign-mode-switcher__segment--active,
+[data-theme="dark"] .ldesign-mode-switcher__segment--active,
+.dark .ldesign-mode-switcher__segment--active {
+  background: #374151;
+  color: #60a5fa;
+}
+
+[data-theme-mode="dark"] .ldesign-mode-switcher__radio,
+[data-theme="dark"] .ldesign-mode-switcher__radio,
+.dark .ldesign-mode-switcher__radio {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+[data-theme-mode="dark"] .ldesign-mode-switcher__radio-label,
+[data-theme="dark"] .ldesign-mode-switcher__radio-label,
+.dark .ldesign-mode-switcher__radio-label {
+  color: #d1d5db;
+}

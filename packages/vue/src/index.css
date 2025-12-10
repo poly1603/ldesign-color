@@ -1,0 +1,7 @@
+/**
+ * @ldesign/color-vue 样式入口
+ * 聚合所有组件样式
+ */
+
+@import './components/ThemeColorPicker/styles.css';
+@import './components/ThemeModeSwitcher/styles.css';

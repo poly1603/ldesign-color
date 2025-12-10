@@ -60,17 +60,61 @@ const { currentTheme, setTheme, mode, setMode, availableThemes } = useTheme()
 
 ### 3. Use Components
 
+#### 主题颜色选择器 ThemeColorPicker
+
+提供多种形式的主题色选择器：
+
 ```vue
 <script setup>
-import { ThemePicker, VueThemeModeSwitcher } from '@ldesign/color-vue'
-import '@ldesign/color-vue/styles.css'
+import { 
+  ThemeColorPicker,           // 下拉面板选择器（默认）
+  ThemeColorPickerInline,     // 内联网格选择器
+  ThemeColorPickerPopover,    // 悬浮卡片选择器
+  ThemeColorPickerSimple,     // 简约色块选择器
+} from '@ldesign/color-vue'
 </script>
 
 <template>
-  <div>
-    <ThemePicker />
-    <VueThemeModeSwitcher />
-  </div>
+  <!-- 默认下拉面板 -->
+  <ThemeColorPicker v-model="color" :show-custom-input="true" />
+  
+  <!-- 内联网格（适合设置页面） -->
+  <ThemeColorPickerInline v-model="color" title="主题色" :columns="5" />
+  
+  <!-- 简约色块（适合工具栏） -->
+  <ThemeColorPickerSimple v-model="color" size="small" />
+  
+  <!-- 悬浮选择（hover 触发） -->
+  <ThemeColorPickerPopover v-model="color" trigger="hover" />
+</template>
+```
+
+#### 主题模式切换器 ThemeModeSwitcher
+
+提供多种形式的模式切换器：
+
+```vue
+<script setup>
+import { 
+  ThemeModeSwitcher,          // 下拉选择器（默认）
+  ThemeModeSwitcherToggle,    // 单按钮循环切换
+  ThemeModeSwitcherSegmented, // 分段选择器
+  ThemeModeSwitcherRadio,     // 单选按钮组
+} from '@ldesign/color-vue'
+</script>
+
+<template>
+  <!-- 默认下拉选择 -->
+  <ThemeModeSwitcher v-model="mode" :show-label="true" />
+  
+  <!-- 单按钮循环切换（适合工具栏） -->
+  <ThemeModeSwitcherToggle v-model="mode" size="small" />
+  
+  <!-- 分段选择器 -->
+  <ThemeModeSwitcherSegmented v-model="mode" />
+  
+  <!-- 单选按钮组（适合设置页面） -->
+  <ThemeModeSwitcherRadio v-model="mode" />
 </template>
 ```
 
