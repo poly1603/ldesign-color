@@ -165,12 +165,6 @@
       "require": "./lib/locales/*.cjs",
       "default": "./es/locales/*.js"
     },
-    "./optimizations/*": {
-      "types": "./es/optimizations/*.d.ts",
-      "import": "./es/optimizations/*.js",
-      "require": "./lib/optimizations/*.cjs",
-      "default": "./es/optimizations/*.js"
-    },
     "./palette/*": {
       "types": "./es/palette/*.d.ts",
       "import": "./es/palette/*.js",

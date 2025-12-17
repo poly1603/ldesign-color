@@ -33,12 +33,6 @@
       "require": "./cjs/color-picker/*.cjs",
       "default": "./esm/color-picker/*.js"
     },
-    "./components/*": {
-      "types": "./esm/components/*.d.ts",
-      "import": "./esm/components/*.js",
-      "require": "./cjs/components/*.cjs",
-      "default": "./esm/components/*.js"
-    },
     "./composables/*": {
       "types": "./esm/composables/*.d.ts",
       "import": "./esm/composables/*.js",
@@ -147,12 +141,6 @@
       "require": "./cjs/utils/*.cjs",
       "default": "./esm/utils/*.js"
     },
-    "./esm/color-picker/index.css": "./esm/color-picker/index.css",
-    "./esm/index.css": "./esm/index.css",
-    "./esm/palette-display/index.css": "./esm/palette-display/index.css",
-    "./esm/theme-color-picker/index.css": "./esm/theme-color-picker/index.css",
-    "./esm/theme-mode-switcher/index.css": "./esm/theme-mode-switcher/index.css",
-    "./esm/theme-provider/index.css": "./esm/theme-provider/index.css",
     "./dist/index.css": "./dist/index.css",
     "./dist/index.min.css": "./dist/index.min.css",
     "./package.json": "./package.json"
@@ -166,7 +154,6 @@
     "README.md",
     "LICENSE",
     "CHANGELOG.md",
-    "esm",
     "dist"
   ],
   "scripts": {
