@@ -30,6 +30,7 @@ export const ThemeModeSwitcher = defineComponent({
     showLabel: { type: Boolean, default: false },
     translate: { type: Function as unknown as () => (key: string) => string, default: (key: string) => key },
     locale: { type: [String, Object], default: undefined },
+    variant: { type: String as () => 'light' | 'primary', default: 'light' },
   },
   emits: ['update:modelValue'],
   setup(props, { emit }) {
@@ -81,6 +82,22 @@ export const ThemeModeSwitcher = defineComponent({
       if (props.size === 'small') classes.push('ldesign-mode-switcher__trigger--small')
       if (props.size === 'large') classes.push('ldesign-mode-switcher__trigger--large')
       return classes.join(' ')
+    })
+
+    // Inline fallback style based on variant
+    const triggerStyle = computed(() => {
+      if (props.variant === 'primary') {
+        return {
+          background: 'rgba(255, 255, 255, 0.12)',
+          borderColor: 'rgba(255, 255, 255, 0.18)',
+          color: 'var(--color-text-inverse, #ffffff)'
+        }
+      }
+      return {
+        background: 'var(--color-bg-hover, #f3f4f6)',
+        borderColor: 'var(--color-border, #e5e7eb)',
+        color: '#4b5563'
+      }
     })
 
     const containerClass = computed(() => {
@@ -149,10 +166,11 @@ export const ThemeModeSwitcher = defineComponent({
     const CurrentIcon = computed(() => getIcon(currentMode.value))
 
     return () => (
-      <div ref={containerRef} class={containerClass.value}>
+      <div ref={containerRef} class={containerClass.value} data-variant={props.variant || 'light'}>
         <button
           type="button"
           class={triggerClass.value}
+          style={triggerStyle.value}
           onClick={() => (isOpen.value = !isOpen.value)}
           disabled={props.disabled}
           title={currentLang.value === 'zh' ? '主题模式' : 'Theme Mode'}

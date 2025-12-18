@@ -31,6 +31,7 @@ export const ThemeColorPicker = defineComponent({
     translate: { type: Function as unknown as () => (key: string) => string, default: (key: string) => key },
     locale: { type: [String, Object], default: undefined },
     title: { type: String, default: '' },
+    variant: { type: String as () => 'light' | 'primary', default: 'light' },
   },
   emits: ['update:modelValue'],
   setup(props, { emit }) {
@@ -107,6 +108,21 @@ export const ThemeColorPicker = defineComponent({
       return classes.join(' ')
     })
 
+    // Inline fallback style based on variant to avoid stylesheet patch dependency
+    const triggerStyle = computed(() => {
+      if (props.variant === 'primary') {
+        return {
+          background: 'rgba(255, 255, 255, 0.12)',
+          borderColor: 'rgba(255, 255, 255, 0.18)',
+          color: 'var(--color-text-inverse, #ffffff)'
+        }
+      }
+      return {
+        background: 'var(--color-bg-hover, #f3f4f6)',
+        borderColor: 'var(--color-border, #e5e7eb)'
+      }
+    })
+
     const containerClass = computed(() => {
       const classes = ['ldesign-color-picker']
       if (props.disabled) classes.push('ldesign-color-picker--disabled')
@@ -168,10 +184,11 @@ export const ThemeColorPicker = defineComponent({
     }
 
     return () => (
-      <div ref={containerRef} class={containerClass.value}>
+      <div ref={containerRef} class={containerClass.value} data-variant={props.variant || 'light'}>
         <button
           type="button"
           class={triggerClass.value}
+          style={triggerStyle.value}
           onClick={() => (isOpen.value = !isOpen.value)}
           disabled={props.disabled}
           title={currentLang.value === 'zh' ? '选择主题色' : 'Theme Color'}
