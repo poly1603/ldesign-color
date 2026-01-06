@@ -5,7 +5,7 @@ import { defineComponent, computed } from 'vue'
 import { Sun, Moon, Monitor } from 'lucide-vue-next'
 import { setThemeMode } from '@ldesign/color-core'
 import type { ThemeMode } from './types'
-import { defaultModeOptions } from './types'
+import { defaultModeOptions, getModeLabel } from './types'
 import './styles.css'
 
 export const ThemeModeSwitcherRadio = defineComponent({
@@ -59,7 +59,7 @@ export const ThemeModeSwitcherRadio = defineComponent({
               <span class="ldesign-mode-switcher__radio-icon">
                 <Icon size={18} />
               </span>
-              <span class="ldesign-mode-switcher__radio-label">{option.label}</span>
+              <span class="ldesign-mode-switcher__radio-label">{getModeLabel(option)}</span>
             </div>
           )
         })}

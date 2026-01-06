@@ -11,6 +11,14 @@
 
 import type { HSL, HSV, HWB, RGB } from '../types'
 import { clamp, round } from '../utils/math'
+import {
+  acquireHSL,
+  acquireHSV,
+  acquireRGB,
+  releaseHSL,
+  releaseHSV,
+  releaseRGB,
+} from '../utils/objectPool'
 
 // ============================================
 // Precomputed Constants
@@ -100,42 +108,20 @@ export function hexToRgb(hex: string): RGB {
 }
 
 // ============================================
-// Object Pools for Reuse
+// Object Pool Re-exports (for backward compatibility)
 // ============================================
 
-/** HSL object pool for reuse */
-const hslPool: HSL[] = []
-const HSL_POOL_MAX = 20
+/**
+ * Return HSL object to pool
+ * @deprecated Use releaseHSL from '../utils/objectPool' instead
+ */
+export const returnHSLToPool = releaseHSL
 
-/** Get HSL object from pool or create new */
-function getHSLFromPool(): HSL {
-  return hslPool.pop() || { h: 0, s: 0, l: 0 }
-}
-
-/** Return HSL object to pool */
-export function returnHSLToPool(hsl: HSL): void {
-  if (hslPool.length < HSL_POOL_MAX) {
-    delete hsl.a // Clear alpha
-    hslPool.push(hsl)
-  }
-}
-
-/** HSV object pool for reuse */
-const hsvPool: HSV[] = []
-const HSV_POOL_MAX = 20
-
-/** Get HSV object from pool or create new */
-function getHSVFromPool(): HSV {
-  return hsvPool.pop() || { h: 0, s: 0, v: 0 }
-}
-
-/** Return HSV object to pool */
-export function returnHSVToPool(hsv: HSV): void {
-  if (hsvPool.length < HSV_POOL_MAX) {
-    delete hsv.a // Clear alpha
-    hsvPool.push(hsv)
-  }
-}
+/**
+ * Return HSV object to pool
+ * @deprecated Use releaseHSV from '../utils/objectPool' instead
+ */
+export const returnHSVToPool = releaseHSV
 
 /**
  * Convert RGB to HSL
@@ -164,7 +150,7 @@ export function rgbToHsl(rgb: RGB): HSL {
   const delta = max - min
   const l = (max + min) * 0.5 // Lightness
 
-  const hsl = getHSLFromPool()
+  const hsl = acquireHSL()
 
   // Achromatic (gray)
   if (delta === 0) {
@@ -198,26 +184,11 @@ export function rgbToHsl(rgb: RGB): HSL {
   return hsl
 }
 
-// ============================================
-// RGB Object Pool
-// ============================================
-
-/** RGB object pool for reuse */
-const rgbPool: RGB[] = []
-const RGB_POOL_MAX = 20
-
-/** Get RGB object from pool or create new */
-function getRGBFromPool(): RGB {
-  return rgbPool.pop() || { r: 0, g: 0, b: 0 }
-}
-
-/** Return RGB object to pool */
-export function returnRGBToPool(rgb: RGB): void {
-  if (rgbPool.length < RGB_POOL_MAX) {
-    delete rgb.a // Clear alpha
-    rgbPool.push(rgb)
-  }
-}
+/**
+ * Return RGB object to pool
+ * @deprecated Use releaseRGB from '../utils/objectPool' instead
+ */
+export const returnRGBToPool = releaseRGB
 
 /**
  * Convert HSL to RGB
@@ -240,7 +211,7 @@ export function hslToRgb(hsl: HSL): RGB {
   const s = hsl.s * INV_100
   const l = hsl.l * INV_100
 
-  const rgb = getRGBFromPool()
+  const rgb = acquireRGB()
 
   // Gray color (no saturation)
   if (s === 0) {
@@ -319,7 +290,7 @@ export function rgbToHsv(rgb: RGB): HSV {
   const min = Math.min(r, g, b)
   const delta = max - min
 
-  const hsv = getHSVFromPool()
+  const hsv = acquireHSV()
 
   // Calculate saturation and value
   hsv.s = max === 0 ? 0 : round((delta / max) * 100)
@@ -372,7 +343,7 @@ export function hsvToRgb(hsv: HSV): RGB {
   const s = hsv.s * INV_100
   const v = hsv.v * INV_100
 
-  const rgb = getRGBFromPool()
+  const rgb = acquireRGB()
 
   // Gray color (no saturation)
   if (s === 0) {

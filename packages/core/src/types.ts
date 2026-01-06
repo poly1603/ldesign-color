@@ -2,7 +2,111 @@
  * @ldesign/color - Type Definitions
  *
  * All type definitions for the color library
+ *
+ * @module types
  */
+
+// ============================================
+// Utility Types
+// ============================================
+
+/**
+ * 创建品牌类型，用于类型安全的标识符
+ *
+ * @template T - 基础类型
+ * @template Brand - 品牌标识符
+ *
+ * @example
+ * ```ts
+ * type ColorHex = Branded<string, 'ColorHex'>
+ * const hex: ColorHex = '#FF0000' as ColorHex
+ * ```
+ */
+export type Branded<T, Brand extends string> = T & { readonly __brand: Brand }
+
+/**
+ * 深度只读类型
+ *
+ * @template T - 要转换的类型
+ *
+ * @example
+ * ```ts
+ * const config: DeepReadonly<Config> = { ... }
+ * config.nested.value = 1 // Error: Cannot assign to 'value'
+ * ```
+ */
+export type DeepReadonly<T> = T extends (infer U)[]
+  ? readonly DeepReadonly<U>[]
+  : T extends object
+    ? { readonly [K in keyof T]: DeepReadonly<T[K]> }
+    : T
+
+/**
+ * 深度可选类型
+ *
+ * @template T - 要转换的类型
+ */
+export type DeepPartial<T> = T extends object
+  ? { [K in keyof T]?: DeepPartial<T[K]> }
+  : T
+
+/**
+ * 提取非可选属性的键
+ *
+ * @template T - 对象类型
+ */
+export type RequiredKeys<T> = {
+  [K in keyof T]-?: undefined extends T[K] ? never : K
+}[keyof T]
+
+/**
+ * 提取可选属性的键
+ *
+ * @template T - 对象类型
+ */
+export type OptionalKeys<T> = {
+  [K in keyof T]-?: undefined extends T[K] ? K : never
+}[keyof T]
+
+/**
+ * 非空类型
+ *
+ * @template T - 要转换的类型
+ */
+export type NonNullableDeep<T> = T extends object
+  ? { [K in keyof T]: NonNullableDeep<NonNullable<T[K]>> }
+  : NonNullable<T>
+
+/**
+ * 数值范围类型（编译时类型提示）
+ *
+ * @template Min - 最小值
+ * @template Max - 最大值
+ */
+export type NumberInRange<Min extends number, Max extends number> = number & {
+  readonly __min: Min
+  readonly __max: Max
+}
+
+/**
+ * 0-255 范围的数值类型（用于 RGB 通道）
+ */
+export type RGB8 = NumberInRange<0, 255>
+
+/**
+ * 0-360 范围的数值类型（用于色相）
+ */
+export type Degrees = NumberInRange<0, 360>
+
+/**
+ * 0-100 范围的数值类型（用于百分比）
+ */
+export type Percentage = NumberInRange<0, 100>
+
+/**
+ * 0-1 范围的数值类型（用于 Alpha 通道）
+ */
+export type UnitInterval = NumberInRange<0, 1>
 
 // ============================================
 // Basic Color Types
@@ -514,3 +618,96 @@ export interface ExportOptions {
   includeNames?: boolean
   wrapper?: string
 }
+
+// ============================================
+// Type Guards
+// ============================================
+
+/**
+ * 检查值是否为 RGB 对象
+ *
+ * @param value - 要检查的值
+ * @returns 是否为 RGB 对象
+ */
+export function isRGBObject(value: unknown): value is RGB {
+  return (
+    typeof value === 'object'
+    && value !== null
+    && 'r' in value
+    && 'g' in value
+    && 'b' in value
+    && typeof (value as RGB).r === 'number'
+    && typeof (value as RGB).g === 'number'
+    && typeof (value as RGB).b === 'number'
+  )
+}
+
+/**
+ * 检查值是否为 HSL 对象
+ *
+ * @param value - 要检查的值
+ * @returns 是否为 HSL 对象
+ */
+export function isHSLObject(value: unknown): value is HSL {
+  return (
+    typeof value === 'object'
+    && value !== null
+    && 'h' in value
+    && 's' in value
+    && 'l' in value
+    && typeof (value as HSL).h === 'number'
+    && typeof (value as HSL).s === 'number'
+    && typeof (value as HSL).l === 'number'
+  )
+}
+
+/**
+ * 检查值是否为 HSV 对象
+ *
+ * @param value - 要检查的值
+ * @returns 是否为 HSV 对象
+ */
+export function isHSVObject(value: unknown): value is HSV {
+  return (
+    typeof value === 'object'
+    && value !== null
+    && 'h' in value
+    && 's' in value
+    && 'v' in value
+    && typeof (value as HSV).h === 'number'
+    && typeof (value as HSV).s === 'number'
+    && typeof (value as HSV).v === 'number'
+  )
+}
+
+/**
+ * 检查值是否为有效的十六进制颜色字符串
+ *
+ * @param value - 要检查的值
+ * @returns 是否为有效的十六进制颜色
+ */
+export function isHexColor(value: unknown): value is string {
+  if (typeof value !== 'string') return false
+  return /^#?([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/.test(value)
+}
+
+// ============================================
+// Assertion Types
+// ============================================
+
+/**
+ * 断言类型辅助
+ *
+ * @template T - 期望的类型
+ */
+export type AssertType<T> = T extends never ? never : T
+
+/**
+ * 确保类型是对象
+ */
+export type EnsureObject<T> = T extends object ? T : never
+
+/**
+ * 确保类型是数组
+ */
+export type EnsureArray<T> = T extends unknown[] ? T : never

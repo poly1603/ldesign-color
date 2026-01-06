@@ -1026,6 +1026,248 @@ export class Color {
   }
 
   /**
+   * 从 CSS 变量名创建颜色
+   *
+   * 在浏览器环境中读取 CSS 变量的值并创建颜色。
+   * 支持任意有效的 CSS 颜色值。
+   *
+   * @param variableName - CSS 变量名（带或不带 -- 前缀）
+   * @param element - 要查找变量的元素（默认为 document.documentElement）
+   * @returns Color 实例
+   * @throws 如果不在浏览器环境或变量不存在则抛出错误
+   *
+   * @example
+   * ```ts
+   * // CSS: :root { --primary-color: #3B82F6; }
+   * const primary = Color.fromCSSVariable('--primary-color')
+   * const primary2 = Color.fromCSSVariable('primary-color') // 自动添加 --
+   * ```
+   */
+  static fromCSSVariable(variableName: string, element?: Element): Color {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      throw new Error('fromCSSVariable 只能在浏览器环境中使用')
+    }
+
+    // 确保变量名以 -- 开头
+    const cssVarName = variableName.startsWith('--')
+      ? variableName
+      : `--${variableName}`
+
+    const targetElement = element || document.documentElement
+    const computedStyle = getComputedStyle(targetElement)
+    const value = computedStyle.getPropertyValue(cssVarName).trim()
+
+    if (!value) {
+      throw new Error(`CSS 变量 "${cssVarName}" 不存在或为空`)
+    }
+
+    return new Color(value)
+  }
+
+  /**
+   * 将颜色转换为 CSS 变量声明
+   *
+   * @param name - 变量名（不含 -- 前缀）
+   * @param format - 颜色格式（hex 或 rgb）
+   * @returns CSS 变量声明字符串
+   *
+   * @example
+   * ```ts
+   * const color = new Color('#3B82F6')
+   * console.log(color.toCSSVariable('primary'))
+   * // '--primary: #3B82F6;'
+   *
+   * console.log(color.toCSSVariable('primary', 'rgb'))
+   * // '--primary: rgb(59, 130, 246);'
+   * ```
+   */
+  toCSSVariable(name: string, format: 'hex' | 'rgb' = 'hex'): string {
+    const value = format === 'hex' ? this.toHex() : this.toRGBString()
+    return `--${name}: ${value};`
+  }
+
+  /**
+   * 生成 CSS 变量对象
+   *
+   * 生成包含颜色信息的 CSS 变量对象，方便批量设置。
+   *
+   * @param prefix - 变量名前缀
+   * @returns CSS 变量对象
+   *
+   * @example
+   * ```ts
+   * const color = new Color('#3B82F6')
+   * const vars = color.toCSSVariables('primary')
+   * // {
+   * //   '--primary': '#3B82F6',
+   * //   '--primary-rgb': '59, 130, 246',
+   * //   '--primary-hsl': '217, 91%, 60%',
+   * //   '--primary-h': '217',
+   * //   '--primary-s': '91%',
+   * //   '--primary-l': '60%'
+   * // }
+   * ```
+   */
+  toCSSVariables(prefix: string): Record<string, string> {
+    const rgb = this.toRGB()
+    const hsl = this.toHSL()
+
+    const vars: Record<string, string> = {
+      [`--${prefix}`]: this.toHex(),
+      [`--${prefix}-rgb`]: `${rgb.r}, ${rgb.g}, ${rgb.b}`,
+      [`--${prefix}-hsl`]: `${hsl.h}, ${hsl.s}%, ${hsl.l}%`,
+      [`--${prefix}-h`]: `${hsl.h}`,
+      [`--${prefix}-s`]: `${hsl.s}%`,
+      [`--${prefix}-l`]: `${hsl.l}%`,
+    }
+
+    if (this._alpha < 1) {
+      vars[`--${prefix}-alpha`] = `${this._alpha}`
+    }
+
+    Color.returnRGB(rgb)
+    return vars
+  }
+
+  /**
+   * 应用 CSS 变量到元素
+   *
+   * @param element - 目标元素
+   * @param prefix - 变量名前缀
+   *
+   * @example
+   * ```ts
+   * const color = new Color('#3B82F6')
+   * color.applyToElement(document.documentElement, 'primary')
+   * ```
+   */
+  applyToElement(element: HTMLElement, prefix: string): void {
+    const vars = this.toCSSVariables(prefix)
+    for (const [name, value] of Object.entries(vars)) {
+      element.style.setProperty(name, value)
+    }
+  }
+
+  /**
+   * 色域压缩 - 将颜色映射到 sRGB 色域
+   *
+   * 当颜色超出 sRGB 色域时，使用色域压缩算法将其映射到有效范围内。
+   * 保持色相不变，压缩彩度和亮度。
+   *
+   * @returns 压缩后的颜色
+   *
+   * @example
+   * ```ts
+   * const color = new Color('#3B82F6')
+   * const clamped = color.gamutMap()
+   * ```
+   */
+  gamutMap(): Color {
+    const r = (this._value >> 16) & 0xFF
+    const g = (this._value >> 8) & 0xFF
+    const b = this._value & 0xFF
+
+    // 如果已经在色域内，直接返回克隆
+    if (r >= 0 && r <= 255 && g >= 0 && g <= 255 && b >= 0 && b <= 255) {
+      return this.clone()
+    }
+
+    // 使用二分法压缩彩度
+    const hsl = this.toHSL()
+    let lowChroma = 0
+    let highChroma = hsl.s
+    let result = this.clone()
+
+    const MAX_ITERATIONS = 20
+    const EPSILON = 0.01
+
+    for (let i = 0; i < MAX_ITERATIONS && highChroma - lowChroma > EPSILON; i++) {
+      const midChroma = (lowChroma + highChroma) / 2
+      const test = Color.fromHSL(hsl.h, midChroma, hsl.l, this._alpha)
+
+      const tr = (test._value >> 16) & 0xFF
+      const tg = (test._value >> 8) & 0xFF
+      const tb = test._value & 0xFF
+
+      if (tr >= 0 && tr <= 255 && tg >= 0 && tg <= 255 && tb >= 0 && tb <= 255) {
+        result = test
+        lowChroma = midChroma
+      }
+      else {
+        highChroma = midChroma
+      }
+    }
+
+    return result
+  }
+
+  /**
+   * 生成色谱色阶
+   *
+   * 生成从当前颜色的浅色到深色的色阶数组。
+   *
+   * @param count - 色阶数量（默认 10）
+   * @returns 色阶数组
+   *
+   * @example
+   * ```ts
+   * const blue = new Color('#3B82F6')
+   * const shades = blue.generateShades(10)
+   * // 返回 10 个从浅到深的蓝色色阶
+   * ```
+   */
+  generateShades(count = 10): Color[] {
+    const hsl = this.toHSL()
+    const shades: Color[] = []
+
+    for (let i = 0; i < count; i++) {
+      // 从 95% 到 15% 的亮度
+      const l = 95 - (80 * i / (count - 1))
+      // 彩度随亮度调整
+      const s = Math.min(100, hsl.s + (l < 50 ? 10 : -5))
+      shades.push(Color.fromHSL(hsl.h, s, l, this._alpha))
+    }
+
+    return shades
+  }
+
+  /**
+   * 计算与目标颜色的调和色
+   *
+   * 根据两种颜色生成调和色。
+   *
+   * @param target - 目标颜色
+   * @returns 调和色
+   *
+   * @example
+   * ```ts
+   * const red = new Color('#FF0000')
+   * const blue = new Color('#0000FF')
+   * const harmony = red.harmonize(blue) // 返回紫色
+   * ```
+   */
+  harmonize(target: ColorInput): Color {
+    const other = target instanceof Color ? target : new Color(target)
+    const hsl1 = this.toHSL()
+    const hsl2 = other.toHSL()
+
+    // 计算色相差
+    let hueDiff = hsl2.h - hsl1.h
+    if (hueDiff > 180) hueDiff -= 360
+    if (hueDiff < -180) hueDiff += 360
+
+    // 平均色相，平均彩度，平均亮度
+    let h = hsl1.h + hueDiff * 0.5
+    if (h < 0) h += 360
+    if (h > 360) h -= 360
+
+    const s = (hsl1.s + hsl2.s) / 2
+    const l = (hsl1.l + hsl2.l) / 2
+
+    return Color.fromHSL(h, s, l, (this._alpha + other._alpha) / 2)
+  }
+
+  /**
    * Export as JSON
    */
   toJSON(): object {

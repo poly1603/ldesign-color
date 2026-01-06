@@ -5,7 +5,7 @@ import { defineComponent, computed } from 'vue'
 import { Sun, Moon, Monitor } from 'lucide-vue-next'
 import { setThemeMode } from '@ldesign/color-core'
 import type { ThemeMode } from './types'
-import { defaultModeOptions } from './types'
+import { defaultModeOptions, getModeLabel } from './types'
 import './styles.css'
 
 export const ThemeModeSwitcherSegmented = defineComponent({
@@ -58,7 +58,7 @@ export const ThemeModeSwitcherSegmented = defineComponent({
               disabled={props.disabled}
             >
               <Icon size={16} />
-              {props.showLabel && <span>{option.label}</span>}
+              {props.showLabel && <span>{getModeLabel(option)}</span>}
             </button>
           )
         })}

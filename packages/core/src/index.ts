@@ -328,8 +328,47 @@ export {
   validateColorInput,
   validatePercentage,
   validateRange,
+  // New utilities
+  isFiniteNumber,
+  assertFiniteNumber,
+  hasCircularReference,
+  assertNoCircularReference,
+  safeParseNumber,
+  clampSafe,
+  validateColorArray,
+  validateGradientStops,
+  isValidRGBChannel,
+  isValidHue,
+  isValidPercentage,
+  isValidAlpha,
 } from './utils/enhanced-validators'
 
+// Export utility types from types.ts
+export type {
+  Branded,
+  DeepReadonly,
+  DeepPartial,
+  RequiredKeys,
+  OptionalKeys,
+  NonNullableDeep,
+  NumberInRange,
+  RGB8,
+  Degrees,
+  Percentage,
+  UnitInterval,
+  AssertType,
+  EnsureObject,
+  EnsureArray,
+} from './types'
+
+// Export type guards from types.ts
+export {
+  isRGBObject,
+  isHSLObject,
+  isHSVObject,
+  isHexColor,
+} from './types'
+
 // Version
-export const VERSION = '1.0.0'
+export const VERSION = '2.0.0'
 export default Color
